@@ -115,27 +115,58 @@ static void extism_store(ExtismPointer offs, const uint8_t* buffer,
 	}
 }
 
-MonoMethod* method_CountVowels;
+//MonoMethod* method_CountVowels;
+//
+//__attribute__((export_name("count_vowels"))) int count_vowels()
+//{
+//
+//	if (!method_CountVowels)
+//	{
+//		method_CountVowels = lookup_dotnet_method("csharp-pdk.dll", "csharp_pdk", "Interop", "count_vowels", -1);
+//		return 8;
+//		assert(method_CountVowels);
+//	}
+//
+//	return 42;
+//
+//	void* method_params[] = { };
+//	MonoObject* exception;
+//	MonoObject* result = mono_wasm_invoke_method(method_CountVowels, NULL, method_params, &exception);
+//	assert(!exception);
+//
+//	int int_result = *(int*)mono_object_unbox(result);
+//	return int_result;
+//}
 
-__attribute__((export_name("count_vowels"))) int count_vowels()
+__attribute__((export_name("count_vowels"))) int32_t count_vowels()
 {
+	uint64_t length = extism_input_length();
 
-	if (!method_CountVowels)
+	if (length == 0)
 	{
-		method_CountVowels = lookup_dotnet_method("csharp-pdk.dll", "csharp_pdk", "Interop", "count_vowels", -1);
-		return 8;
-		assert(method_CountVowels);
+		return 0;
 	}
 
-	return 42;
+	int64_t count = 0;
+	char ch = 0;
+	for (int64_t i = 0; i < length; i++)
+	{
+		ch = extism_input_load_u8(i);
+		if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u' ||
+			ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U')
+		{
+			count += 1;
+		}
+	}
 
-	void* method_params[] = { };
-	MonoObject* exception;
-	MonoObject* result = mono_wasm_invoke_method(method_CountVowels, NULL, method_params, &exception);
-	assert(!exception);
+	char out[128];
+	int n = snprintf(out, 128, "{\"count\": %lld}", count);
 
-	int int_result = *(int*)mono_object_unbox(result);
-	return int_result;
+	uint64_t offs_ = extism_alloc(n);
+	extism_store(offs_, (const uint8_t*)out, n);
+	extism_output_set(offs_, n);
+
+	return 0;
 }
 
 void attach_internal_calls()
