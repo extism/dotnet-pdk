@@ -19,7 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)extism.c" />
+		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)native.c" />
 		<WasiAfterRuntimeLoaded Include="attach_internal_calls" />
 	</ItemGroup>
 
