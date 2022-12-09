@@ -17,8 +17,6 @@ public class Interop
     [MethodImpl(MethodImplOptions.InternalCall)]
     public static extern byte extism_input_load_u8(int index);
     [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern byte extism_alloc(int count);
-    [MethodImpl(MethodImplOptions.InternalCall)]
     public static extern unsafe void set_output(byte* buffer, int length);
 
     public static unsafe int count_vowels()
