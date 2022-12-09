@@ -144,19 +144,19 @@ __attribute__((export_name("count_vowels"))) int count_vowels()
 	return int_result;
 }
 
-uint8_t get_byte(int index)
+uint8_t input_load_byte(int index)
 {
 	return extism_input_load_u8(index);
 }
 
-uint64_t get_long(int index)
+uint64_t input_load_long(int index)
 {
 	return extism_input_load_u64(index);
 }
 
 void attach_internal_calls()
 {
-	mono_add_internal_call("Pdk.Interop::extism_input_load_u64", get_long);
+	mono_add_internal_call("Pdk.Interop::extism_input_load_u64", input_load_long);
 	mono_add_internal_call("Pdk.Interop::extism_input_length", extism_input_length);
-	mono_add_internal_call("Pdk.Interop::extism_input_load_u8", get_byte);
+	mono_add_internal_call("Pdk.Interop::extism_input_load_u8", input_load_byte);
 }
