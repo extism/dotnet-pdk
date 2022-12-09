@@ -15,21 +15,12 @@ public class Interop
     public static extern long extism_input_length();
 
     [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern long extism_input_load_u64(long index);
+    public static extern ulong extism_input_load_u64(int index);
 
     [MethodImpl(MethodImplOptions.InternalCall)]
     public static extern byte extism_input_load_u8(int index);
 
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern unsafe void load_input(byte* buffer, long length);
-
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern int do_something(ulong index);
-
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    public extern static int native_power(int number);
-
-    public unsafe static int count_vowels()
+    public static int count_vowels()
     {
         byte[] buffer = GetInput();
 
@@ -38,14 +29,19 @@ public class Interop
         var count = 0;
         foreach (var c in text)
         {
-            var lower = char.ToLowerInvariant(c);
-            switch (lower)
+            var lower = char.ToLower(c);
+            switch (c)
             {
                 case 'a':
+                case 'A':
                 case 'e':
+                case 'E':
                 case 'i':
+                case 'I':
                 case 'o':
+                case 'O':
                 case 'u':
+                case 'U':
                     count++;
                     break;
             }
@@ -54,7 +50,7 @@ public class Interop
         return count;
     }
 
-    private static unsafe byte[] GetInput()
+    private static byte[] GetInput()
     {
         var length = extism_input_length();
         if (length == 0)
