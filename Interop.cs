@@ -1,5 +1,6 @@
 ﻿// https://github.com/emepetres/dotnet-wasm-sample
 
+using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -64,19 +65,7 @@ public class Interop
             if (length - i >= 8)
             {
                 var x = extism_input_load_u64(i);
-                var bytes = BitConverter.GetBytes(x);
-
-                if (!BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(bytes);
-                }
-
-                for (uint j = 0; j < bytes.Length; j++)
-                {
-                    bytes[i + j] = bytes[j];
-                }
-
-                //Array.Copy(bytes, 0, buffer, i, bytes.Length);
+                BinaryPrimitives.WriteUInt64LittleEndian(buffer.AsSpan(i), x);
                 i += 7;
             }
             else
