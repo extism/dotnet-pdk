@@ -154,9 +154,16 @@ uint64_t input_load_long(int index)
 	return extism_input_load_u64(index);
 }
 
+uint64_t alloc(int count)
+{
+	return extism_alloc(count);
+}
+
 void attach_internal_calls()
 {
 	mono_add_internal_call("Pdk.Interop::extism_input_load_u64", input_load_long);
 	mono_add_internal_call("Pdk.Interop::extism_input_length", extism_input_length);
 	mono_add_internal_call("Pdk.Interop::extism_input_load_u8", input_load_byte);
+	mono_add_internal_call("Pdk.Interop::extism_alloc", alloc);
+	mono_add_internal_call("Pdk.Interop::set_output", set_output);
 }

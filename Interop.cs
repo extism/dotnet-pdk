@@ -16,8 +16,12 @@ public class Interop
 
     [MethodImpl(MethodImplOptions.InternalCall)]
     public static extern byte extism_input_load_u8(int index);
+    [MethodImpl(MethodImplOptions.InternalCall)]
+    public static extern byte extism_alloc(int count);
+    [MethodImpl(MethodImplOptions.InternalCall)]
+    public static extern unsafe void set_output(byte* buffer, int length);
 
-    public static int count_vowels()
+    public static unsafe int count_vowels()
     {
         byte[] buffer = GetInput();
 
@@ -34,7 +38,7 @@ public class Interop
             {
                 case 'a':
                 case 'A':
-                case 'e':
+                case 'e': 
                 case 'E':
                 case 'i':
                 case 'I':
@@ -47,7 +51,15 @@ public class Interop
             }
         }
 
-        return count;
+        var result = "{ \"count\": " + count + " }";
+        var resultBytes = Encoding.UTF8.GetBytes(result);
+
+        fixed (byte* ptr = resultBytes)
+        {
+            set_output(ptr, resultBytes.Length);
+        }
+
+        return 0;
     }
 
     private static byte[] GetInput()
