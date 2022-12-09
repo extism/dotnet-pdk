@@ -66,7 +66,7 @@ public class Interop
                 var x = extism_input_load_u64(i);
                 var bytes = BitConverter.GetBytes(x);
 
-                if (BitConverter.IsLittleEndian)
+                if (!BitConverter.IsLittleEndian)
                 {
                     Array.Reverse(bytes);
                 }
@@ -76,6 +76,7 @@ public class Interop
                     bytes[i + j] = bytes[j];
                 }
 
+                //Array.Copy(bytes, 0, buffer, i, bytes.Length);
                 i += 7;
             }
             else
