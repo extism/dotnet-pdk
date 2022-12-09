@@ -1,13 +1,16 @@
 ﻿#pragma once
-
+#define NDEBUG
 // https://github.com/dotnet/runtime/blob/v7.0.0/src/mono/wasi/mono-wasi-driver/driver.c
 #include <string.h>
+
 #include <mono-wasi/driver.h>
+#include <mono/metadata/exception.h>
 
 #include <stdint.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
 
 #define IMPORT(a, b) __attribute__((import_module(a), import_name(b)))
 
@@ -117,14 +120,28 @@ static void extism_store(ExtismPointer offs, const uint8_t* buffer,
 	}
 }
 
-MonoMethod* method_CountVowels;
+void set_output(uint8_t* out, int n) {
+	ExtismPointer errorPointer = extism_alloc(n);
+	extism_store(errorPointer, out, n);
+	extism_output_set(errorPointer, n);
+}
 
+MonoMethod* method_CountVowels;
 __attribute__((export_name("count_vowels"))) int count_vowels()
 {
+	uint64_t input_length = extism_input_length();
+	if (input_length > 0)
+	{
+		//return 888;
+	//	return extism_input_load_u8(0);
+	}
+
+	//return 9;
+
 	if (!method_CountVowels)
 	{
 		method_CountVowels = lookup_dotnet_method("CSharp.Pdk.dll", "Pdk", "Interop", "count_vowels", -1);
-		assert(method_CountVowels);
+		//assert(method_CountVowels);
 	}
 
 	void* method_params[] = { };
@@ -136,8 +153,32 @@ __attribute__((export_name("count_vowels"))) int count_vowels()
 	return int_result;
 }
 
+int native_power(uint64_t number) {
+	return extism_input_load_u8(number);
+}
+
+uint64_t do_something(uint64_t index)
+{
+	return index;
+	return extism_input_load_u8(index);
+	//return 8;
+}
+
+uint8_t get_byte(int index)
+{
+	return extism_input_load_u8(index);
+}
+
 void attach_internal_calls()
 {
 	//mono_add_internal_call("Pdk.Interop::InputLength", extism_input_length);
 	mono_add_internal_call("Pdk.Interop::CountVowelsNative", count_vowels);
+	//mono_add_internal_call("Pdk.Interop::get_input", get_input);
+	mono_add_internal_call("Pdk.Interop::load_input", extism_load_input);
+	mono_add_internal_call("Pdk.Interop::do_something", do_something);
+
+	mono_add_internal_call("Pdk.Interop::extism_input_load_u64", extism_input_load_u64);
+	mono_add_internal_call("Pdk.Interop::extism_input_length", extism_input_length);
+	mono_add_internal_call("Pdk.Interop::extism_input_load_u8", get_byte);
+	mono_add_internal_call("Pdk.Interop::native_power", native_power);
 }

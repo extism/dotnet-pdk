@@ -10,6 +10,8 @@
 		<LangVersion>preview</LangVersion>
 		<NoWarn>IL2026</NoWarn>
 		<StartupObject>Pdk.Program</StartupObject>
+		<WasmBuildNative>true</WasmBuildNative>
+		<WasmNativeStrip>false</WasmNativeStrip>
 	</PropertyGroup>
 
 	<ItemGroup>
