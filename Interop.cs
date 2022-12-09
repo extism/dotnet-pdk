@@ -1,16 +1,12 @@
 ﻿// https://github.com/emepetres/dotnet-wasm-sample
 
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Pdk;
 
 public class Interop
 {
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    public static extern int CountVowelsNative();
-
     [MethodImpl(MethodImplOptions.InternalCall)]
     public static extern long extism_input_length();
 
@@ -29,7 +25,10 @@ public class Interop
         var count = 0;
         foreach (var c in text)
         {
-            var lower = char.ToLower(c);
+            // Something really weird, char.ToLower() throws a `wasm trap: indirect call type mismatch`
+            // exception unless in Main we call CountVowelsNative inside Console.WriteLine in Main.
+            // See: https://github.com/mhmd-azeez/csharp-pdk/blob/baa6dda079fbc8bea0319b494fa359d10707bd63/Program.cs#L7
+
             switch (c)
             {
                 case 'a':

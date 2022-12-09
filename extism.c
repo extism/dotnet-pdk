@@ -156,8 +156,6 @@ uint64_t get_long(int index)
 
 void attach_internal_calls()
 {
-	mono_add_internal_call("Pdk.Interop::CountVowelsNative", count_vowels);
-
 	mono_add_internal_call("Pdk.Interop::extism_input_load_u64", get_long);
 	mono_add_internal_call("Pdk.Interop::extism_input_length", extism_input_length);
 	mono_add_internal_call("Pdk.Interop::extism_input_load_u8", get_byte);
