@@ -2,7 +2,7 @@
 
 using System.Text;
 
-var path = @"..\..\..\..\SamplePlugin\bin\Debug\net7.0\SamplePlugin.wasm";
+var path = "../../../../SamplePlugin/bin/Debug/net7.0/SamplePlugin.wasm";
 
 var bytes = File.ReadAllBytes(path);
 var context = new Context();
