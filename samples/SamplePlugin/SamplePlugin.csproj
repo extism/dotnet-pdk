@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
+		<PackageReference Include="Wasi.Sdk" Version="0.1.2-preview.10061" />
+	</ItemGroup>
+
+	<!--This is only necessary for ProjectReference, when using the nuget package this will not be necessary-->
+	<Import Project="..\..\src\Extism.Pdk\build\Extism.Pdk.targets" />
+
+	<ItemGroup>
+		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)native.c" />
+	</ItemGroup>
+
+</Project>
