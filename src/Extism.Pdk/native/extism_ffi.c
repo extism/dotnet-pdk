@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-
 #define IMPORT(a, b) __attribute__((import_module(a), import_name(b)))
 
 typedef uint64_t ExtismPointer;
@@ -126,24 +125,6 @@ void set_output(uint8_t* out, int n) {
 	extism_output_set(errorPointer, n);
 }
 
-MonoMethod* method_CountVowels;
-__attribute__((export_name("count_vowels"))) int count_vowels()
-{
-	if (!method_CountVowels)
-	{
-		method_CountVowels = lookup_dotnet_method("CSharp.Pdk.dll", "Pdk", "Interop", "count_vowels", -1);
-		assert(method_CountVowels);
-	}
-
-	void* method_params[] = { };
-	MonoObject* exception;
-	MonoObject* result = mono_wasm_invoke_method(method_CountVowels, NULL, method_params, &exception);
-	assert(!exception);
-
-	int int_result = *(int*)mono_object_unbox(result);
-	return int_result;
-}
-
 uint8_t input_load_byte(int index)
 {
 	return extism_input_load_u8(index);
@@ -154,10 +135,10 @@ uint64_t input_load_long(int index)
 	return extism_input_load_u64(index);
 }
 
-void attach_internal_calls()
+void extism_pdk_attach_internal_calls()
 {
-	mono_add_internal_call("Pdk.Interop::extism_input_load_u64", input_load_long);
-	mono_add_internal_call("Pdk.Interop::extism_input_length", extism_input_length);
-	mono_add_internal_call("Pdk.Interop::extism_input_load_u8", input_load_byte);
-	mono_add_internal_call("Pdk.Interop::set_output", set_output);
+	mono_add_internal_call("Extism.Pdk.Native.Interop::extism_input_load_u64", input_load_long);
+	mono_add_internal_call("Extism.Pdk.Native.Interop::extism_input_length", extism_input_length);
+	mono_add_internal_call("Extism.Pdk.Native.Interop::extism_input_load_u8", input_load_byte);
+	mono_add_internal_call("Extism.Pdk.Native.Interop::set_output", set_output);
 }

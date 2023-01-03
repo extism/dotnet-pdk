@@ -4,7 +4,7 @@ using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Pdk;
+namespace Extism.Pdk.Native;
 
 public class Interop
 {
@@ -60,7 +60,7 @@ public class Interop
         return 0;
     }
 
-    private static byte[] GetInput()
+    public static byte[] GetInput()
     {
         var length = extism_input_length();
         if (length == 0)
