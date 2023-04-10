@@ -28,7 +28,7 @@
 	<Import Project="..\..\src\Extism.Pdk\build\Extism.Pdk.targets" />
 
 	<ItemGroup>
-		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)native.c" />
+		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)native.gen.c" />
 	</ItemGroup>
 
 </Project>
