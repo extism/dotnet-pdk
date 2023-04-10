@@ -9,9 +9,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\src\Extism.Pdk.MsBuild\Extism.Pdk.MsBuild.csproj" />
+		<ProjectReference Include="..\..\src\Extism.Pdk.SourceGenerators\Extism.Pdk.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
 		<PackageReference Include="Wasi.Sdk" Version="0.1.2-preview.10061" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
+	</ItemGroup>
+
+	<UsingTask TaskName="ExtismExportGenerator" AssemblyFile="$(MSBuildProjectDirectory)\..\..\src\Extism.Pdk.MsBuild\bin\Debug\netstandard2.0\Extism.Pdk.MsBuild.dll" />
+	<Target Name="GenerateGlueCode" AfterTargets="Build">
+		<ExtismExportGenerator AssemblyPath="$(TargetPath)" OutputPath="native.gen.c" />
+	</Target>
 
 	<!--This is only necessary for ProjectReference, when using the nuget package this will not be necessary-->
 	<Import Project="..\..\src\Extism.Pdk\build\Extism.Pdk.targets" />

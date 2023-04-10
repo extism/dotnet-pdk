@@ -5,9 +5,13 @@ VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Extism.Pdk", "src\Extism.Pdk\Extism.Pdk.csproj", "{09D76A48-EEB5-43AC-8C4E-1B65224A1442}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleHost", "samples\SampleHost\SampleHost.csproj", "{D0D803F9-A45F-4340-B77C-EE8AEE35F3AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleHost", "samples\SampleHost\SampleHost.csproj", "{D0D803F9-A45F-4340-B77C-EE8AEE35F3AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplePlugin", "samples\SamplePlugin\SamplePlugin.csproj", "{59C3AF4A-3601-4EFC-B1D2-CC26982BA1E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplePlugin", "samples\SamplePlugin\SamplePlugin.csproj", "{59C3AF4A-3601-4EFC-B1D2-CC26982BA1E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extism.Pdk.SourceGenerators", "src\Extism.Pdk.SourceGenerators\Extism.Pdk.SourceGenerators.csproj", "{602AB831-679F-4A01-BE79-D6B40C52E2C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extism.Pdk.MsBuild", "src\Extism.Pdk.MsBuild\Extism.Pdk.MsBuild.csproj", "{A3818A8D-9891-4052-97C0-1E532B8CFE8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{59C3AF4A-3601-4EFC-B1D2-CC26982BA1E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59C3AF4A-3601-4EFC-B1D2-CC26982BA1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59C3AF4A-3601-4EFC-B1D2-CC26982BA1E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{602AB831-679F-4A01-BE79-D6B40C52E2C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{602AB831-679F-4A01-BE79-D6B40C52E2C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{602AB831-679F-4A01-BE79-D6B40C52E2C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{602AB831-679F-4A01-BE79-D6B40C52E2C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3818A8D-9891-4052-97C0-1E532B8CFE8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3818A8D-9891-4052-97C0-1E532B8CFE8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3818A8D-9891-4052-97C0-1E532B8CFE8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3818A8D-9891-4052-97C0-1E532B8CFE8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
