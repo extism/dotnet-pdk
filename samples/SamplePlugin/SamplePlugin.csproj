@@ -18,16 +18,7 @@
 		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
 	</ItemGroup>
 
-	<UsingTask TaskName="ExtismExportGenerator" AssemblyFile="$(MSBuildProjectDirectory)\..\..\src\Extism.Pdk.MSBuild\bin\Debug\netstandard2.0\Extism.Pdk.MSBuild.dll" />
-	<Target Name="GenerateGlueCode" AfterTargets="Build">
-		<ExtismExportGenerator AssemblyPath="$(TargetPath)" OutputPath="native.gen.c" />
-	</Target>
-
 	<!--This is only necessary for ProjectReference, when using the nuget package this will not be necessary-->
 	<Import Project="..\..\src\Extism.Pdk\build\Extism.Pdk.targets" />
-
-	<ItemGroup>
-		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)native.gen.c" />
-	</ItemGroup>
 
 </Project>
