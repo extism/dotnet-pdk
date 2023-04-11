@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Extism.Pdk.MsBuild\Extism.Pdk.MSBuild.csproj" />
+		<ProjectReference Include="..\..\src\Extism.Pdk.MSBuild\Extism.Pdk.MSBuild.csproj" />
 		<ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
 		<PackageReference Include="Wasi.Sdk" Version="0.1.2-preview.10061" />
 	</ItemGroup>
@@ -18,7 +18,7 @@
 		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
 	</ItemGroup>
 
-	<UsingTask TaskName="ExtismExportGenerator" AssemblyFile="$(MSBuildProjectDirectory)\..\..\src\Extism.Pdk.MsBuild\bin\Debug\netstandard2.0\Extism.Pdk.MsBuild.dll" />
+	<UsingTask TaskName="ExtismExportGenerator" AssemblyFile="$(MSBuildProjectDirectory)\..\..\src\Extism.Pdk.MSBuild\bin\Debug\netstandard2.0\Extism.Pdk.MSBuild.dll" />
 	<Target Name="GenerateGlueCode" AfterTargets="Build">
 		<ExtismExportGenerator AssemblyPath="$(TargetPath)" OutputPath="native.gen.c" />
 	</Target>
