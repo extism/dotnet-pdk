@@ -11,6 +11,7 @@
 		<WasmBuildNative>true</WasmBuildNative>
 		<WasmNativeStrip>false</WasmNativeStrip>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<OutputPath>lib\</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>

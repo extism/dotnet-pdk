@@ -5,7 +5,7 @@
 		<WasiAfterRuntimeLoaded Include="extism_pdk_attach_internal_calls" />
 	</ItemGroup>
 
-	<UsingTask TaskName="ExtismExportGenerator" AssemblyFile="$(MSBuildThisFileDirectory)..\bin\Debug\net7.0\Extism.Pdk.MSBuild.dll" />
+	<UsingTask TaskName="ExtismExportGenerator" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\net7.0\Extism.Pdk.MSBuild.dll" />
 	<Target Name="GenerateGlueCode" AfterTargets="Build">
 		<ExtismExportGenerator AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism.native.g.c" />
 	</Target>
