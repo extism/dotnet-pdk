@@ -9,8 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Extism.Pdk.MsBuild\Extism.Pdk.MsBuild.csproj" />
-		<ProjectReference Include="..\..\src\Extism.Pdk.SourceGenerators\Extism.Pdk.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\..\src\Extism.Pdk.MsBuild\Extism.Pdk.MSBuild.csproj" />
 		<ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
 		<PackageReference Include="Wasi.Sdk" Version="0.1.2-preview.10061" />
 	</ItemGroup>
