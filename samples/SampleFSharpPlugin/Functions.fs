@@ -1,5 +1,5 @@
 ﻿
-module SampleFSharpPlugin.Library
+module SampleFSharpPlugin.Functions
 
 // Use of `fixed`.
 // Warning FS0009 Uses of this construct may result in the generation of unverifiable .NET IL code.
