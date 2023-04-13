@@ -19,10 +19,11 @@ let countVowels () =
   for c in text do
     match c with
     | 'a' | 'e' | 'i' | 'o' | 'u' 
-    | 'A' | 'E' | 'I' | 'O' | 'U' -> count <- count + 1
+    | 'A' | 'E' | 'I' | 'O' | 'U' ->
+      count <- count + 1
     | _ -> ()
 
-  let result = Encoding.UTF8.GetBytes $"""{{ "count" = {count} }}"""
+  let result = Encoding.UTF8.GetBytes $"""{{ "count": {count} }}"""
   use ptr = fixed result
   Interop.set_output (ptr, result.Length)
   0
