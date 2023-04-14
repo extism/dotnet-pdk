@@ -2,8 +2,10 @@
 
 using System.Text;
 
-var path = "../../../../SamplePlugin/bin/Debug/net7.0/SamplePlugin.wasm";
+var path = "../../../../SamplePlugin/bin/Debug/net7.0/SampleCSharpPlugin.wasm";
+//var path = "../../../../SampleFSharpPlugin/bin/Debug/net7.0/SampleFSharpPlugin.wasm";
 
+Console.WriteLine(path);
 var bytes = File.ReadAllBytes(path);
 var context = new Context();
 var plugin = context.CreatePlugin(bytes, withWasi: true);

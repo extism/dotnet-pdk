@@ -3,7 +3,7 @@ using Extism.Pdk;
 
 using System.Text;
 
-namespace SamplePlugin
+namespace SampleCSharpPlugin
 {
     public class Functions
     {
