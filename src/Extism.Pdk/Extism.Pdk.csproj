@@ -10,10 +10,16 @@
 		<NoWarn>IL2026</NoWarn>
 		<WasmBuildNative>true</WasmBuildNative>
 		<WasmNativeStrip>false</WasmNativeStrip>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<OutputPath>lib\</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Wasi.Sdk" Version="0.1.2-preview.10061" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Extism.Pdk.MSBuild\Extism.Pdk.MSBuild.csproj" />
 	</ItemGroup>
 
 	<Import Project="build\Extism.Pdk.targets" />

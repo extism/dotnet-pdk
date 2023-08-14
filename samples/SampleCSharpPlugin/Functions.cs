@@ -1,11 +1,13 @@
 ﻿using Extism.Pdk.Native;
+using Extism.Pdk;
 
 using System.Text;
 
-namespace SamplePlugin
+namespace SampleCSharpPlugin
 {
     public class Functions
     {
+        [ExtismExport("count_vowels")]
         public static unsafe int CountVowels()
         {
             byte[] buffer = Interop.GetInput();

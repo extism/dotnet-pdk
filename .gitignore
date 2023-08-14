@@ -2,3 +2,4 @@
 bin/
 obj/
 .vs/
+/src/Extism.Pdk/lib
