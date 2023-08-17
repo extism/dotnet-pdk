@@ -8,11 +8,10 @@ module SampleFSharpPlugin.Functions
 open System.Text
 
 open Extism.Pdk
-open Extism.Pdk.Native
 
 [<ExtismExport("count_vowels")>]
 let countVowels () =
-  let buffer = Interop.GetInput ()
+  let buffer = Pdk.GetInput ()
   let text = Encoding.UTF8.GetString buffer
 
   let mutable count = 0
@@ -23,7 +22,5 @@ let countVowels () =
       count <- count + 1
     | _ -> ()
 
-  let result = Encoding.UTF8.GetBytes $"""{{ "count": {count} }}"""
-  use ptr = fixed result
-  Interop.set_output (ptr, result.Length)
+  Pdk.SetOutput ($"""{{ "count": {count} }}""")
   0

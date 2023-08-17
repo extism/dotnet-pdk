@@ -3,12 +3,14 @@
 	<ItemGroup>
 		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)..\native\extism_ffi.c" />
 		<WasiAfterRuntimeLoaded Include="extism_pdk_attach_internal_calls" />
+		<WasiAfterRuntimeLoaded Include="extism_pdk_attach_imports" />
 	</ItemGroup>
 
-	<UsingTask TaskName="ExtismExportGenerator" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\net7.0\Extism.Pdk.MSBuild.dll" />
+	<UsingTask TaskName="ExtismFFIGenerator" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\net7.0\Extism.Pdk.MSBuild.dll" />
 	<Target Name="GenerateGlueCode" AfterTargets="Build">
-		<ExtismExportGenerator AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism.native.g.c" />
+		<ExtismFFIGenerator AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism.native.g.c" />
 	</Target>
+
 
 	<ItemGroup>
 		<WasiNativeFileReference Include="$(IntermediateOutputPath)extism.native.g.c" />

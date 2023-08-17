@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Extism.runtime.win-x64" Version="0.2.0" />
-    <PackageReference Include="Extism.Sdk" Version="0.2.0" />
+	  <PackageReference Include="Extism.runtime.win-x64" Version="0.6.0" />
+	  <PackageReference Include="Extism.Sdk" Version="0.6.0" />
   </ItemGroup>
 
 </Project>
