@@ -11,12 +11,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-// Convert two int32_t values to a single uint64_t value
-uint64_t combine_int32s_to_uint64(int32_t high, int32_t low) {
-	return ((uint64_t)high << 32) | (uint32_t)low;
-}
-
-
 #define IMPORT(a, b) __attribute__((import_module(a), import_name(b)))
 
 typedef uint64_t ExtismPointer;
@@ -127,11 +121,6 @@ static void extism_store(uint32_t offs, const uint8_t* buffer, uint32_t length) 
 void set_output(int offset, int n) {
 	extism_output_set(offset, n);
 }
-//void set_output(int offset, int length) {
-//	ExtismPointer ptr = extism_alloc(n);
-//	extism_store(errorPointer, out, n);
-//	extism_output_set(errorPointer, n);
-//}
 
 uint8_t input_load_byte(int index)
 {
