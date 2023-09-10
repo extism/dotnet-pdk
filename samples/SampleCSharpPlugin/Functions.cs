@@ -1,18 +1,19 @@
 ﻿using Extism.Pdk;
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace SampleCSharpPlugin
 {
-    public class Functions
+    public static class Functions
     {
-        [ExtismImport("host", "is_vowel")]
-        [MethodImpl(MethodImplOptions.InternalCall)]
+        [DllImport("host", EntryPoint = "is_vowel")]
         public static extern int IsVowel(int c);
 
-        [ExtismExport("count_vowels")]
-        public static unsafe int CountVowels()
+        [UnmanagedCallersOnly]
+
+        public static unsafe int count_vowels()
         {
             var text = Pdk.GetInputString();
 

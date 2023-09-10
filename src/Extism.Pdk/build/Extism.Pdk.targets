@@ -1,19 +1,13 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<ItemGroup>
-		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)..\native\extism_ffi.c" />
-		<WasiAfterRuntimeLoaded Include="extism_pdk_attach_internal_calls" />
-		<WasiAfterRuntimeLoaded Include="extism_pdk_attach_imports" />
-	</ItemGroup>
-
-	<UsingTask TaskName="ExtismFFIGenerator" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\net7.0\Extism.Pdk.MSBuild.dll" />
+	<UsingTask TaskName="ExtismFFIGenerator" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\net8.0\Extism.Pdk.MSBuild.dll" />
 	<Target Name="GenerateGlueCode" AfterTargets="Build">
-		<ExtismFFIGenerator AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism.native.g.c" />
+		<ExtismFFIGenerator AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism" EnvPath="$(MSBuildThisFileDirectory)..\native\env.c" />
 	</Target>
 
-
 	<ItemGroup>
-		<WasiNativeFileReference Include="$(IntermediateOutputPath)extism.native.g.c" />
+		<NativeFileReference Include="$(IntermediateOutputPath)extism\*.c" />
+		<_WasmNativeFileForLinking Include="@(NativeFileReference)" />
 	</ItemGroup>
 
 </Project>

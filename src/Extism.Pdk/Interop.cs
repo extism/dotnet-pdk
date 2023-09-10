@@ -321,7 +321,7 @@ public struct MemoryBlock
 
         fixed (byte* ptr = buffer)
         {
-            Native.extism_load(Offset, ptr, Length);
+           Native.extism_load(Offset, ptr, Length);
         }
     }
 
@@ -329,7 +329,7 @@ public struct MemoryBlock
     {
         fixed (byte* ptr = bytes)
         {
-            Native.extism_store(Offset, ptr, Length);
+          Native.extism_store(Offset, ptr, Length);
         }
     }
 
