@@ -18,5 +18,5 @@
 			<_PackageFiles Include="native\**" BuildAction="Content" PackagePath="native" />
 		</ItemGroup>
 	</Target>
-
+	
 </Project>

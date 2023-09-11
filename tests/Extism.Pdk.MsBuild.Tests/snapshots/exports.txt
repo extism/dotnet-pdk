@@ -1,0 +1,81 @@
+#include <string.h>
+#include <mono/metadata/assembly.h>
+#include <mono/metadata/exception.h>
+
+// https://github.com/dotnet/runtime/blob/v7.0.0/src/mono/wasi/mono-wasi-driver/driver.c
+#include <string.h>
+
+#include "driver.h"
+
+#include <stdint.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <stdio.h>
+
+#define IMPORT(a, b) __attribute__((import_module(a), import_name(b)))
+
+typedef uint64_t ExtismPointer;
+// _initialize
+void mono_wasm_load_runtime(const char* unused, int debug_level);
+
+#ifdef WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
+// This is supplied from the MSBuild itemgroup @(WasiAfterRuntimeLoaded)
+WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
+#endif
+
+__attribute__((export_name("_initialize"))) void initialize() {
+    mono_wasm_load_runtime("", 0);
+}
+
+// end of _initialize   
+extern void mono_wasm_invoke_method_ref(MonoMethod* method, MonoObject** this_arg_in, void* params[], MonoObject** _out_exc, MonoObject** out_result);
+
+MonoMethod* method_DoSomething;
+__attribute__((export_name("DoSomething"))) int DoSomething()
+{
+    if (!method_DoSomething)
+    {
+        method_DoSomething = lookup_dotnet_method("SampleApp.dll", "SampleNamespace", "SampleType", "DoSomething", -1);
+        assert(method_DoSomething);
+    }
+
+    void* method_params[] = { };
+    MonoObject* exception = NULL;
+    MonoObject* result = NULL;
+    mono_wasm_invoke_method_ref(method_DoSomething, NULL, method_params, &exception, &result);
+    assert(!exception);
+    
+    int int_result = 0;  // Default value
+
+    if (result != NULL) {
+        int_result = *(int*)mono_object_unbox(result);
+    }
+    
+    return int_result;
+}
+
+
+MonoMethod* method_fancy_name;
+__attribute__((export_name("fancy_name"))) int fancy_name()
+{
+    if (!method_fancy_name)
+    {
+        method_fancy_name = lookup_dotnet_method("SampleApp.dll", "SampleNamespace", "SampleType", "DoSomeOtherStuff", -1);
+        assert(method_fancy_name);
+    }
+
+    void* method_params[] = { };
+    MonoObject* exception = NULL;
+    MonoObject* result = NULL;
+    mono_wasm_invoke_method_ref(method_fancy_name, NULL, method_params, &exception, &result);
+    assert(!exception);
+    
+    int int_result = 0;  // Default value
+
+    if (result != NULL) {
+        int_result = *(int*)mono_object_unbox(result);
+    }
+    
+    return int_result;
+}

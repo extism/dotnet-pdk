@@ -1,54 +1,25 @@
-﻿using Microsoft.Build.Framework;
-using Mono.Cecil;
+﻿using Mono.Cecil;
+
 using System.Text;
 
-namespace Extism.Pdk.MsBuild
+namespace Extism.Pdk.MSBuild
 {
-    public class ExtismFFIGenerator : Microsoft.Build.Utilities.Task
+    public class FFIGenerator
     {
-        [Required]
-        public string AssemblyPath { get; set; }
+        private readonly Action<string> _logError;
+        private readonly string _env;
 
-        [Required]
-        public string OutputPath { get; set; }
-
-        [Required]
-        public string EnvPath { get; set; }
-
-        public override bool Execute()
+        public FFIGenerator(string env, Action<string> logError)
         {
-            try
-            {
-                GenerateGlueCode();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log.LogErrorFromException(ex);
-                return false;
-            }
+            _logError = logError;
+            _env = env;
         }
 
-        private void GenerateGlueCode()
+        public IEnumerable<FileEntry> GenerateGlueCode(AssemblyDefinition assembly)
         {
-            var assemblyFileName = Path.GetFileName(AssemblyPath);
-            var assembly = AssemblyDefinition.ReadAssembly(AssemblyPath);
-
-            if (!Directory.Exists(OutputPath))
-            {
-                Directory.CreateDirectory(OutputPath);
-            }
-            else
-            {
-                foreach (var file in Directory.GetFiles(OutputPath, "*.c"))
-                {
-                    File.Delete(file);
-                }
-            }
-
             var exportedMethods = assembly.MainModule.Types
                 .SelectMany(t => t.Methods)
-                .Where(m => m.IsStatic && m.CustomAttributes.Any(a => a.AttributeType.Name == "UnmanagedCallersOnlyAttribute"))
+                .Where(m => m.IsStatic && m.CustomAttributes.Any(a => a.AttributeType.FullName == "System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute"))
                 .ToArray();
 
             // TODO: also find F# module functions
@@ -57,11 +28,13 @@ namespace Extism.Pdk.MsBuild
                 .Where(m => m.HasPInvokeInfo)
                 .ToArray();
 
-            GenerateExports(assemblyFileName, exportedMethods);
-            GenerateImports(importedMethods);
+            var files = GenerateImports(importedMethods, _env);
+            files.Add(GenerateExports(assembly.Name.Name + ".dll", exportedMethods));
+
+            return files;
         }
 
-        private void GenerateImports(MethodDefinition[] importedMethods)
+        private List<FileEntry> GenerateImports(MethodDefinition[] importedMethods, string env)
         {
             var modules = importedMethods.GroupBy(m => m.PInvokeInfo.Module.Name)
                             .Select(g => new
@@ -71,8 +44,9 @@ namespace Extism.Pdk.MsBuild
                             })
                             .ToList();
 
-            var envImports = File.ReadAllText(EnvPath);
             var envWritten = false;
+
+            var files = new List<FileEntry>();
 
             // For DllImport to work with wasm, the name of the file has to match
             // the name of the module that the function is imported from
@@ -83,7 +57,7 @@ namespace Extism.Pdk.MsBuild
                 if (module.Name == "env")
                 {
                     envWritten = true;
-                    builder.AppendLine(envImports);
+                    builder.AppendLine(env);
                 }
                 else
                 {
@@ -95,16 +69,18 @@ namespace Extism.Pdk.MsBuild
                     builder.AppendLine(import);
                 }
 
-                File.WriteAllText(Path.Combine(OutputPath, $"{module.Name}.c"), builder.ToString());
+                files.Add(new FileEntry { Name = $"{module.Name}.c", Content = builder.ToString() });
             }
 
             if (!envWritten)
             {
-                File.WriteAllText(Path.Combine(OutputPath, $"env.c"), envImports);
+                files.Add(new FileEntry { Name = $"env.c", Content = env });
             }
+
+            return files;
         }
 
-        private void GenerateExports(string assemblyFileName, MethodDefinition[] exportedMethods)
+        private FileEntry GenerateExports(string assemblyFileName, MethodDefinition[] exportedMethods)
         {
             var sb = new StringBuilder();
 
@@ -137,7 +113,6 @@ namespace Extism.Pdk.MsBuild
                     var methodParams = string.Join(", ", Enumerable.Repeat("NULL", parameterCount));
                     var returnType = method.ReturnType.FullName;
 
-                    sb.AppendLine();
                     sb.AppendLine($@"
 MonoMethod* method_{exportName};
 __attribute__((export_name(""{exportName}""))) int {exportName}()
@@ -167,7 +142,7 @@ __attribute__((export_name(""{exportName}""))) int {exportName}()
             }
 
             sb.AppendLine();
-            File.WriteAllText(Path.Combine(OutputPath, "exports.c"), sb.ToString());
+            return new FileEntry { Name = "exports.c", Content = sb.ToString() };
         }
 
         private string ToImportStatement(MethodDefinition method)
@@ -177,7 +152,7 @@ __attribute__((export_name(""{exportName}""))) int {exportName}()
 
             if (!_types.ContainsKey(method.ReturnType.Name))
             {
-                Log.LogError("Unsupported return type: {0} on {1} method.", method.ReturnType.FullName, method.FullName);
+                _logError($"Unsupported return type: {method.ReturnType.FullName} on {method.FullName} method.");
                 return "";
             }
 
@@ -185,7 +160,7 @@ __attribute__((export_name(""{exportName}""))) int {exportName}()
             var p = method.Parameters.FirstOrDefault(p => !_types.ContainsKey(p.ParameterType.Name));
             if (p != null)
             {
-                Log.LogError("Unsupported parameter type: {0} ({1}) on {2} method.", p.Name, p.ParameterType.FullName, method.FullName);
+                _logError($"Unsupported parameter type: {p.Name} ({p.ParameterType.FullName}) on {method.FullName} method.");
 
                 return $"\\\\ Unrecognized type: ${p.ParameterType.Name} => '{p.ParameterType.FullName}'.";
             }
@@ -242,5 +217,11 @@ typedef uint64_t ExtismPointer;
 
             { "Void", "void"},
         };
+    }
+
+    public class FileEntry
+    {
+        public string Name { get; set; }
+        public string Content { get; set; }
     }
 }
