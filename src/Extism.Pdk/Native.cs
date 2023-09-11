@@ -16,72 +16,72 @@ public class Native
 {
 
     [DllImport("env")]
-    public static unsafe extern long extism_input_length();
+    public static unsafe extern ulong extism_input_length();
 
     [DllImport("env")]
-    public static unsafe extern long extism_length(long offset);
+    public static unsafe extern ulong extism_length(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern int extism_alloc(int n);
+    public static unsafe extern ulong extism_alloc(ulong n);
 
     [DllImport("env")]
-    public static unsafe extern void extism_free(long offset);
+    public static unsafe extern void extism_free(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern byte extism_input_load_u8(int index);
+    public static unsafe extern byte extism_input_load_u8(ulong index);
 
     [DllImport("env")]
-    public static unsafe extern ulong extism_input_load_u64(int index);
+    public static unsafe extern ulong extism_input_load_u64(ulong index);
 
     [DllImport("env")]
-    public static unsafe extern void extism_output_set(int offset, int n);
+    public static unsafe extern void extism_output_set(ulong offset, ulong n);
 
     [DllImport("env")]
-    public static unsafe extern void extism_error_set(long offset);
+    public static unsafe extern void extism_error_set(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern long extism_config_get(long offset);
+    public static unsafe extern ulong extism_config_get(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern long extism_var_get(long offset);
+    public static unsafe extern ulong extism_var_get(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern void extism_var_set(long keyOffset, long valueOffset);
+    public static unsafe extern void extism_var_set(ulong keyOffset, ulong valueOffset);
 
     [DllImport("env")]
-    public static unsafe extern void extism_store_u8(long offset, byte value);
+    public static unsafe extern void extism_store_u8(ulong offset, byte value);
 
     [DllImport("env")]
-    public static unsafe extern byte extism_load_u8(long offset);
+    public static unsafe extern byte extism_load_u8(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern void extism_store_u64(long offset, ulong value);
+    public static unsafe extern void extism_store_u64(ulong offset, ulong value);
 
     [DllImport("env")]
-    public static unsafe extern ulong extism_load_u64(long offset);
+    public static unsafe extern ulong extism_load_u64(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern long extism_http_request(long requestOffset, long bodyOffset);
+    public static unsafe extern ulong extism_http_request(ulong requestOffset, ulong bodyOffset);
 
     [DllImport("env")]
     public static unsafe extern ushort extism_http_status_code();
 
     [DllImport("env")]
-    public static unsafe extern void extism_log_info(long offset);
+    public static unsafe extern void extism_log_info(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern void extism_log_debug(long offset);
+    public static unsafe extern void extism_log_debug(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern void extism_log_warn(long offset);
+    public static unsafe extern void extism_log_warn(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern void extism_log_error(long offset);
+    public static unsafe extern void extism_log_error(ulong offset);
 
     [DllImport("env")]
-    public static unsafe extern void extism_store(long offset, byte* buffer, int n);
+    public static unsafe extern void extism_store(ulong offset, byte* buffer, ulong n);
     [DllImport("env")]
-    public static unsafe extern void extism_load(long offset, byte* buffer, int n);
+    public static unsafe extern void extism_load(ulong offset, byte* buffer, ulong n);
     [DllImport("env")]
-    public static unsafe extern void extism_load_input(byte* buffer, long n);
+    public static unsafe extern void extism_load_input(byte* buffer, ulong n);
 }

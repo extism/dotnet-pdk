@@ -165,7 +165,7 @@ void extism_log_error(ExtismPointer p) {
     extism_log_error_import(p);
 }
 
-void extism_load(int64_t offs, uint8_t* buffer, int32_t length) {
+void extism_load(uint64_t offs, uint8_t* buffer, uint64_t length) {
 	uint64_t n;
 	uint64_t left = 0;
 
@@ -182,7 +182,7 @@ void extism_load(int64_t offs, uint8_t* buffer, int32_t length) {
 	}
 }
 
-void extism_load_input(uint8_t* buffer, int32_t length) {
+void extism_load_input(uint8_t* buffer, uint64_t length) {
 	uint64_t n;
 	uint64_t left = 0;
 
@@ -199,7 +199,7 @@ void extism_load_input(uint8_t* buffer, int32_t length) {
 	}
 }
 
-void extism_store(uint32_t offs, const uint8_t* buffer, uint32_t length) {
+void extism_store(uint64_t offs, const uint8_t* buffer, uint64_t length) {
 	uint64_t n;
 	uint64_t left = 0;
 	for (uint64_t i = 0; i < length; i++) {

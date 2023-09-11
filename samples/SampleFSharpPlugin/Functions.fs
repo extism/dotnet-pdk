@@ -13,6 +13,9 @@ open System.Text
 open System.Runtime.InteropServices
 open Extism.Pdk
 
+[<DllImport("host", EntryPoint = "is_vowel")>]
+extern int IsVowel(int c)
+
 [<UnmanagedCallersOnly>]
 let count_vowels () =
   let buffer = Pdk.GetInput ()
@@ -20,11 +23,10 @@ let count_vowels () =
 
   let mutable count = 0
   for c in text do
-    match c with
-    | 'a' | 'e' | 'i' | 'o' | 'u' 
-    | 'A' | 'E' | 'I' | 'O' | 'U' ->
+    let x = byte c
+    let i = int x
+    if (IsVowel (i)) > 0 then
       count <- count + 1
-    | _ -> ()
 
   Pdk.SetOutput ($"""{{ "count": {count} }}""")
   0

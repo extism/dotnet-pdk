@@ -51,6 +51,7 @@ namespace Extism.Pdk.MsBuild
                 .Where(m => m.IsStatic && m.CustomAttributes.Any(a => a.AttributeType.Name == "UnmanagedCallersOnlyAttribute"))
                 .ToArray();
 
+            // TODO: also find F# module functions
             var importedMethods = assembly.MainModule.Types
                 .SelectMany(t => t.Methods)
                 .Where(m => m.HasPInvokeInfo)

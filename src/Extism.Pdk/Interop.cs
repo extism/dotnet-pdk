@@ -19,12 +19,12 @@ public class Pdk
 
         var buffer = new byte[length];
 
-        for (int i = 0; i < length; i++)
+        for (ulong i = 0; i < length; i++)
         {
             if (length - i >= 8)
             {
                 var x = Native.extism_input_load_u64(i);
-                BinaryPrimitives.WriteUInt64LittleEndian(buffer.AsSpan(i), x);
+                BinaryPrimitives.WriteUInt64LittleEndian(buffer.AsSpan((int)i), x);
                 i += 7;
             }
             else
@@ -51,9 +51,10 @@ public class Pdk
     {
         fixed (byte* ptr = data)
         {
-            var offs = Native.extism_alloc(data.Length);
-            Native.extism_store(offs, ptr, data.Length);
-            Native.extism_output_set(offs, data.Length);
+            var len = (ulong)data.Length;
+            var offs = Native.extism_alloc(len);
+            Native.extism_store(offs, ptr, len);
+            Native.extism_output_set(offs, len);
         }
     }
 
@@ -62,7 +63,7 @@ public class Pdk
         SetOutput(Encoding.UTF8.GetBytes(data));
     }
 
-    public static MemoryBlock Allocate(int length)
+    public static MemoryBlock Allocate(ulong length)
     {
         var offset = Native.extism_alloc(length);
 
@@ -76,11 +77,11 @@ public class Pdk
             return MemoryBlock.Empty;
         }
 
-        var block = Allocate(buffer.Length);
+        var block = Allocate((ulong)buffer.Length);
 
         fixed (byte* ptr = buffer)
         {
-            Native.extism_store(block.Offset, ptr, buffer.Length);
+            Native.extism_store(block.Offset, ptr, (ulong)buffer.Length);
         }
 
         return block;
@@ -100,7 +101,7 @@ public class Pdk
         var keyBlock = Allocate(key);
 
         var offset = Native.extism_config_get(keyBlock.Offset);
-        var valueBlock = MemoryBlock.Find((int)offset);
+        var valueBlock = MemoryBlock.Find(offset);
 
         if (offset == 0 || valueBlock.Length == 0)
         {
@@ -146,7 +147,7 @@ public class Pdk
         var keyBlock = Allocate(key);
 
         var offset = Native.extism_var_get(keyBlock.Offset);
-        block = MemoryBlock.Find((int)offset);
+        block = MemoryBlock.Find(offset);
 
         if (offset == 0 || block.Value.Length == 0)
         {
@@ -299,14 +300,14 @@ public class HttpResponse : IDisposable
 
 public struct MemoryBlock
 {
-    public MemoryBlock(int offset, int length)
+    public MemoryBlock(ulong offset, ulong length)
     {
         Offset = offset;
         Length = length;
     }
 
-    public int Offset { get; }
-    public int Length { get; }
+    public ulong Offset { get; }
+    public ulong Length { get; }
 
     public bool IsEmpty => Length == 0;
 
@@ -314,14 +315,14 @@ public struct MemoryBlock
 
     public unsafe void CopyTo(Span<byte> buffer)
     {
-        if (buffer.Length < Length)
+        if ((ulong)buffer.Length < Length)
         {
             throw new InvalidOperationException($"Buffer must be at least ${Length} bytes.");
         }
 
         fixed (byte* ptr = buffer)
         {
-           Native.extism_load(Offset, ptr, Length);
+            Native.extism_load(Offset, ptr, Length);
         }
     }
 
@@ -329,7 +330,7 @@ public struct MemoryBlock
     {
         fixed (byte* ptr = bytes)
         {
-          Native.extism_store(Offset, ptr, Length);
+            Native.extism_store(Offset, ptr, Length);
         }
     }
 
@@ -349,9 +350,9 @@ public struct MemoryBlock
         }
     }
 
-    public static MemoryBlock Find(int offset)
+    public static MemoryBlock Find(ulong offset)
     {
         var length = Native.extism_length(offset);
-        return new MemoryBlock(offset, (int)length);
+        return new MemoryBlock(offset, length);
     }
 }
