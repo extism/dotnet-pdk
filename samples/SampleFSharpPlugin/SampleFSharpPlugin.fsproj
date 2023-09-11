@@ -16,9 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Extism.Pdk.MSBuild\Extism.Pdk.MSBuild.csproj" />
 		<ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
-		<PackageReference Include="Wasi.Sdk" Version="0.1.2-preview.10061" />
 	</ItemGroup>
   
 	<ItemGroup>

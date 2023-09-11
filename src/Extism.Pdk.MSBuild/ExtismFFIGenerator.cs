@@ -105,14 +105,12 @@ namespace Extism.Pdk.MsBuild
 
         private void GenerateExports(string assemblyFileName, MethodDefinition[] exportedMethods)
         {
-            if (exportedMethods.Length == 0)
-            {
-                return;
-            }
-
             var sb = new StringBuilder();
-            sb.AppendLine(Preamble);
-            sb.AppendLine("""          
+
+            if (exportedMethods.Length > 0)
+            {
+                sb.AppendLine(Preamble);
+                sb.AppendLine("""          
             // _initialize
             void mono_wasm_load_runtime(const char* unused, int debug_level);
 
@@ -127,19 +125,19 @@ namespace Extism.Pdk.MsBuild
 
             // end of _initialize   
             """);
-            sb.AppendLine("extern void mono_wasm_invoke_method_ref(MonoMethod* method, MonoObject** this_arg_in, void* params[], MonoObject** _out_exc, MonoObject** out_result);");
+                sb.AppendLine("extern void mono_wasm_invoke_method_ref(MonoMethod* method, MonoObject** this_arg_in, void* params[], MonoObject** _out_exc, MonoObject** out_result);");
 
-            foreach (var method in exportedMethods)
-            {
-                var attribute = method.CustomAttributes.First(a => a.AttributeType.Name == "UnmanagedCallersOnlyAttribute");
+                foreach (var method in exportedMethods)
+                {
+                    var attribute = method.CustomAttributes.First(a => a.AttributeType.Name == "UnmanagedCallersOnlyAttribute");
 
-                var exportName = attribute.Fields.FirstOrDefault(p => p.Name == "EntryPoint").Argument.Value?.ToString() ?? method.Name;
-                var parameterCount = method.Parameters.Count;
-                var methodParams = string.Join(", ", Enumerable.Repeat("NULL", parameterCount));
-                var returnType = method.ReturnType.FullName;
+                    var exportName = attribute.Fields.FirstOrDefault(p => p.Name == "EntryPoint").Argument.Value?.ToString() ?? method.Name;
+                    var parameterCount = method.Parameters.Count;
+                    var methodParams = string.Join(", ", Enumerable.Repeat("NULL", parameterCount));
+                    var returnType = method.ReturnType.FullName;
 
-                sb.AppendLine();
-                sb.AppendLine($@"
+                    sb.AppendLine();
+                    sb.AppendLine($@"
 MonoMethod* method_{exportName};
 __attribute__((export_name(""{exportName}""))) int {exportName}()
 {{
@@ -164,6 +162,7 @@ __attribute__((export_name(""{exportName}""))) int {exportName}()
     return int_result;
 }}
 ");
+                }
             }
 
             sb.AppendLine();
