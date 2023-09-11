@@ -1,6 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<UsingTask TaskName="ExtismFFIGenerator" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\net8.0\Extism.Pdk.MSBuild.dll" />
+	<UsingTask TaskName="ExtismFFIGenerator" AssemblyFile="$(MSBuildThisFileDirectory)..\build\Extism.Pdk.MSBuild.dll" />
 	<Target Name="GenerateGlueCode" AfterTargets="Build">
 		<ExtismFFIGenerator AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism" EnvPath="$(MSBuildThisFileDirectory)..\native\env.c" />
 	</Target>

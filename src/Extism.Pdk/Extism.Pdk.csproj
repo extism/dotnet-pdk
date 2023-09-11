@@ -11,11 +11,7 @@
 		<LangVersion>preview</LangVersion>
 		<NoWarn>IL2026</NoWarn>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Extism.Pdk.MSBuild\Extism.Pdk.MSBuild.csproj" />
-	</ItemGroup>
-
+	
 	<Target Name="PackTaskDependencies" BeforeTargets="GenerateNuspec">
 		<ItemGroup>
 			<_PackageFiles Include="build\**" BuildAction="Content" PackagePath="build" />

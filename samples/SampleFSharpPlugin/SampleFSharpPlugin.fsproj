@@ -19,10 +19,6 @@
 		<ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
 	</ItemGroup>
   
-	<ItemGroup>
-		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
-	</ItemGroup>
-  
 	<!--This is only necessary for ProjectReference, when using the nuget package this will not be necessary-->
 	<Import Project="..\..\src\Extism.Pdk\build\Extism.Pdk.targets" />
 

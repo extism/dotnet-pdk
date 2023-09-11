@@ -3,3 +3,6 @@ bin/
 obj/
 .vs/
 /src/Extism.Pdk/lib
+*.dll
+*.deps.json
+*.pdb
