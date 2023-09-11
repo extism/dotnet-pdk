@@ -214,17 +214,3 @@ void extism_store(uint32_t offs, const uint8_t* buffer, uint32_t length) {
 		i += 7;
 	}
 }
-
-// _initialize
-
-void mono_wasm_load_runtime(const char* unused, int debug_level);
-
-#ifdef WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
-// This is supplied from the MSBuild itemgroup @(WasiAfterRuntimeLoaded)
-WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
-#endif
-
-__attribute__((export_name("_initialize"))) void initialize() {
-	mono_wasm_load_runtime("", 0);
-}
-

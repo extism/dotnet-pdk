@@ -11,9 +11,8 @@ namespace SampleCSharpPlugin
         [DllImport("host", EntryPoint = "is_vowel")]
         public static extern int IsVowel(int c);
 
-        [UnmanagedCallersOnly]
-
-        public static unsafe int count_vowels()
+        [UnmanagedCallersOnly(EntryPoint = "count_vowels")]
+        public static unsafe int CountVowels()
         {
             var text = Pdk.GetInputString();
 

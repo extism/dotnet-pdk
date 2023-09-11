@@ -105,33 +105,54 @@ namespace Extism.Pdk.MsBuild
 
         private void GenerateExports(string assemblyFileName, MethodDefinition[] exportedMethods)
         {
+            if (exportedMethods.Length == 0)
+            {
+                return;
+            }
+
             var sb = new StringBuilder();
             sb.AppendLine(Preamble);
+            sb.AppendLine("""          
+            // _initialize
+            void mono_wasm_load_runtime(const char* unused, int debug_level);
+
+            #ifdef WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
+            // This is supplied from the MSBuild itemgroup @(WasiAfterRuntimeLoaded)
+            WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
+            #endif
+
+            __attribute__((export_name("_initialize"))) void initialize() {
+                mono_wasm_load_runtime("", 0);
+            }
+
+            // end of _initialize   
+            """);
             sb.AppendLine("extern void mono_wasm_invoke_method_ref(MonoMethod* method, MonoObject** this_arg_in, void* params[], MonoObject** _out_exc, MonoObject** out_result);");
 
             foreach (var method in exportedMethods)
             {
                 var attribute = method.CustomAttributes.First(a => a.AttributeType.Name == "UnmanagedCallersOnlyAttribute");
-                var functionName = method.Name;
+
+                var exportName = attribute.Fields.FirstOrDefault(p => p.Name == "EntryPoint").Argument.Value?.ToString() ?? method.Name;
                 var parameterCount = method.Parameters.Count;
                 var methodParams = string.Join(", ", Enumerable.Repeat("NULL", parameterCount));
                 var returnType = method.ReturnType.FullName;
 
                 sb.AppendLine();
                 sb.AppendLine($@"
-MonoMethod* method_{functionName};
-__attribute__((export_name(""{functionName}""))) int {functionName}()
+MonoMethod* method_{exportName};
+__attribute__((export_name(""{exportName}""))) int {exportName}()
 {{
-    if (!method_{functionName})
+    if (!method_{exportName})
     {{
-        method_{functionName} = lookup_dotnet_method(""{assemblyFileName}"", ""{method.DeclaringType.Namespace}"", ""{method.DeclaringType.Name}"", ""{functionName}"", -1);
-        assert(method_{functionName});
+        method_{exportName} = lookup_dotnet_method(""{assemblyFileName}"", ""{method.DeclaringType.Namespace}"", ""{method.DeclaringType.Name}"", ""{method.Name}"", -1);
+        assert(method_{exportName});
     }}
 
     void* method_params[] = {{ }};
     MonoObject* exception = NULL;
     MonoObject* result = NULL;
-    mono_wasm_invoke_method_ref(method_{functionName}, NULL, method_params, &exception, &result);
+    mono_wasm_invoke_method_ref(method_{exportName}, NULL, method_params, &exception, &result);
     assert(!exception);
     
     int int_result = 0;  // Default value
