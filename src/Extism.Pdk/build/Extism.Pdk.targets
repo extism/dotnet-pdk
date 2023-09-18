@@ -3,11 +3,10 @@
 	<UsingTask TaskName="GenerateFFITask" AssemblyFile="$(MSBuildThisFileDirectory)..\build\Extism.Pdk.MSBuild.dll" />
 	<Target Name="GenerateGlueCode" AfterTargets="Build">
 		<GenerateFFITask AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism" EnvPath="$(MSBuildThisFileDirectory)..\native\env.c" />
+		<ItemGroup>
+			<NativeFileReference Include="$(IntermediateOutputPath)extism\*.c" />
+			<_WasmNativeFileForLinking Include="@(NativeFileReference)" />
+		</ItemGroup>
 	</Target>
-
-	<ItemGroup>
-		<NativeFileReference Include="$(IntermediateOutputPath)extism\*.c" />
-		<_WasmNativeFileForLinking Include="@(NativeFileReference)" />
-	</ItemGroup>
 
 </Project>
