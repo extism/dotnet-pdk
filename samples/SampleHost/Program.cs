@@ -3,8 +3,8 @@ using Extism.Sdk.Native;
 
 using System.Text;
 
-var path = "../../../../SampleCSharpPlugin/bin/Debug/net7.0/SampleCSharpPlugin.wasm";
-//var path = "../../../../SampleFSharpPlugin/bin/Debug/net7.0/SampleFSharpPlugin.wasm";
+// var path = "../SampleCSharpPlugin/bin/debug/net8.0/wasi-wasm/AppBundle/SampleCSharpPlugin.wasm";
+var path = "../SampleFSharpPlugin/bin/debug/net8.0/wasi-wasm/AppBundle/SampleFSharpPlugin.wasm";
 
 Console.WriteLine(path);
 var bytes = File.ReadAllBytes(path);
@@ -40,11 +40,13 @@ void IsVowel(CurrentPlugin plugin, Span<ExtismVal> inputs, Span<ExtismVal> outpu
 
 var plugin = context.CreatePlugin(bytes, new HostFunction[] { }, withWasi: true);
 
-if (plugin.FunctionExists("_initialize"))
-{
-    plugin.CallFunction("_initialize", Span<byte>.Empty);
-}
+// if (plugin.FunctionExists("_initialize"))
+// {
+//     plugin.CallFunction("_initialize", Span<byte>.Empty);
+// }
 
-var output = plugin.CallFunction("count_vowels", Encoding.UTF8.GetBytes("Hello World!"));
+var output = plugin.CallFunction("_start", Encoding.UTF8.GetBytes("Hello World!"));
+Console.WriteLine(Encoding.UTF8.GetString(output));
 
+output = plugin.CallFunction("_start", Encoding.UTF8.GetBytes("Hello World!"));
 Console.WriteLine(Encoding.UTF8.GetString(output));

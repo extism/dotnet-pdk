@@ -142,14 +142,14 @@ public class Pdk
         Log(level, block);
     }
 
-    public static bool TryGetVar(string key, [NotNullWhen(true)] out MemoryBlock? block)
+    public static bool TryGetVar(string key, out MemoryBlock block)
     {
         var keyBlock = Allocate(key);
 
         var offset = Native.extism_var_get(keyBlock.Offset);
         block = MemoryBlock.Find(offset);
 
-        if (offset == 0 || block.Value.Length == 0)
+        if (offset == 0 || block.Length == 0)
         {
             return false;
         }
