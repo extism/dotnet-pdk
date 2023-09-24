@@ -161,7 +161,7 @@ let main args =
 ```
 
 ### Making HTTP calls
-WASI doesn't allow guests to create socket connections yet, and thus they can't make HTTP calls. However, Extism provides convinient functions to make HTTP calls easy. If the host is configured to allow them, Extism plugins can make http calls by using `Pdk.SendRequest`:
+WASI doesn't allow guests to create socket connections yet, and thus they can't make HTTP calls. However, Extism provides convenient functions to make HTTP calls easy. If the host is configured to allow them, Extism plugins can make http calls by using `Pdk.SendRequest`:
 
 ```csharp
 var request = new HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
