@@ -2,6 +2,8 @@
 
 This repo houses the .NET PDK for building Extism plugins in C# and F#.
 
+> NOTE: This is an experimental PDK. We'd love to hear your feedback.
+
 ## Prerequisites
 1. .NET SDK 8: https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 2. WASI Workload
