@@ -1,5 +1,5 @@
 ﻿open System.Text
-open Extism.Pdk
+open Extism
 
 let countVowels (input: string) =
     input

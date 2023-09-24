@@ -59,7 +59,7 @@ Hello, Wasi Console!
 
 ```csharp
 using System.Text;
-using Extism.Pdk;
+using Extism;
 
 // Read input from the host
 var input = Pdk.GetInputString();
@@ -118,7 +118,7 @@ Notice how total is 6 in the second output.
 The same example works in F# too!:
 ```fsharp
 open System.Text
-open Extism.Pdk
+open Extism
 
 let countVowels (input: string) =
     input
@@ -175,9 +175,9 @@ Pdk.SetOutput(response.Body);
 ```
 
 ```fsharp
-open Extism.Pdk
+open Extism
 
-let request = Extism.Pdk.HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
+let request = Extism.HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
 request.Method = HttpMethod.GET
 request.Headers.Add("some-header", "value")
 

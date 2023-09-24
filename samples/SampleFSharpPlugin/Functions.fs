@@ -11,7 +11,7 @@ module SampleFSharpPlugin.Functions
 
 open System.Text
 open System.Runtime.InteropServices
-open Extism.Pdk
+open Extism
 
 [<DllImport("host", EntryPoint = "is_vowel")>]
 extern int IsVowel(int c)

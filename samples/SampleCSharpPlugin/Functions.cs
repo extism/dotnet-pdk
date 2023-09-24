@@ -1,4 +1,4 @@
-﻿using Extism.Pdk;
+﻿using Extism;
 using System.Runtime.InteropServices;
 
 namespace SampleCSharpPlugin

@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Extism.Pdk;
+using Extism;
 
 // Read input from the host
 var input = Pdk.GetInputString();
