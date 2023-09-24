@@ -66,19 +66,23 @@ var input = Pdk.GetInputString();
 
 var count = 0;
 
-foreach (var c in input) {
-    if ("aeiouAEIOU".Contains(c)) {
+foreach (var c in input)
+{
+    if ("aeiouAEIOU".Contains(c))
+    {
         count++;
     }
 }
 
 // Read configuration values from the host
-if (!Pdk.TryGetConfig("thing", out var thing)) {
+if (!Pdk.TryGetConfig("thing", out var thing))
+{
     thing = "<unset by host>";
 }
 
 // Read variables persisted by the host
-if (!Pdk.TryGetVar("total", out var totalBlock)) {
+if (!Pdk.TryGetVar("total", out var totalBlock))
+{
     Pdk.Log(LogLevel.Info, "First time running, total is not set.");
 }
 
@@ -153,3 +157,89 @@ let main args =
     Pdk.SetOutput(output)
     0
 ```
+
+### Making HTTP calls
+WASI doesn't allow guests to create socket connections yet, and thus they can't make HTTP calls. However, Extism provides convinient functions to make HTTP calls easy. If the host is configured to allow them, Extism plugins can make http calls by using `Pdk.SendRequest`:
+
+```csharp
+var request = new HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
+{
+    Method = HttpMethod.GET
+};
+
+request.Headers.Add("some-header", "value");
+
+var response = Pdk.SendRequest(request);
+
+Pdk.SetOutput(response.Body);
+```
+
+```fsharp
+open Extism.Pdk
+
+let request = Extism.Pdk.HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
+request.Method = HttpMethod.GET
+request.Headers.Add("some-header", "value")
+
+let response = Pdk.SendRequest(request)
+Pdk.SetOutput(response.Body)
+```
+
+Output:
+```json
+{
+  "userId": 1,
+  "id": 1,
+  "title": "delectus aut autem",
+  "completed": false
+}
+```
+### Export functions
+
+If you want to export multiple functions from one plugin, you can use `UnmanagedCallersOnly` attribute:
+
+```csharp
+[UnmanagedCallersOnly(EntryPoint = "count_vowels")]
+public static unsafe int CountVowels()
+{
+   var text = Pdk.GetInputString();
+
+   // ...
+
+   Pdk.SetOutput(result);
+   return 0;
+}
+```
+
+```fsharp
+[<UnmanagedCallersOnly(EntryPoint = "count_vowels")>]
+let CountVowels () =
+  let buffer = Pdk.GetInput ()
+  
+  // ...
+
+  Pdk.SetOutput ($"""{{ "count": {count} }}""")
+  0
+```
+
+Notes:
+1. If `UnmanagedCallersOnly.EntryPoint` is not specified, the method name will be used.
+2. Exported functions can only have this signature: () => int.
+
+### Import functions
+
+The host might give guests additional capabilities. You can import functions from the host using `DllImport`:
+
+```csharp
+[DllImport("host", EntryPoint = "is_vowel")]
+public static extern int IsVowel(int c);
+```
+
+```fsharp
+[<DllImport("host", EntryPoint = "is_vowel")>]
+extern int IsVowel(int c)
+```
+
+Notes:
+1. Parameters and return types can only be one of these types: `SByte`, `Int16`, `Int32`, `Int64`, `Byte`, `UInt16`, `UInt32`, `UInt64`, `Float`, `Double`, and `Void`.
+2. If `DllImport.EntryPoint` is not specified, the name of the method will be used.

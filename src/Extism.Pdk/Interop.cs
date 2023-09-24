@@ -182,8 +182,8 @@ public class Pdk
         using (var writer = new Utf8JsonWriter(stream))
         {
             writer.WriteStartObject();
-            writer.WriteString("url", request.Url);
-            writer.WriteString("method", request.Method);
+            writer.WriteString("url", request.Url.AbsoluteUri);
+            writer.WriteString("method", Enum.GetName(typeof(HttpMethod), request.Method));
 
             if (request.Headers.Count > 0)
             {
@@ -194,37 +194,21 @@ public class Pdk
                 }
                 writer.WriteEndObject();
             }
+
+            writer.WriteEndObject();
         }
 
         var bytes = stream.ToArray();
-        //Log(LogLevel.Error, "hi");
 
-        // Log(LogLevel.Error, $"length: {bytes.Length}");
-
-        // var requestBlock = Allocate(bytes);
+        var requestBlock = Allocate(bytes);
         var bodyBlock = Allocate(request.Body);
 
-        try
-        {
-            //var offset = Native.extism_http_request(requestBlock.Offset, bodyBlock.Offset);
-            //var block = MemoryBlock.Find(offset);
-            //var status = Native.extism_http_status_code();
+        var offset = Native.extism_http_request(requestBlock.Offset, bodyBlock.Offset);
+        var block = MemoryBlock.Find(offset);
+        var status = Native.extism_http_status_code();
 
-            //return new HttpResponse(block, status);
-
-            return new HttpResponse(new MemoryBlock(0, 0), 0);
-        }
-        finally
-        {
-            //requestBlock.Free();
-            //bodyBlock.Free();
-        }
+        return new HttpResponse(block, status);
     }
-
-    //public static HttpClient GetHttpClient()
-    //{
-    //    return new HttpClient(new ExtismHttpMessageHandler());
-    //}
 }
 
 public enum LogLevel
@@ -235,50 +219,32 @@ public enum LogLevel
     Error
 }
 
-
-//public class ExtismHttpMessageHandler : HttpMessageHandler
-//{
-//    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-//    {
-//        if (request.RequestUri is null)
-//        {
-//            throw new InvalidOperationException("RequestUri can't be null.");
-//        }
-
-//        var extismHttpRequest = new HttpRequest
-//        {
-//            Url = request.RequestUri.AbsoluteUri,
-//            Method = request.Method.Method
-//        };
-
-//        if (request.Content != null)
-//        {
-//            extismHttpRequest.Body = await request.Content.ReadAsByteArrayAsync();
-//        }
-
-//        foreach (var header in request.Headers)
-//        {
-//            extismHttpRequest.Headers.TryAdd(header.Key, string.Join(", ", header.Value));
-//        }
-
-//        var customResponse = Pdk.SendRequest(extismHttpRequest);
-
-//        // Convert HttpResponse to HttpResponseMessage
-//        var httpResponseMessage = new HttpResponseMessage((HttpStatusCode)customResponse.Status);
-
-//        var memoryStream = new MemoryStream(customResponse.Body.ReadBytes());
-//        httpResponseMessage.Content = new StreamContent(memoryStream);
-
-//        return httpResponseMessage;
-//    }
-//}
-
 public class HttpRequest
 {
-    public string Url { get; set; }
+    public HttpRequest(Uri url)
+    {
+        Url = url;
+    }
+
+    public HttpRequest(string url)
+    {
+        Url = new Uri(url);
+        Pdk.Log(LogLevel.Error, url);
+    }
+
+    public Uri Url { get; set; }
     public Dictionary<string, string> Headers { get; } = new();
-    public string Method { get; set; } = "GET";
+    public HttpMethod Method { get; set; } = HttpMethod.GET;
     public byte[] Body { get; set; } = Array.Empty<byte>();
+}
+
+public enum HttpMethod
+{
+    GET,
+    POST,
+    PUT,
+    DELETE,
+    HEAD,
 }
 
 public class HttpResponse : IDisposable
