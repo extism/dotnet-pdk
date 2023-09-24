@@ -2,24 +2,32 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
 
 name: .NET CI
 
 jobs:
   test:
-    name: Test .NET SDK
+    name: Test .NET PDK
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
         rust:
           - stable
     steps:
       - name: Checkout sources
         uses: actions/checkout@v3
 
-# Setup .NET and run tests
+      - name: Install WASI SDK
+        run: |
+          mkdir ~/wasi-sdk
+          cd ~/wasi-sdk/
+          export WASI_VERSION=20
+          export WASI_VERSION_FULL=${WASI_VERSION}.0
+          wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
+          tar xvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
+
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.0.3
         with:
@@ -29,6 +37,7 @@ jobs:
         run: |
           dotnet workload install wasi-experimental
 
-      - name: Test .NET Sdk
+      - name: Test .NET PDK
         run: |
+          export WASI_SDK_PATH=~/wasi-sdk/wasi-sdk-20.0
           make test
