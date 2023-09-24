@@ -17,8 +17,7 @@
 
 typedef uint64_t ExtismPointer;
 
-// IMPORT("env", "extism_input_length") 
-__attribute__((import_module("env"), import_name("extism_input_length")))
+IMPORT("env", "extism_input_length") 
 extern uint64_t extism_input_length_import();
 
 uint64_t extism_input_length() {
@@ -32,7 +31,7 @@ uint64_t extism_length(ExtismPointer p) {
     return extism_length_import(p);
 }
 
-IMPORT("env", "extism_alloc") 
+IMPORT("env", "extism_alloc")
 extern ExtismPointer extism_alloc_import(uint64_t size);
 
 ExtismPointer extism_alloc(uint64_t size) {
@@ -213,4 +212,24 @@ void extism_store(uint64_t offs, const uint8_t* buffer, uint64_t length) {
 		extism_store_u64(offs + i, n);
 		i += 7;
 	}
+}
+
+// Wrap mono_runtime_run_main so that we ensure at least one argument is passed in to Mono
+// otherwise it crashes, we use the -Wl,--wrap flag to instruct the linker to replace mono_runtime_run_main with
+// __wrap_mono_runtime_run_main everywhere. see:
+// - build/Extism.Pdk.targets
+// - https://gist.github.com/mlabbe/a0b7b14be652085341162321a0a08530
+// - https://github.com/dotnet/runtime/blob/4101144c8dde177addfb93ac46425fd1a8604f7a/src/mono/mono/metadata/object.c#L4175
+int __real_mono_runtime_run_main(MonoMethod *method, int argc, char *argv[], MonoObject **exc);
+
+int __wrap_mono_runtime_run_main(MonoMethod *method, int argc, char *argv[], MonoObject **exc)
+{
+	if (argc == 0)
+	{
+		char *temp[] = {"extism", NULL};
+		argv = temp;
+		argc = 1;
+	}
+
+	return __real_mono_runtime_run_main(method, argc, argv, exc);
 }
