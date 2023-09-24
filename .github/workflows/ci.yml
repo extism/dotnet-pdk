@@ -22,7 +22,7 @@ jobs:
       - name: Install WASI SDK
         run: |
           mkdir ~/wasi-sdk
-          cd ~/wasi-sdk
+          cd ~/wasi-sdk/
           export WASI_VERSION=20
           export WASI_VERSION_FULL=${WASI_VERSION}.0
           wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
@@ -39,5 +39,5 @@ jobs:
 
       - name: Test .NET PDK
         run: |
-          export WASI_SDK_PATH=~/wasi-sdk
+          export WASI_SDK_PATH=~/wasi-sdk/wasi-sdk-20.0
           make test
