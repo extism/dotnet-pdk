@@ -6,3 +6,4 @@ obj/
 *.dll
 *.deps.json
 *.pdb
+src/Extism.Pdk/build/Extism.Pdk.MSBuild.xml
