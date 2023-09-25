@@ -1,21 +1,18 @@
-﻿// https://github.com/emepetres/dotnet-wasm-sample
-
-using System.Buffers.Binary;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Buffers.Binary;
 using System.Text;
 using System.Text.Json;
 
 namespace Extism;
 
 /// <summary>
-/// Interop functions that allow guests to communicate with the host.
+/// Provides interop functions for communication between guests and the host.
 /// </summary>
 public static class Pdk
 {
     /// <summary>
-    /// Read call input.
+    /// Read the input data sent by the host.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The input data as a byte array.</returns>
     public static byte[] GetInput()
     {
         var length = Native.extism_input_length();
@@ -44,7 +41,7 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Read call input as a UTF8 string.
+    /// Read the input data sent by the host as a UTF-8 encoded string.
     /// </summary>
     /// <returns></returns>
     public static string GetInputString()
@@ -54,18 +51,18 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Set call output.
+    /// Set the output data to be sent back to the host.
     /// </summary>
-    /// <param name="block"></param>
+    /// <param name="block">The memory block containing the output data.</param>
     public static void SetOutput(MemoryBlock block)
     {
         Native.extism_output_set(block.Offset, block.Length);
     }
 
     /// <summary>
-    /// Set call output to a byte buffer.
+    /// Set the output data to be sent back to the host as a byte buffer.
     /// </summary>
-    /// <param name="data"></param>
+    /// <param name="data">The byte buffer to set as output data.</param>
     public unsafe static void SetOutput(ReadOnlySpan<byte> data)
     {
         fixed (byte* ptr = data)
@@ -78,19 +75,19 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Set call output to a UTF8 string.
+    /// Set the output data to be sent back to the host as a UTF-8 encoded string.
     /// </summary>
-    /// <param name="data"></param>
+    /// <param name="data">The UTF-8 encoded string to set as output data.</param>
     public static void SetOutput(string data)
     {
         SetOutput(Encoding.UTF8.GetBytes(data));
     }
 
     /// <summary>
-    /// Allocate a block of memory.
+    /// Allocate a block of memory with the specified length.
     /// </summary>
-    /// <param name="length">Block size in bytes</param>
-    /// <returns></returns>
+    /// <param name="length">The size of the memory block in bytes.</param>
+    /// <returns>A <see cref="MemoryBlock"/> instance representing the allocated memory.</returns>
     public static MemoryBlock Allocate(ulong length)
     {
         var offset = Native.extism_alloc(length);
@@ -99,10 +96,10 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Allocate an byte buffer into memory.
+    /// Allocate a byte buffer into memory.
     /// </summary>
-    /// <param name="buffer"></param>
-    /// <returns></returns>
+    /// <param name="buffer">The byte buffer to allocate into memory.</param>
+    /// <returns>A <see cref="MemoryBlock"/> instance representing the allocated memory.</returns>
     public static unsafe MemoryBlock Allocate(ReadOnlySpan<byte> buffer)
     {
         if (buffer.Length == 0)
@@ -121,10 +118,10 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Allocate a string into memory using UTF8 encoding.
+    /// Encodes a string as UTF-8 and stores it in memory.
     /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
+    /// <param name="data">The string to allocate into memory.</param>
+    /// <returns>A <see cref="MemoryBlock"/> instance representing the allocated memory.</returns>
     public static MemoryBlock Allocate(string data)
     {
         var bytes = Encoding.UTF8.GetBytes(data);
@@ -132,11 +129,11 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Tries to get a configuration from the host.
+    /// Try to get a configuration value from the host.
     /// </summary>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
+    /// <param name="key">The key for the configuration value.</param>
+    /// <param name="value">The retrieved configuration value as a string.</param>
+    /// <returns>True if the configuration value was retrieved successfully; otherwise, false.</returns>
     public static bool TryGetConfig(string key, out string value)
     {
         value = string.Empty;
@@ -151,6 +148,8 @@ public static class Pdk
             return false;
         }
 
+        valueBlock.Free();
+
         var bytes = valueBlock.ReadBytes();
         value = Encoding.UTF8.GetString(bytes);
 
@@ -158,10 +157,10 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Logs a message to the host.
+    /// Log a message with the specified log level to the host.
     /// </summary>
-    /// <param name="level"></param>
-    /// <param name="block"></param>
+    /// <param name="level">The log level for the message.</param>
+    /// <param name="block">The memory block containing the log message.</param>
     public static void Log(LogLevel level, MemoryBlock block)
     {
         switch (level)
@@ -196,10 +195,10 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Tries to get a var persisted by the host.
+    /// Log a message with the specified log level to the host.
     /// </summary>
-    /// <param name="key"></param>
-    /// <param name="block"></param>
+    /// <param name="key">The log level for the message.</param>
+    /// <param name="block">The log message as a string.</param>
     /// <returns></returns>
     public static bool TryGetVar(string key, out MemoryBlock block)
     {
@@ -229,10 +228,10 @@ public static class Pdk
     }
 
     /// <summary>
-    ///  Tries to set a var that will be persisted by the host.
+    /// Try to get a variable value persisted by the host.
     /// </summary>
-    /// <param name="key"></param>
-    /// <param name="bytes"></param>
+    /// <param name="key">The key for the persisted variable.</param>
+    /// <param name="bytes">The byte buffer to set as the variable value.</param>
     public static void SetVar(string key, ReadOnlySpan<byte> bytes)
     {
         var block = Allocate(bytes);
@@ -240,9 +239,9 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Remove a var from host memory.
+    /// Remove a variable from host memory.
     /// </summary>
-    /// <param name="key"></param>
+    /// <param name="key">The key of the variable to remove.</param>
     public static void RemoveVar(string key)
     {
         var keyBlock = Allocate(key);
@@ -250,10 +249,10 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Send an HTTP request synchronously and get the response back.
+    /// Send an HTTP request synchronously and get the response from the host.
     /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
+    /// <param name="request">The HTTP request to send.</param>
+    /// <returns>The HTTP response received from the host.</returns>
     public static HttpResponse SendRequest(HttpRequest request)
     {
         using var stream = new MemoryStream();

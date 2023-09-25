@@ -37,11 +37,3 @@ let main args =
     let output = sprintf """{"count": %d, "config": "%s", "total": "%d" }""" count thing total
     Pdk.SetOutput(output)
     0
-
-// Make an HTTP request    
-// let request = Extism.Pdk.HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
-// request.Method = HttpMethod.GET
-// request.Headers.Add("some-header", "value")
-
-// let response = Pdk.SendRequest(request)
-// Pdk.SetOutput(response.Body)

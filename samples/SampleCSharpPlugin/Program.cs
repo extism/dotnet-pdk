@@ -36,15 +36,3 @@ Pdk.SetVar("total", totalBlock);
 // Set plugin output for host to read
 var output = $$"""{"count": {{count}}, "config": "{{thing}}", "total": "{{total}}" }""";
 Pdk.SetOutput(output);
-
-// Make an HTTP request
-// var request = new Extism.Pdk.HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
-// {
-//     Method = HttpMethod.GET
-// };
-
-// request.Headers.Add("some-header", "value");
-
-// var response = Pdk.SendRequest(request);
-
-// Pdk.SetOutput(response.Body);
