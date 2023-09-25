@@ -81,4 +81,10 @@ internal class Native
     internal static unsafe extern void extism_load(ulong offset, byte* buffer, ulong n);
     [DllImport("env")]
     internal static unsafe extern void extism_load_input(byte* buffer, ulong n);
+    
+    internal static void PrintException(Exception ex)
+    {
+        var message = ex.ToString();
+        Pdk.Log(LogLevel.Error, message);
+    }
 }

@@ -111,10 +111,30 @@ namespace Extism.Pdk.MSBuild
                 MonoString* mono_object_try_to_string (MonoObject *obj, MonoObject **exc, MonoError *error);
                 void mono_print_unhandled_exception(MonoObject *exc);
 
-                void extism_log_error(uint64_t p);
-                void extism_store(uint64_t offs, const uint8_t* buffer, uint64_t length);
-                uint64_t extism_alloc(uint64_t size);
+                MonoMethod* method_extism_print_exception;
+                void extism_print_exception(MonoObject* exc)
+                {
+                    if (!method_extism_print_exception)
+                    {
+                        method_extism_print_exception = lookup_dotnet_method("Extism.Pdk.dll", "Extism", "Native", "PrintException", -1);
 
+                        if (method_extism_print_exception == NULL) {
+                            printf("Fatal: Failed to find Extism.Native.PrintException");
+                        }
+
+                        assert(method_extism_print_exception);
+                    }
+
+                    void* method_params[] = { exc };
+                    MonoObject* exception = NULL;
+                    MonoObject* result = NULL;
+                    mono_wasm_invoke_method_ref(method_extism_print_exception, NULL, method_params, &exception, &result);
+                
+                    if (exception != NULL) {
+                        const char* message = "An exception was thrown while trying to print the previous exception. Please check stderr for details.";
+                        mono_print_unhandled_exception(exception);
+                    }
+                }
 
                 """);
 
@@ -144,13 +164,9 @@ __attribute__((export_name("{{exportName}}"))) int {{exportName}}()
    
     if (exception != NULL) {
         const char* message = "An exception was thrown when calling {{exportName}}. Please check stderr for details.";
-
-        uint64_t message_length = strlen(message);
-        uint64_t p = extism_alloc(message_length + 1); // +1 for null-terminator
-        extism_store(p, (const uint8_t*)message, message_length);
-        extism_log_error(p);
-
         mono_print_unhandled_exception(exception);
+
+        extism_print_exception(exception);
         return 1;
     }
     
