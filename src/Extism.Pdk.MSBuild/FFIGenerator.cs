@@ -87,22 +87,36 @@ namespace Extism.Pdk.MSBuild
             if (exportedMethods.Length > 0)
             {
                 sb.AppendLine(Preamble);
-                sb.AppendLine("""          
-            // _initialize
-            void mono_wasm_load_runtime(const char* unused, int debug_level);
+                sb.AppendLine(
+                """          
+                // _initialize
+                void mono_wasm_load_runtime(const char* unused, int debug_level);
 
-            #ifdef WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
-            // This is supplied from the MSBuild itemgroup @(WasiAfterRuntimeLoaded)
-            WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
-            #endif
+                #ifdef WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
+                // This is supplied from the MSBuild itemgroup @(WasiAfterRuntimeLoaded)
+                WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
+                #endif
 
-            __attribute__((export_name("_initialize"))) void initialize() {
-                mono_wasm_load_runtime("", 0);
-            }
+                __attribute__((export_name("_initialize"))) void initialize() {
+                    mono_wasm_load_runtime("", 0);
+                }
 
-            // end of _initialize   
-            """);
-                sb.AppendLine("extern void mono_wasm_invoke_method_ref(MonoMethod* method, MonoObject** this_arg_in, void* params[], MonoObject** _out_exc, MonoObject** out_result);");
+                // end of _initialize
+                """);
+
+                sb.AppendLine(
+                """
+
+                void mono_wasm_invoke_method_ref(MonoMethod* method, MonoObject** this_arg_in, void* params[], MonoObject** _out_exc, MonoObject** out_result);
+                MonoString* mono_object_try_to_string (MonoObject *obj, MonoObject **exc, MonoError *error);
+                void mono_print_unhandled_exception(MonoObject *exc);
+
+                void extism_log_error(uint64_t p);
+                void extism_store(uint64_t offs, const uint8_t* buffer, uint64_t length);
+                uint64_t extism_alloc(uint64_t size);
+
+
+                """);
 
                 foreach (var method in exportedMethods)
                 {
@@ -113,31 +127,42 @@ namespace Extism.Pdk.MSBuild
                     var methodParams = string.Join(", ", Enumerable.Repeat("NULL", parameterCount));
                     var returnType = method.ReturnType.FullName;
 
-                    sb.AppendLine($@"
-MonoMethod* method_{exportName};
-__attribute__((export_name(""{exportName}""))) int {exportName}()
-{{
-    if (!method_{exportName})
-    {{
-        method_{exportName} = lookup_dotnet_method(""{assemblyFileName}"", ""{method.DeclaringType.Namespace}"", ""{method.DeclaringType.Name}"", ""{method.Name}"", -1);
-        assert(method_{exportName});
-    }}
+                    sb.AppendLine($$"""
+MonoMethod* method_{{exportName}};
+__attribute__((export_name("{{exportName}}"))) int {{exportName}}()
+{
+    if (!method_{{exportName}})
+    {
+        method_{{exportName}} = lookup_dotnet_method("{{assemblyFileName}}", "{{method.DeclaringType.Namespace}}", "{{method.DeclaringType.Name}}", "{{method.Name}}", -1);
+        assert(method_{{exportName}});
+    }
 
-    void* method_params[] = {{ }};
+    void* method_params[] = { };
     MonoObject* exception = NULL;
     MonoObject* result = NULL;
-    mono_wasm_invoke_method_ref(method_{exportName}, NULL, method_params, &exception, &result);
-    assert(!exception);
+    mono_wasm_invoke_method_ref(method_{{exportName}}, NULL, method_params, &exception, &result);
+   
+    if (exception != NULL) {
+        const char* message = "An exception was thrown when calling {{exportName}}. Please check stderr for details.";
+
+        uint64_t message_length = strlen(message);
+        uint64_t p = extism_alloc(message_length + 1); // +1 for null-terminator
+        extism_store(p, (const uint8_t*)message, message_length);
+        extism_log_error(p);
+
+        mono_print_unhandled_exception(exception);
+        return 1;
+    }
     
     int int_result = 0;  // Default value
 
-    if (result != NULL) {{
+    if (result != NULL) {
         int_result = *(int*)mono_object_unbox(result);
-    }}
+    }
     
     return int_result;
-}}
-");
+}
+""");
                 }
             }
 
