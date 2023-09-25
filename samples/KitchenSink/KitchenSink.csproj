@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<RuntimeIdentifier>wasi-wasm</RuntimeIdentifier>
+		<OutputType>Exe</OutputType>
+		<PublishTrimmed>true</PublishTrimmed>
+		<WasmSingleFileBundle>true</WasmSingleFileBundle>
+		<WasmBuildNative>true</WasmBuildNative>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<TrimmerSingleWarn>false</TrimmerSingleWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
+	</ItemGroup>
+
+	<!--This is only necessary for ProjectReference, when using the nuget package this will not be necessary-->
+	<Import Project="..\..\src\Extism.Pdk\build\Extism.Pdk.targets" />
+
+</Project>
