@@ -85,6 +85,7 @@ internal class Native
     internal static void PrintException(Exception ex)
     {
         var message = ex.ToString();
-        Pdk.Log(LogLevel.Error, message);
+        var block = Pdk.Allocate(message);
+        extism_error_set(block.Offset);
     }
 }
