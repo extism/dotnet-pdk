@@ -34,9 +34,16 @@ Update your MyPlugin.csproj as follows:
 
     <!-- Make sure we create a standalone wasm file for our plugin -->
     <WasmSingleFileBundle>true</WasmSingleFileBundle>
-	<WasmBuildNative>true</WasmBuildNative>
+    <WasmBuildNative>true</WasmBuildNative>
   </PropertyGroup>
 </Project>
+```
+
+Update your Program.cs:
+```csharp
+using Extism;
+
+Pdk.SetOutput("Hello from .NET!");
 ```
 
 Then compile your plugin to wasm:
@@ -44,7 +51,12 @@ Then compile your plugin to wasm:
 dotnet build
 ```
 
-This will create a `MyPlugin.wasm` file in `bin/Debug/net8.0/wasi-wasm/AppBundle`. Now, you can try out your plugin by using any of [Extism SDKs](https://extism.org/docs/category/integrate-into-your-codebase).
+This will create a `MyPlugin.wasm` file in `bin/Debug/net8.0/wasi-wasm/AppBundle`. Now, you can try out your plugin by using any of [Extism SDKs](https://extism.org/docs/category/integrate-into-your-codebase) or by using [Extism CLI](https://extism.org/docs/install):
+
+```
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm _start --wasi
+Hello from .NET!
+```
 
 ## Example Usage
 ### Using Config, I/O, & Persisted Variables
