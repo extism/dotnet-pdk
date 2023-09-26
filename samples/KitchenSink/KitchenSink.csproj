@@ -7,7 +7,9 @@
 		<PublishTrimmed>true</PublishTrimmed>
 		<WasmSingleFileBundle>true</WasmSingleFileBundle>
 		<WasmBuildNative>true</WasmBuildNative>
+		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<TrimmerSingleWarn>false</TrimmerSingleWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

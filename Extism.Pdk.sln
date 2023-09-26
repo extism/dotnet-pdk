@@ -13,6 +13,16 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "SampleFSharpPlugin", "sampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleCSharpPlugin", "samples\SampleCSharpPlugin\SampleCSharpPlugin.csproj", "{61F85E8E-9328-4AFA-A843-2844B45668EE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Extism.Pdk.MsBuild.Tests", "tests\Extism.Pdk.MsBuild.Tests\Extism.Pdk.MsBuild.Tests.csproj", "{21861C9B-3C91-46BA-A4D1-5A919FF0113F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{604F9655-E3D7-4E42-9D5D-91FBCACCD565}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{E54FB503-86BE-459F-A7B4-DF2AA9094CEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KitchenSink", "samples\KitchenSink\KitchenSink.csproj", "{F045BCA5-71DC-483F-8D9F-D1416F6AB588}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extism.Pdk.WasmTests", "tests\Extism.Pdk.WasmTests\Extism.Pdk.WasmTests.csproj", "{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +49,29 @@ Global
 		{61F85E8E-9328-4AFA-A843-2844B45668EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61F85E8E-9328-4AFA-A843-2844B45668EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61F85E8E-9328-4AFA-A843-2844B45668EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21861C9B-3C91-46BA-A4D1-5A919FF0113F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21861C9B-3C91-46BA-A4D1-5A919FF0113F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21861C9B-3C91-46BA-A4D1-5A919FF0113F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21861C9B-3C91-46BA-A4D1-5A919FF0113F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F045BCA5-71DC-483F-8D9F-D1416F6AB588}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F045BCA5-71DC-483F-8D9F-D1416F6AB588}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F045BCA5-71DC-483F-8D9F-D1416F6AB588}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F045BCA5-71DC-483F-8D9F-D1416F6AB588}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D0D803F9-A45F-4340-B77C-EE8AEE35F3AE} = {E54FB503-86BE-459F-A7B4-DF2AA9094CEE}
+		{F6FF716E-632C-4089-9E54-40D6EFE9776A} = {E54FB503-86BE-459F-A7B4-DF2AA9094CEE}
+		{61F85E8E-9328-4AFA-A843-2844B45668EE} = {E54FB503-86BE-459F-A7B4-DF2AA9094CEE}
+		{21861C9B-3C91-46BA-A4D1-5A919FF0113F} = {604F9655-E3D7-4E42-9D5D-91FBCACCD565}
+		{F045BCA5-71DC-483F-8D9F-D1416F6AB588} = {E54FB503-86BE-459F-A7B4-DF2AA9094CEE}
+		{F603C66E-1821-4E5F-94EF-09D5BB9A04A3} = {604F9655-E3D7-4E42-9D5D-91FBCACCD565}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F37E205A-FB9F-4C44-B098-ACBF87CF9FF5}

@@ -1,17 +1,14 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<UsingTask TaskName="GenerateFFITask" AssemblyFile="$(MSBuildThisFileDirectory)..\build\Extism.Pdk.MSBuild.dll" />
+	<Target Name="GenerateGlueCode" AfterTargets="Build" BeforeTargets="_BeforeWasmBuildApp">
+		<GenerateFFITask AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism" EnvPath="$(MSBuildThisFileDirectory)..\native\env.c" />
+		<ItemGroup>
+			<NativeFileReference Include="$(IntermediateOutputPath)extism\*.c" />
+			<_WasmNativeFileForLinking Include="@(NativeFileReference)" />
 
-	<ItemGroup>
-		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)..\native\extism_ffi.c" />
-		<WasiAfterRuntimeLoaded Include="extism_pdk_attach_internal_calls" />
-	</ItemGroup>
-
-	<UsingTask TaskName="ExtismExportGenerator" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\net7.0\Extism.Pdk.MSBuild.dll" />
-	<Target Name="GenerateGlueCode" AfterTargets="Build">
-		<ExtismExportGenerator AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism.native.g.c" />
+			<!-- Wrap mono_runtime_run_main because we have to make sure at least one argument is passed in to Mono -->
+			<!-- See native/env.c for the implementation -->
+			<_WasiSdkClangArgs Include="-Wl,--wrap=mono_runtime_run_main" />
+		</ItemGroup>
 	</Target>
-
-	<ItemGroup>
-		<WasiNativeFileReference Include="$(IntermediateOutputPath)extism.native.g.c" />
-	</ItemGroup>
-
 </Project>

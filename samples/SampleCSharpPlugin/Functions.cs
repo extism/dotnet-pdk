@@ -1,51 +1,30 @@
-﻿using Extism.Pdk.Native;
-using Extism.Pdk;
-
-using System.Text;
+﻿using Extism;
+using System.Runtime.InteropServices;
 
 namespace SampleCSharpPlugin
 {
-    public class Functions
+    public static class Functions
     {
-        [ExtismExport("count_vowels")]
-        public static unsafe int CountVowels()
-        {
-            byte[] buffer = Interop.GetInput();
+        [DllImport("host", EntryPoint = "is_vowel")]
+        public static extern int IsVowel(int c);
 
-            var text = Encoding.UTF8.GetString(buffer);
+        [UnmanagedCallersOnly(EntryPoint = "count_vowels")]
+        public static int CountVowels()
+        {
+            var text = Pdk.GetInputString();
 
             var count = 0;
             foreach (var c in text)
             {
-                // Something really weird, char.ToLower() throws a `wasm trap: indirect call type mismatch`
-                // exception unless in Main we call CountVowelsNative inside Console.WriteLine in Main.
-                // See: https://github.com/mhmd-azeez/csharp-pdk/blob/baa6dda079fbc8bea0319b494fa359d10707bd63/Program.cs#L7
-
-                switch (c)
+                if (IsVowel((byte)c) > 0)
                 {
-                    case 'a':
-                    case 'A':
-                    case 'e':
-                    case 'E':
-                    case 'i':
-                    case 'I':
-                    case 'o':
-                    case 'O':
-                    case 'u':
-                    case 'U':
-                        count++;
-                        break;
+                    count++;
                 }
             }
 
             var result = "{ \"count\": " + count + " }";
-            var resultBytes = Encoding.UTF8.GetBytes(result);
 
-            fixed (byte* ptr = resultBytes)
-            {
-                Interop.set_output(ptr, resultBytes.Length);
-            }
-
+            Pdk.SetOutput(result);
             return 0;
         }
 
