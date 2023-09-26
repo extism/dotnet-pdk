@@ -4,23 +4,17 @@ This repo houses the .NET PDK for building Extism plugins in C# and F#.
 
 > NOTE: This is an experimental PDK. We'd love to hear your feedback.
 
+Join the [Discord](https://discord.gg/5g3mtQRt) and chat with us!
+
 ## Prerequisites
 1. .NET SDK 8: https://dotnet.microsoft.com/en-us/download/dotnet/8.0
-2. WASI Workload
+2. WASI Workload:
 ```
 dotnet workload install wasi-experimental
 ```
+3. WASI SDK: https://github.com/WebAssembly/wasi-sdk/releases
 
 ## Installation
-You first need to install .NET 8:
-https://dotnet.microsoft.com/en-us/download/dotnet/8.0
-
-Then install the experimental WASI workload:
-
-```
-dotnet workload install wasi-experimental
-```
-
 Create a new project and add this nuget package to your project:
 
 ```
@@ -29,7 +23,7 @@ cd MyPlugin
 dotnet add package Extism.Pdk 
 ```
 
-Modify your MyPlugin.csproj like so:
+Update your MyPlugin.csproj as follows:
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
@@ -50,7 +44,7 @@ Then compile your plugin to wasm:
 dotnet build
 ```
 
-This will create a `MyPlugin.wasm` file in `bin/Debug/net8.0/wasi-wasm/AppBundle`. Now, you can try out your plugin by using any of our SDKs, or by using [Wasmtime](https://wasmtime.dev/):
+This will create a `MyPlugin.wasm` file in `bin/Debug/net8.0/wasi-wasm/AppBundle`. Now, you can try out your plugin by using any of [Extism SDKs](https://extism.org/docs/category/integrate-into-your-codebase), or by using [Wasmtime](https://wasmtime.dev/):
 ```
 wasmtime run ./bin/debug/net8.0/wasi-wasm/AppBundle/MyPlugin.wasm                                       
 Hello, Wasi Console!
