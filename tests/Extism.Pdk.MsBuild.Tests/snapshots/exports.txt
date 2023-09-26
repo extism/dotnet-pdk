@@ -28,8 +28,36 @@ __attribute__((export_name("_initialize"))) void initialize() {
     mono_wasm_load_runtime("", 0);
 }
 
-// end of _initialize   
-extern void mono_wasm_invoke_method_ref(MonoMethod* method, MonoObject** this_arg_in, void* params[], MonoObject** _out_exc, MonoObject** out_result);
+// end of _initialize
+
+void mono_wasm_invoke_method_ref(MonoMethod* method, MonoObject** this_arg_in, void* params[], MonoObject** _out_exc, MonoObject** out_result);
+MonoString* mono_object_try_to_string (MonoObject *obj, MonoObject **exc, MonoError *error);
+void mono_print_unhandled_exception(MonoObject *exc);
+
+MonoMethod* method_extism_print_exception;
+void extism_print_exception(MonoObject* exc)
+{
+    if (!method_extism_print_exception)
+    {
+        method_extism_print_exception = lookup_dotnet_method("Extism.Pdk.dll", "Extism", "Native", "PrintException", -1);
+
+        if (method_extism_print_exception == NULL) {
+            printf("Fatal: Failed to find Extism.Native.PrintException");
+        }
+
+        assert(method_extism_print_exception);
+    }
+
+    void* method_params[] = { exc };
+    MonoObject* exception = NULL;
+    MonoObject* result = NULL;
+    mono_wasm_invoke_method_ref(method_extism_print_exception, NULL, method_params, &exception, &result);
+
+    if (exception != NULL) {
+        const char* message = "An exception was thrown while trying to print the previous exception. Please check stderr for details.";
+        mono_print_unhandled_exception(exception);
+    }
+}
 
 MonoMethod* method_DoSomething;
 __attribute__((export_name("DoSomething"))) int DoSomething()
@@ -44,7 +72,14 @@ __attribute__((export_name("DoSomething"))) int DoSomething()
     MonoObject* exception = NULL;
     MonoObject* result = NULL;
     mono_wasm_invoke_method_ref(method_DoSomething, NULL, method_params, &exception, &result);
-    assert(!exception);
+   
+    if (exception != NULL) {
+        const char* message = "An exception was thrown when calling DoSomething. Please check stderr for details.";
+        mono_print_unhandled_exception(exception);
+
+        extism_print_exception(exception);
+        return 1;
+    }
     
     int int_result = 0;  // Default value
 
@@ -54,8 +89,6 @@ __attribute__((export_name("DoSomething"))) int DoSomething()
     
     return int_result;
 }
-
-
 MonoMethod* method_fancy_name;
 __attribute__((export_name("fancy_name"))) int fancy_name()
 {
@@ -69,7 +102,14 @@ __attribute__((export_name("fancy_name"))) int fancy_name()
     MonoObject* exception = NULL;
     MonoObject* result = NULL;
     mono_wasm_invoke_method_ref(method_fancy_name, NULL, method_params, &exception, &result);
-    assert(!exception);
+   
+    if (exception != NULL) {
+        const char* message = "An exception was thrown when calling fancy_name. Please check stderr for details.";
+        mono_print_unhandled_exception(exception);
+
+        extism_print_exception(exception);
+        return 1;
+    }
     
     int int_result = 0;  // Default value
 
