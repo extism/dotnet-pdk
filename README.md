@@ -44,11 +44,7 @@ Then compile your plugin to wasm:
 dotnet build
 ```
 
-This will create a `MyPlugin.wasm` file in `bin/Debug/net8.0/wasi-wasm/AppBundle`. Now, you can try out your plugin by using any of [Extism SDKs](https://extism.org/docs/category/integrate-into-your-codebase), or by using [Wasmtime](https://wasmtime.dev/):
-```
-wasmtime run ./bin/debug/net8.0/wasi-wasm/AppBundle/MyPlugin.wasm                                       
-Hello, Wasi Console!
-```
+This will create a `MyPlugin.wasm` file in `bin/Debug/net8.0/wasi-wasm/AppBundle`. Now, you can try out your plugin by using any of [Extism SDKs](https://extism.org/docs/category/integrate-into-your-codebase).
 
 ## Example Usage
 ### Using Config, I/O, & Persisted Variables

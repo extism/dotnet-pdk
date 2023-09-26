@@ -9,7 +9,7 @@ namespace SampleCSharpPlugin
         public static extern int IsVowel(int c);
 
         [UnmanagedCallersOnly(EntryPoint = "count_vowels")]
-        public static unsafe int CountVowels()
+        public static int CountVowels()
         {
             var text = Pdk.GetInputString();
 
