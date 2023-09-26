@@ -28,6 +28,13 @@ jobs:
           wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
           tar xvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz
 
+      - name: Setup Go environment
+        uses: actions/setup-go@v4.1.0
+        
+      - name: Install Extism CLI
+        run: |
+          go install github.com/extism/cli/extism@latest 
+
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.0.3
         with:
