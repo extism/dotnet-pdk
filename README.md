@@ -245,3 +245,6 @@ extern int IsVowel(int c)
 Notes:
 1. Parameters and return types can only be one of these types: `SByte`, `Int16`, `Int32`, `Int64`, `Byte`, `UInt16`, `UInt32`, `UInt64`, `Float`, `Double`, and `Void`.
 2. If `DllImport.EntryPoint` is not specified, the name of the method will be used.
+
+## Samples
+For more examples, check out the [samples](./samples) folder.

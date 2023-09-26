@@ -1,4 +1,5 @@
 ﻿using System.Buffers.Binary;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 
@@ -84,6 +85,16 @@ public static class Pdk
     }
 
     /// <summary>
+    /// Set plugin error
+    /// </summary>
+    /// <param name="errorMessage"></param>
+    public static void SetError(string errorMessage)
+    {
+        var block = Allocate(errorMessage);
+        Native.extism_error_set(block.Offset);
+    }
+
+    /// <summary>
     /// Allocate a block of memory with the specified length.
     /// </summary>
     /// <param name="length">The size of the memory block in bytes.</param>
@@ -134,7 +145,7 @@ public static class Pdk
     /// <param name="key">The key for the configuration value.</param>
     /// <param name="value">The retrieved configuration value as a string.</param>
     /// <returns>True if the configuration value was retrieved successfully; otherwise, false.</returns>
-    public static bool TryGetConfig(string key, out string value)
+    public static bool TryGetConfig(string key, [NotNullWhen(true)] out string value)
     {
         value = string.Empty;
 
@@ -216,7 +227,7 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Tries to set a var that will be persisted by the host.
+    /// Set a var that will be persisted by the host.
     /// </summary>
     /// <param name="key"></param>
     /// <param name="value"></param>
@@ -228,7 +239,7 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Try to get a variable value persisted by the host.
+    /// Set a variable value persisted by the host.
     /// </summary>
     /// <param name="key">The key for the persisted variable.</param>
     /// <param name="bytes">The byte buffer to set as the variable value.</param>
@@ -236,6 +247,17 @@ public static class Pdk
     {
         var block = Allocate(bytes);
         SetVar(key, block);
+    }
+
+    /// <summary>
+    /// Set a variable value persisted by the host.
+    /// </summary>
+    /// <param name="key">The key for the persisted variable.</param>
+    /// <param name="value">A string value that will be UTF8 encoded.</param>
+    public static void SetVar(string key, string value)
+    {
+        var bytes = Encoding.UTF8.GetBytes(value);
+        SetVar(key, bytes);
     }
 
     /// <summary>
@@ -522,6 +544,16 @@ public struct MemoryBlock
         CopyTo(buffer);
 
         return buffer;
+    }
+
+    /// <summary>
+    /// Reads the current memory block as a UTF8 encoded string.
+    /// </summary>
+    /// <returns></returns>
+    public string ReadString()
+    {
+        var bytes = ReadBytes();
+        return Encoding.UTF8.GetString(bytes);
     }
 
     /// <summary>
