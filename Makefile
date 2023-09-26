@@ -13,7 +13,9 @@ test: prepare
 clean:
 	dotnet clean
 
-publish: clean prepare
+publish: clean
+	dotnet build -c Release ./src/Extism.Pdk.MsBuild/Extism.Pdk.MsBuild.csproj
+	dotnet build -c Release ./src/Extism.Pdk/Extism.Pdk.csproj
 	dotnet pack -c Release ./src/Extism.Pdk/Extism.Pdk.csproj
 	dotnet nuget push --source https://api.nuget.org/v3/index.json ./src/Extism.Pdk/bin/Release/*.nupkg --api-key $(NUGET_API_KEY)
 
