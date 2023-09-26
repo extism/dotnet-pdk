@@ -38,6 +38,7 @@ jobs:
 
       - name: Test .NET Sdk
         run: |
+          export WASI_SDK_PATH=~/wasi-sdk/wasi-sdk-20.0
           make test
 
       - name: Publish .NET Sdk
