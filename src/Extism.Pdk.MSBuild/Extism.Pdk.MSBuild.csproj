@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -16,10 +16,10 @@
 
 	<ItemGroup>
 
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.0.0"
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.7.2"
 			ExcludeAssets="Runtime" />
 
-		<PackageReference Include="Mono.Cecil" Version="0.11.4">
+		<PackageReference Include="Mono.Cecil" Version="0.11.5">
 			<PrivateAssets>All</PrivateAssets>
 			<IncludeAssets>All</IncludeAssets>
 		</PackageReference>
