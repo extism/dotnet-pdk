@@ -24,8 +24,14 @@ void mono_wasm_load_runtime(const char* unused, int debug_level);
 WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
 #endif
 
-__attribute__((export_name("_initialize"))) void initialize() {
+bool mono_runtime_initialized = false;
+void initialize_runtime() {
+    if (mono_runtime_initialized) {
+        return;
+    }
+
     mono_wasm_load_runtime("", 0);
+    mono_runtime_initialized = true;
 }
 
 // end of _initialize
@@ -62,6 +68,8 @@ void extism_print_exception(MonoObject* exc)
 MonoMethod* method_DoSomething;
 __attribute__((export_name("DoSomething"))) int DoSomething()
 {
+    initialize_runtime();
+
     if (!method_DoSomething)
     {
         method_DoSomething = lookup_dotnet_method("SampleApp.dll", "SampleNamespace", "SampleType", "DoSomething", -1);
@@ -92,6 +100,8 @@ __attribute__((export_name("DoSomething"))) int DoSomething()
 MonoMethod* method_fancy_name;
 __attribute__((export_name("fancy_name"))) int fancy_name()
 {
+    initialize_runtime();
+
     if (!method_fancy_name)
     {
         method_fancy_name = lookup_dotnet_method("SampleApp.dll", "SampleNamespace", "SampleType", "DoSomeOtherStuff", -1);
