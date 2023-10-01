@@ -97,8 +97,14 @@ namespace Extism.Pdk.MSBuild
                 WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
                 #endif
 
-                __attribute__((export_name("_initialize"))) void initialize() {
+                bool mono_runtime_initialized = false;
+                void initialize_runtime() {
+                    if (mono_runtime_initialized) {
+                        return;
+                    }
+
                     mono_wasm_load_runtime("", 0);
+                    mono_runtime_initialized = true;
                 }
 
                 // end of _initialize
@@ -151,6 +157,8 @@ namespace Extism.Pdk.MSBuild
 MonoMethod* method_{{exportName}};
 __attribute__((export_name("{{exportName}}"))) int {{exportName}}()
 {
+    initialize_runtime();
+
     if (!method_{{exportName}})
     {
         method_{{exportName}} = lookup_dotnet_method("{{assemblyFileName}}", "{{method.DeclaringType.Namespace}}", "{{method.DeclaringType.Name}}", "{{method.Name}}", -1);
