@@ -3,8 +3,8 @@ using Extism.Sdk.Native;
 
 using System.Text;
 
-// var path = "../SampleCSharpPlugin/bin/debug/net8.0/wasi-wasm/AppBundle/SampleCSharpPlugin.wasm";
-var path = "../SampleFSharpPlugin/bin/debug/net8.0/wasi-wasm/AppBundle/SampleFSharpPlugin.wasm";
+var path = "../SampleCSharpPlugin/bin/debug/net8.0/wasi-wasm/AppBundle/SampleCSharpPlugin.wasm";
+//var path = "../SampleFSharpPlugin/bin/debug/net8.0/wasi-wasm/AppBundle/SampleFSharpPlugin.wasm";
 
 Console.WriteLine(path);
 var bytes = File.ReadAllBytes(path);
@@ -14,11 +14,9 @@ var hf = new HostFunction("is_vowel", "host", new ExtismValType[] { ExtismValTyp
 
 void IsVowel(CurrentPlugin plugin, Span<ExtismVal> inputs, Span<ExtismVal> outputs, nint userData)
 {
-    var bytes = plugin.ReadBytes(inputs[0].v.i32);
+    var c = (char)inputs[0].v.i32;
 
-    var text = Encoding.UTF8.GetString(bytes);
-
-    switch (char.ToLowerInvariant(text[0]))
+    switch (char.ToLowerInvariant(c))
     {
 
         case 'a':
@@ -38,15 +36,10 @@ void IsVowel(CurrentPlugin plugin, Span<ExtismVal> inputs, Span<ExtismVal> outpu
     outputs[0].v.i32 = 0;
 }
 
-var plugin = context.CreatePlugin(bytes, new HostFunction[] { }, withWasi: true);
+var plugin = context.CreatePlugin(bytes, new HostFunction[] { hf }, withWasi: true);
 
-// if (plugin.FunctionExists("_initialize"))
-// {
-//     plugin.CallFunction("_initialize", Span<byte>.Empty);
-// }
-
-var output = plugin.CallFunction("_start", Encoding.UTF8.GetBytes("Hello World!"));
+var output = plugin.CallFunction("count_vowels", Encoding.UTF8.GetBytes("Hello World!"));
 Console.WriteLine(Encoding.UTF8.GetString(output));
 
-output = plugin.CallFunction("_start", Encoding.UTF8.GetBytes("Hello World!"));
+output = plugin.CallFunction("count_vowels", Encoding.UTF8.GetBytes("Hello World!"));
 Console.WriteLine(Encoding.UTF8.GetString(output));
