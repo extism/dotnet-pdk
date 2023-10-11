@@ -7,7 +7,7 @@
 			<_WasmNativeFileForLinking Include="@(NativeFileReference)" />
 
 			<!-- Wrap mono_runtime_run_main because we have to make sure at least one argument is passed in to Mono -->
-			<!-- See native/env.c for the implementation -->
+			<!-- See native/extism.c for the implementation -->
 			<_WasiSdkClangArgs Include="-Wl,--wrap=mono_runtime_run_main" />
 
 			<!-- Wrap mono_wasm_load_runtime to ensure mono is loaded only once when _start is called after an exported function -->
