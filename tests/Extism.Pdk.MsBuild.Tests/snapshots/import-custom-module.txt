@@ -16,12 +16,12 @@
 #define IMPORT(a, b) __attribute__((import_module(a), import_name(b)))
 
 typedef uint64_t ExtismPointer;
-IMPORT("host", "do_something") extern void do_something_import(int32_t p1, uint8_t p2, int64_t p3);
+IMPORT("env", "do_something") extern void do_something_import(int32_t p1, uint8_t p2, int64_t p3);
 
 void do_something(int32_t p1, uint8_t p2, int64_t p3) {
     do_something_import(p1, p2, p3);
 }
-IMPORT("host", "GetLength") extern int32_t GetLength_import(float p1);
+IMPORT("env", "GetLength") extern int32_t GetLength_import(float p1);
 
 int32_t GetLength(float p1) {
     return GetLength_import(p1);
