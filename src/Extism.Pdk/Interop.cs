@@ -357,7 +357,6 @@ public class HttpRequest
     public HttpRequest(string url)
     {
         Url = new Uri(url);
-        Pdk.Log(LogLevel.Error, url);
     }
 
     /// <summary>
