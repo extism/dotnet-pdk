@@ -20,7 +20,7 @@ Create a new project and add this nuget package to your project:
 ```
 dotnet new wasiconsole -o MyPlugin
 cd MyPlugin
-dotnet add package Extism.Pdk 
+dotnet add package Extism.Pdk --prerelease
 ```
 
 Update your MyPlugin.csproj as follows:
