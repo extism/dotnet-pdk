@@ -233,3 +233,16 @@ int __wrap_mono_runtime_run_main(MonoMethod *method, int argc, char *argv[], Mon
 
 	return __real_mono_runtime_run_main(method, argc, argv, exc);
 }
+
+// Wrap mono_wasm_load_runtime to make sure we don't initialize mono more than once
+void __real_mono_wasm_load_runtime(const char* unused, int debug_level);
+
+bool mono_runtime_initialized = false;
+void __wrap_mono_wasm_load_runtime(const char* unused, int debug_level) {
+    if (mono_runtime_initialized) {
+        return;
+    }
+
+    __real_mono_wasm_load_runtime(unused, debug_level);
+    mono_runtime_initialized = true;
+}
