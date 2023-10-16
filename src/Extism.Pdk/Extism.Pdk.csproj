@@ -14,7 +14,7 @@
 
 	<PropertyGroup>
 		<PackageId>Extism.Pdk</PackageId>
-		<Version>1.0.0-rc2</Version>
+		<Version>1.0.0-rc3</Version>
 		<Authors>Extism Contributors</Authors>
 		<Description>Extism PDK that allows compiling .NET apps into wasm Extism plugins.</Description>
 		<Tags>extism, wasm, plugin</Tags>

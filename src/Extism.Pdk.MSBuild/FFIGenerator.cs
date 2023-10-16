@@ -97,14 +97,8 @@ namespace Extism.Pdk.MSBuild
                 WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
                 #endif
 
-                bool mono_runtime_initialized = false;
                 void initialize_runtime() {
-                    if (mono_runtime_initialized) {
-                        return;
-                    }
-
                     mono_wasm_load_runtime("", 0);
-                    mono_runtime_initialized = true;
                 }
 
                 // end of _initialize
