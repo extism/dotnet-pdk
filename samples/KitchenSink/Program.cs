@@ -2,7 +2,9 @@
 using System;
 using Extism;
 using System.Text.Json;
+using SampleLib;
 
+Class1.noop(); // Import Class1 from SampleLib so that it's included during compilation
 Console.WriteLine("Hello world!");
 
 namespace Functions

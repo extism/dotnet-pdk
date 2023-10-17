@@ -17,6 +17,9 @@ public class GenerateFFITask : Microsoft.Build.Utilities.Task
     [Required]
     public string EnvPath { get; set; }
 
+    [Required]
+    public ITaskItem[] UnmanagedEntryPointsAssemblies { get; set; }
+
     public override bool Execute()
     {
         try
@@ -38,7 +41,12 @@ public class GenerateFFITask : Microsoft.Build.Utilities.Task
 
             var generator = new FFIGenerator(File.ReadAllText(EnvPath), (string message) => Log.LogError(message));
 
-            foreach (var file in generator.GenerateGlueCode(assembly))
+            var references = new HashSet<string>(
+                    UnmanagedEntryPointsAssemblies
+                        .Select(a => a.GetMetadata("Identity"))
+                        .Where(x => x is not null));
+
+            foreach (var file in generator.GenerateGlueCode(assembly, Path.GetDirectoryName(AssemblyPath), references))
             {
                 File.WriteAllText(Path.Combine(OutputPath, file.Name), file.Content);
             }
