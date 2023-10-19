@@ -15,10 +15,10 @@ namespace Extism.Pdk.MSBuild
             _env = env;
         }
 
-        public IEnumerable<FileEntry> GenerateGlueCode(AssemblyDefinition assembly, string directory, HashSet<string> entryPointAssemblies)
+        public IEnumerable<FileEntry> GenerateGlueCode(AssemblyDefinition assembly, string directory)
         {
             var assemblies = assembly.MainModule.AssemblyReferences
-                .Where(r => entryPointAssemblies.Contains(r.Name))
+                .Where(r => !r.Name.StartsWith("System") && !r.Name.StartsWith("Microsoft") && r.Name != "Extism.Pdk")
                 .Select(r => AssemblyDefinition.ReadAssembly(Path.Combine(directory, r.Name + ".dll")))
                 .ToList();
 

@@ -18,7 +18,7 @@ namespace Extism.Pdk.MsBuild.Tests
 
             var assembly = CecilExtensions.CreateSampleAssembly("SampleApp");
 
-            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory(), new HashSet<string>());
+            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory());
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Extism.Pdk.MsBuild.Tests
             _ = type.CreateMethod("DoSomething", typeof(void), ("p1", typeof(int)), ("p2", typeof(byte)), ("p3", typeof(long)))
                 .AddImport("env", "do_something");
 
-            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory(), new HashSet<string>());
+            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory());
 
             var envFile = files.Single(f => f.Name == "env.c");
             envFile.Content.Trim().ShouldBe(
@@ -66,7 +66,7 @@ namespace Extism.Pdk.MsBuild.Tests
             _ = type.CreateMethod("GetLength", typeof(int), ("p1", typeof(float)))
                 .AddImport("host", null);
 
-            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory(), new HashSet<string>());
+            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory());
 
             var hostFile = files.Single(f => f.Name == "host.c");
             var expected = File.ReadAllText("snapshots/import-custom-module.txt");
@@ -98,7 +98,7 @@ namespace Extism.Pdk.MsBuild.Tests
             _ = type.CreateMethod("DoSomeOtherStuff", typeof(int), ("longParameterNameHere", typeof(double)))
                   .AddExport("fancy_name");
 
-            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory(), new HashSet<string>());
+            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory());
 
             var file = files.Single(f => f.Name == "exports.c");
             var expected = File.ReadAllText("snapshots/exports.txt");
@@ -128,7 +128,7 @@ namespace Extism.Pdk.MsBuild.Tests
             var assembly = CecilExtensions.CreateSampleAssembly("SampleApp")
                 .WithReferenceTo(lib);
 
-            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory(), new HashSet<string> { "SampleLib" });
+            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory());
 
             var file = files.Single(f => f.Name == "exports.c");
             var expected = File.ReadAllText("snapshots/reference-exports.txt");
@@ -158,7 +158,7 @@ namespace Extism.Pdk.MsBuild.Tests
             var assembly = CecilExtensions.CreateSampleAssembly("SampleApp")
                 .WithReferenceTo(lib);
 
-            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory(), new HashSet<string> { "SampleLib2" });
+            var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory());
 
             var hostFile = files.Single(f => f.Name == "host.c");
             var expected = File.ReadAllText("snapshots/import-references.txt");

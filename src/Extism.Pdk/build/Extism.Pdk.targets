@@ -3,8 +3,7 @@
 	<Target Name="GenerateGlueCode" AfterTargets="Build" BeforeTargets="_BeforeWasmBuildApp">
 		<GenerateFFITask AssemblyPath="$(TargetPath)" 
 			OutputPath="$(IntermediateOutputPath)extism"
-			EnvPath="$(MSBuildThisFileDirectory)..\native\env.c"
-			UnmanagedEntryPointsAssemblies="@(UnmanagedEntryPointsAssembly)" />
+			EnvPath="$(MSBuildThisFileDirectory)..\native\env.c" />
 
 		<ItemGroup>
 			<NativeFileReference Include="$(IntermediateOutputPath)extism\*.c" />

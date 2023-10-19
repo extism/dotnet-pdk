@@ -3,11 +3,11 @@
 namespace SampleLib;
 public class Class1
 {
-    [DllImport("env", EntryPoint = "do_something")]
-    public static extern void do_something();
+    [DllImport("env", EntryPoint = "samplelib_import")]
+    public static extern void samplelib_import();
 
-    [UnmanagedCallersOnly(EntryPoint = "useful_method")]
-    public static void useful_method()
+    [UnmanagedCallersOnly(EntryPoint = "samplelib_export")]
+    public static void samplelib_export()
     {
 
     }

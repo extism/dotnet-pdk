@@ -17,10 +17,6 @@
 		<ProjectReference Include="..\SampleLib\SampleLib.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<UnmanagedEntryPointsAssembly Include="SampleLib" />
-	</ItemGroup>
-
 	<!--This is only necessary for ProjectReference, when using the nuget package this will not be necessary-->
 	<Import Project="..\..\src\Extism.Pdk\build\Extism.Pdk.targets" />
 
