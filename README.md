@@ -1,12 +1,11 @@
 # .NET PDK
 
-This repo houses the .NET PDK for building Extism plugins in C# and F#.
+This library can be used to write Extism [Plug-ins](https://extism.org/docs/concepts/plug-in) in C# and F#.
 
 > NOTE: This is an experimental PDK. We'd love to hear your feedback.
 
-Join the [Discord](https://discord.gg/5g3mtQRt) and chat with us!
-
 ## Prerequisites
+
 1. .NET SDK 8: https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 2. WASI Workload:
 ```
@@ -14,7 +13,8 @@ dotnet workload install wasi-experimental
 ```
 3. WASI SDK: https://github.com/WebAssembly/wasi-sdk/releases
 
-## Installation
+## Install
+
 Create a new project and add this nuget package to your project:
 
 ```
@@ -23,7 +23,7 @@ cd MyPlugin
 dotnet add package Extism.Pdk --prerelease
 ```
 
-Update your MyPlugin.csproj as follows:
+Update your `MyPlugin.csproj`/`MyPlugin.fsproj` as follows:
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
@@ -39,158 +39,314 @@ Update your MyPlugin.csproj as follows:
 </Project>
 ```
 
-Update your Program.cs:
+## Getting Started
+The goal of writing an Extism plug-in is to compile your C#/F# code to a Wasm module with exported functions that the host application can invoke. The first thing you should understand is creating an export. Let's write a simple program that exports a greet function which will take a name as a string and return a greeting string. Paste this into your Program.cs/Program.fs:
+
+C#:
 ```csharp
+using System;
+using System.Runtime.InteropServices;
+using System.Text.Json;
 using Extism;
 
-Pdk.SetOutput("Hello from .NET!");
+namespace MyPlugin;
+public class Functions
+{
+    public static void Main()
+    {
+        // Note: a `Main` method is required for the app to compile
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "greet")]
+    public static int Greet()
+    {
+        var name = Pdk.GetInputString();
+        var greeting = $"Hello, {name}!";
+        Pdk.SetOutput(greeting);
+
+        return 0;
+    }
+}
 ```
 
-Then compile your plugin to wasm:
+F#:
+```fsharp
+module MyPlugin
+
+open System
+open System.Runtime.InteropServices
+open System.Text.Json
+open Extism
+
+[<UnmanagedCallersOnly(EntryPoint = "greet")>]
+let Greet () : int32 =
+    let name = Pdk.GetInputString()
+    let greeting = $"Hello, {name}!"
+    Pdk.SetOutput(greeting)
+    0
+    
+[<EntryPoint>]
+let Main args  =
+    // Note: an `EntryPoint` function is required for the app to compile
+    0
+```
+
+Some things to note about this code:
+1. The `[UnmanagedCallersOnly(EntryPoint = "greet")]` is required, this marks the `Greet` function as an export with the name `greet` that can be called by the host. `EntryPoint` is optional.
+1. We need a `Main` but it's unused. If you do want to use it, it's exported as a function called `_start`.
+1. Exports in the .NET PDK care coded to the raw ABI. You get parameters from the host by calling `Pdk.GetInput*` functions and you send returns back with the `Pdk.SetOutput` functions.
+1. An Extism export expects an `Int32` return code. `0` is success and `1` is a failure.
+
+Compile with this command:
 ```
 dotnet build
 ```
 
-This will create a `MyPlugin.wasm` file in `bin/Debug/net8.0/wasi-wasm/AppBundle`. Now, you can try out your plugin by using any of [Extism SDKs](https://extism.org/docs/category/integrate-into-your-codebase) or by using [Extism CLI](https://extism.org/docs/install):
-
+This will create a `MyPlugin.wasm` file in `bin/Debug/net8.0/wasi-wasm/AppBundle`. Now, you can try out your plugin by using any of the [Extism SDKs](https://extism.org/docs/category/integrate-into-your-codebase) or by using [Extism CLI](https://extism.org/docs/install)'s `run` command:
 ```
-extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm _start --wasi
-Hello from .NET!
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input "Benjamin" --wasi
+# => Hello, Benjamin!
 ```
 
-## Example Usage
-### Using Config, I/O, & Persisted Variables
+> **Note:** Currently wasi must be provided for all .NET plug-ins even if they don't need system access.
 
+## More Exports: Error Handling
+Suppose we want to re-write our greeting function to never greet Benjamis. We can use `Pdk.SetError`:
+
+C#:
 ```csharp
-using System.Text;
-using Extism;
-
-// Read input from the host
-var input = Pdk.GetInputString();
-
-var count = 0;
-
-foreach (var c in input)
+[UnmanagedCallersOnly(EntryPoint = "greet")]
+public static int Greet()
 {
-    if ("aeiouAEIOU".Contains(c))
+    var name = Pdk.GetInputString();
+    if (name == "Benjamin")
     {
-        count++;
+        Pdk.SetError("Sorry, we don't greet Benjamins!");
+        return 1;
     }
+
+    var greeting = $"Hello, {name}!";
+    Pdk.SetOutput(greeting);
+
+    return 0;
 }
-
-// Read configuration values from the host
-if (!Pdk.TryGetConfig("thing", out var thing))
-{
-    thing = "<unset by host>";
-}
-
-// Read variables persisted by the host
-if (!Pdk.TryGetVar("total", out var totalBlock))
-{
-    Pdk.Log(LogLevel.Info, "First time running, total is not set.");
-}
-
-int.TryParse(Encoding.UTF8.GetString(totalBlock.ReadBytes()), out var total);
-
-// Save total for next invocations
-total += count;
-totalBlock = Pdk.Allocate(total.ToString());
-Pdk.SetVar("total", totalBlock);
-
-// Set plugin output for host to read
-var output = $$"""{"count": {{count}}, "config": "{{thing}}", "total": "{{total}}" }""";
-Pdk.SetOutput(output);
 ```
 
-If you build this app and use Extism's .NET SDK to run it:
-```csharp
-var output = plugin.CallFunction("_start", Encoding.UTF8.GetBytes("Hello World!"));
-Console.WriteLine(Encoding.UTF8.GetString(output));
-
-output = plugin.CallFunction("_start", Encoding.UTF8.GetBytes("Hello World!"));
-Console.WriteLine(Encoding.UTF8.GetString(output));
-```
-
-You'll get this output:
-```
-{"count": 3, "config": "<unset by host>", "total": "3" }
-{"count": 3, "config": "<unset by host>", "total": "6" }
-```
-
-Notice how total is 6 in the second output.
-
-The same example works in F# too!:
+F#:
 ```fsharp
-open System.Text
-open Extism
-
-let countVowels (input: string) =
-    input
-    |> Seq.filter (fun c -> "aeiouAEIOU".Contains(c))
-    |> Seq.length
-
-// Read configuration from the host
-let readConfig () =
-    match Pdk.TryGetConfig("thing") with
-    | true, thing -> thing
-    | false, _ -> "<unset by the host>"
-
-// Read a variable persisted by the host
-let readTotal () =
-    match Pdk.TryGetVar("total") with
-    | true, totalBlock ->
-        Encoding.UTF8.GetString(totalBlock.ReadBytes()) |> int
-    | false, _ ->
-        Pdk.Log(LogLevel.Info, "First time running, total is not set.")
+[<UnmanagedCallersOnly(EntryPoint = "greet")>]
+let Greet () =
+    let name = Pdk.GetInputString()
+    if name = "Benjamin" then
+        Pdk.SetError("Sorry, we don't greet Benjamins!")
+        1
+    else
+        let greeting = $"Hello, {name}!"
+        Pdk.SetOutput(greeting)
         0
+```
 
-// Write a variable persisted by the host
-let saveTotal total =
-    let totalBlock = Pdk.Allocate(total.ToString())
-    Pdk.SetVar("total", totalBlock)
+Now when we try again:
+```
+extism call plugin.wasm greet --input="Benjamin" --wasi
+# => Error: Sorry, we don't greet Benjamins!
+echo $? # print last status code
+# => 1
+extism call plugin.wasm greet --input="Zach" --wasi
+# => Hello, Zach!
+echo $?
+# => 0
+```
 
-[<EntryPoint>]
-let main args =
-    let input = Pdk.GetInputString()
-    let count = countVowels input
-    let thing = readConfig()
-    let total = readTotal() + count
-    saveTotal total
+We can also throw a normal .NET Exception:
+```
+var name = Pdk.GetInputString();
+if (name == "Benjamin")
+{
+    throw new ArgumentException("Sorry, we don't greet Benjamins!");
+}
+```
 
-    let output = sprintf """{"count": %d, "config": "%s", "total": "%d" }""" count thing total
-    Pdk.SetOutput(output)
+Now when we try again:
+```
+extism call plugin.wasm greet --input="Benjamin" --wasi
+# => Error: System.ArgumentException: Sorry, we don't greet Benjamins!
+   at MyPlugin.Functions.Greet()
+```
+
+## Json
+Extism export functions simply take bytes in and bytes out. Those can be whatever you want them to be. A common and simple way to get more complex types to and from the host is with json:
+
+C#:
+```csharp
+public record Add(int A, int B);
+public record Sum(int Result);
+
+[UnmanagedCallersOnly]
+public static int add()
+{
+    var inputJson = Pdk.GetInputString();
+    var options = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    var parameters = JsonSerializer.Deserialize<Add>(inputJson, options);
+    var sum = new Sum(parameters.A + parameters.B);
+    var outputJson = JsonSerializer.Serialize(sum, options);
+    Pdk.SetOutput(outputJson);
+    return 0;
+}
+```
+
+F#:
+```fsharp
+type Add = { A: int; B: int }
+type Sum = { Result: int }
+
+[<UnmanagedCallersOnly>]
+let add () =
+    let inputJson = Pdk.GetInputString()
+    let options = JsonSerializerOptions(PropertyNameCaseInsensitive = true)
+    let parameters = JsonSerializer.Deserialize<Add>(inputJson, options)
+    
+    let sum = { Result = parameters.A + parameters.B }
+    let outputJson = JsonSerializer.Serialize(sum, options)
+    
+    Pdk.SetOutput(outputJson)
     0
 ```
 
-### Making HTTP calls
-WASI doesn't allow guests to create socket connections yet, and thus they can't make HTTP calls. However, Extism provides convenient functions to make HTTP calls easy. If the host is configured to allow them, Extism plugins can make http calls by using `Pdk.SendRequest`:
+```
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\readmeapp.wasm --wasi add --input='{"a": 20, "b": 21}'
+# => {"Result":41}
+```
 
+## Configs
+
+Configs are key-value pairs that can be passed in by the host when creating a plug-in. These can be useful to statically configure the plug-in with some data that exists across every function call. Here is a trivial example using Pdk.TryGetConfig:
+
+C#:
 ```csharp
-var request = new HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
+[UnmanagedCallersOnly(EntryPoint = "greet")]
+public static int Greet()
 {
-    Method = HttpMethod.GET
-};
+    if (!Pdk.TryGetConfig("user", out var user)) {
+        throw new InvalidOperationException("This plug-in requires a 'user' key in the config");
+    }
 
-request.Headers.Add("some-header", "value");
+    var greeting = $"Hello, {user}!";
+    Pdk.SetOutput(greeting);
 
-var response = Pdk.SendRequest(request);
-
-Pdk.SetOutput(response.Body);
+    return 0;
+}
 ```
 
+F#:
 ```fsharp
-open Extism
+[<UnmanagedCallersOnly(EntryPoint = "greet")>]
+let Greet () =
+    let mutable user : string = null
+    let success = Pdk.TryGetConfig( "user", &user)
+    if not success then
+            raise (new System.Exception(sprintf "Key '%s' not found" "user"))
 
-let request = Extism.HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
-request.Method = HttpMethod.GET
-request.Headers.Add("some-header", "value")
-
-let response = Pdk.SendRequest(request)
-Pdk.SetOutput(response.Body)
+    let greeting = $"Hello, {user}!"
+    Pdk.SetOutput(greeting)
+    0
 ```
 
-Output:
-```json
+To test it, the [Extism CLI](https://github.com/extism/cli) has a --config option that lets you pass in key=value pairs:
+```
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi greet --config user=Benjamin
+# => Hello, Benjamin!
+```
+
+## Variables
+Variables are another key-value mechanism but it's a mutable data store that will persist across function calls. These variables will persist as long as the host has loaded and not freed the plug-in.
+
+C#:
+```csharp
+[UnmanagedCallersOnly]
+public static int count()
+{
+    int count = 0;
+    if (Pdk.TryGetVar("count", out var memoryBlock))
+    {
+        count = BitConverter.ToInt32(memoryBlock.ReadBytes());
+    }
+    count += 1;
+    Pdk.SetVar("count", BitConverter.GetBytes(count));
+    Pdk.SetOutput(count.ToString());
+    return 0;
+}
+```
+
+F#:
+```fsharp
+[<UnmanagedCallersOnly>]
+let count () =
+    let mutable count = 0
+    let mutable buffer : MemoryBlock = null
+
+    if Pdk.TryGetVar("count", &buffer) then
+        count <- BitConverter.ToInt32(buffer.ReadBytes())
+    
+    count <- count + 1
+    let countBytes = BitConverter.GetBytes(count)
+    
+    Pdk.SetVar("count", countBytes)
+    Pdk.SetOutput(count.ToString())
+    
+    0
+```
+
+From [Extism CLI](https://github.com/extism/cli):
+```
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi count --loop 3
+1
+2
+3
+```
+
+## HTTP
+Sometimes it is useful to let a plug-in make HTTP calls:
+
+C#:
+```csharp
+[UnmanagedCallersOnly]
+public static int http_get()
+{
+    // create an HTTP Request (withuot relying on WASI), set headers as needed
+    var request = new HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
+    {
+        Method = HttpMethod.GET,
+    };
+    request.Headers.Add("some-name", "some-value");
+    request.Headers.Add("another", "again");
+    var response = Pdk.SendRequest(request);
+    Pdk.SetOutput(response.Body);
+    return 0;
+}
+```
+
+F#:
+```fsharp
+[<UnmanagedCallersOnly>]
+let http_get () =
+    let request = HttpRequest("https://jsonplaceholder.typicode.com/todos/1")
+    request.Headers.Add("some-name", "some-value")
+    request.Headers.Add("another", "again")
+
+    let response = Pdk.SendRequest(request)
+    Pdk.SetOutput(response.Body)
+    
+    0
+```
+
+From [Extism CLI](https://github.com/extism/cli):
+```
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi http_get --allow-host='*.typicode.com'
 {
   "userId": 1,
   "id": 1,
@@ -198,55 +354,103 @@ Output:
   "completed": false
 }
 ```
-### Export functions
+> **NOTE**: `HttpClient` doesn't work in Wasm yet.
 
-If you want to export multiple functions from one plugin, you can use `UnmanagedCallersOnly` attribute:
+## Imports (Host Functions)
 
+Like any other code module, Wasm not only let's you export functions to the outside world, you can import them too. Host Functions allow a plug-in to import functions defined in the host. For example, if you host application is written in Python, it can pass a Python function down to your Go plug-in where you can invoke it.
+
+This topic can get fairly complicated and we have not yet fully abstracted the Wasm knowledge you need to do this correctly. So we recommend reading our [concept doc on Host Functions](https://extism.org/docs/concepts/host-functions) before you get started.
+
+### A Simple Example
+
+Host functions have a similar interface as exports. You just need to declare them as extern on the top of your `Program.cs`/`Program.fs`. You only declare the interface as it is the host's responsibility to provide the implementation:
+
+C#:
 ```csharp
-[UnmanagedCallersOnly(EntryPoint = "count_vowels")]
-public static unsafe int CountVowels()
+[DllImport("env", EntryPoint = "a_python_func")]
+public static extern ulong PythonFunc(ulong offset);
+[UnmanagedCallersOnly]
+public static int hello_from_python()
 {
-   var text = Pdk.GetInputString();
-
-   // ...
-
-   Pdk.SetOutput(result);
-   return 0;
+    var message = "An argument to send to Python";
+    using var block = Pdk.Allocate(message);
+    
+    var ptr = PythonFunc(block.Offset);
+    var response = MemoryBlock.Find(ptr).ReadString();
+    Pdk.SetOutput(response);
+    return 0;
 }
 ```
 
+F#:
 ```fsharp
-[<UnmanagedCallersOnly(EntryPoint = "count_vowels")>]
-let CountVowels () =
-  let buffer = Pdk.GetInput ()
-  
-  // ...
+[<DllImport("env", EntryPoint = "a_python_func")>]
+extern uint64 PythonFunc(uint64 offset)
 
-  Pdk.SetOutput ($"""{{ "count": {count} }}""")
-  0
+[<UnmanagedCallersOnly>]
+let HelloFromPython () =
+    let message = "An argument to send to Python"
+    use block = Pdk.Allocate(message)
+
+    let ptr = PythonFunc(block.Offset)
+    let response = MemoryBlock.Find ptr
+    Pdk.SetOutput(response)
+    
+    0
 ```
 
-Notes:
-1. If `UnmanagedCallersOnly.EntryPoint` is not specified, the method name will be used.
-2. Exported functions can only have this signature: () => int.
+### Testing it out
 
-### Import functions
+We can't really test this from the Extism CLI as something must provide the implementation. So let's
+write out the Python side here. Check out the [docs for Host SDKs](https://extism.org/docs/concepts/host-sdk) to implement a host function in a language of your choice.
 
-The host might give guests additional capabilities. You can import functions from the host using `DllImport`:
+```python
+from extism import host_fn, Function, ValType, Plugin
 
-```csharp
-[DllImport("host", EntryPoint = "is_vowel")]
-public static extern int IsVowel(int c);
+@host_fn
+def a_python_func(plugin, input_, output, _user_data):
+    # The plug-in is passing us a string
+    input_str = plugin.input_string(input_[0])
+
+    # just printing this out to prove we're in Python land
+    print("Hello from Python!")
+
+    # let's just add "!" to the input string
+    # but you could imagine here we could add some
+    # applicaiton code like query or manipulate the database
+    # or our application APIs
+    input_str += "!"
+
+    # set the new string as the return value to the plug-in
+    plugin.return_string(output[0], input_str)
 ```
 
-```fsharp
-[<DllImport("host", EntryPoint = "is_vowel")>]
-extern int IsVowel(int c)
+Now when we load the plug-in we pass the host function:
+ 
+```python
+functions = [
+    Function(
+        "a_python_func",
+        [ValType.I64],
+        [ValType.I64],
+        a_python_func,
+        None
+    )
+]
+
+manifest = {"wasm": [{"path": "/path/to/plugin.wasm"}]}
+plugin = Plugin(manifest, functions=functions, wasi=True)
+result = plugin.call('hello_from_python').decode('utf-8')
+print(result)
 ```
 
-Notes:
-1. Parameters and return types can only be one of these types: `SByte`, `Int16`, `Int32`, `Int64`, `Byte`, `UInt16`, `UInt32`, `UInt64`, `Float`, `Double`, and `Void`.
-2. If `DllImport.EntryPoint` is not specified, the name of the method will be used.
+```bash
+python3 app.py
+# => Hello from Python!
+# => An argument to send to Python!
+```
 
-## Samples
-For more examples, check out the [samples](./samples) folder.
+### Reach Out!
+
+Have a question or just want to drop in and say hi? [Hop on the Discord](https://extism.org/discord)!
