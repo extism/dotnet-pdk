@@ -246,14 +246,13 @@ F#:
 ```fsharp
 [<UnmanagedCallersOnly(EntryPoint = "greet")>]
 let Greet () =
-    let mutable user : string = null
-    let success = Pdk.TryGetConfig( "user", &user)
-    if not success then
-            raise (new System.Exception(sprintf "Key '%s' not found" "user"))
-
-    let greeting = $"Hello, {user}!"
-    Pdk.SetOutput(greeting)
-    0
+    match Pdk.TryGetConfig "user" with
+    | true, user ->
+        let greeting = $"Hello, {user}!"
+        Pdk.SetOutput(greeting)
+        0
+    | false, _ ->
+        failwith "This plug-in requires a 'user' key in the config"
 ```
 
 To test it, the [Extism CLI](https://github.com/extism/cli) has a --config option that lets you pass in key=value pairs:
@@ -286,20 +285,20 @@ F#:
 ```fsharp
 [<UnmanagedCallersOnly>]
 let count () =
-    let mutable count = 0
-    let mutable buffer : MemoryBlock = null
 
-    if Pdk.TryGetVar("count", &buffer) then
-        count <- BitConverter.ToInt32(buffer.ReadBytes())
+    let count =
+        match Pdk.TryGetVar "count" with
+        | true, buffer ->
+            BitConverter.ToInt32(buffer.ReadBytes())
+        | false, _ ->
+            0
     
-    count <- count + 1
-    let countBytes = BitConverter.GetBytes(count)
-    
-    Pdk.SetVar("count", countBytes)
+    let count = count + 1
+
+    Pdk.SetVar("count", BitConverter.GetBytes(count))
     Pdk.SetOutput(count.ToString())
     
     0
-```
 
 From [Extism CLI](https://github.com/extism/cli):
 ```
