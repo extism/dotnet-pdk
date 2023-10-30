@@ -201,7 +201,7 @@ __attribute__((export_name("{{exportName}}"))) int {{exportName}}()
         private string ToImportStatement(MethodDefinition method)
         {
             var moduleName = method.PInvokeInfo.Module.Name;
-            var functionName = method.PInvokeInfo.EntryPoint ?? method.Name;
+            var functionName = string.IsNullOrEmpty(method.PInvokeInfo.EntryPoint) ? method.Name : method.PInvokeInfo.EntryPoint;
 
             if (!_types.ContainsKey(method.ReturnType.Name))
             {

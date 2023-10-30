@@ -137,8 +137,7 @@ namespace Extism.Pdk.MsBuild.Tests
             AssertContent(env, files, "env.c");
         }
 
-        // This breaks Cecil, see: https://github.com/jbevain/cecil/issues/926
-        //[Fact]
+        [Fact]
         public void CanImportFromReferences()
         {
             var env = "// env stuff";
@@ -219,13 +218,16 @@ namespace Extism.Pdk.MsBuild.Tests
 
         public static MethodDefinition AddImport(this MethodDefinition method, string moduleName, string? entryPoint = null)
         {
-            var pinvokeInfo = new PInvokeInfo(PInvokeAttributes.CallConvCdecl, entryPoint, new ModuleReference(moduleName));
+            var moduleReference = new ModuleReference(moduleName);
+            var pinvokeInfo = new PInvokeInfo(PInvokeAttributes.CallConvCdecl, entryPoint, moduleReference);
             method.PInvokeInfo = pinvokeInfo;
             method.Attributes |= MethodAttributes.PInvokeImpl;
             method.ImplAttributes |= MethodImplAttributes.PreserveSig | (MethodImplAttributes)pinvokeInfo.Attributes;
 
             method.IsPInvokeImpl = true;
             method.IsPreserveSig = true;
+
+            method.Module.Assembly.MainModule.ModuleReferences.Add(moduleReference);
 
             return method;
         }
