@@ -48,8 +48,7 @@ public class KitchenSinkTests
 
         stderr.ShouldBe("");
         exit.ShouldBe(0);
-        // TODO: Enable this again after the Extism CLI is fixed
-        //stdout.ShouldBe("1\n2\n3\n");
+        stdout.ShouldBe("1\n2\n3\n");
     }
 
     [Theory]
@@ -141,19 +140,17 @@ public class KitchenSinkTests
         public int Loop { get; set; }
         public string Input { get; set; } = "";
         public bool Wasi { get; set; } = true;
-        public bool Quiet { get; set; }
         public Dictionary<string, string> Config { get; set; } = new();
         public List<string> AllowedHosts { get; set; } = new List<string>();
 
         public string[] ToCliArguments()
         {
             var wasiArg = Wasi ? "--wasi" : "";
-            var quietArg = Quiet ? "-q" : "";
 
             var configs = Config.Where(c => !string.IsNullOrEmpty(c.Value)).SelectMany(c => new string[] { "--config", $"{c.Key}={c.Value}" });
             var hosts = AllowedHosts.Where(h => !string.IsNullOrEmpty(h)).SelectMany(h => new string[] { "--allow-host", h });
 
-            return ["--loop", Loop.ToString(), "--input", Input, quietArg, wasiArg, .. configs, .. hosts];
+            return ["--loop", Loop.ToString(), "--input", Input, wasiArg, .. configs, .. hosts];
         }
     }
 }
