@@ -367,15 +367,14 @@ Host functions have a similar interface as exports. You just need to declare the
 
 C#:
 ```csharp
-[DllImport("env", EntryPoint = "a_python_func")]
-public static extern ulong PythonFunc(ulong offset);
+[DllImport("env", EntryPoint = "a_go_func")]
+public static extern ulong GoFunc(ulong offset);
 [UnmanagedCallersOnly]
-public static int hello_from_python()
+public static int hello_from_go()
 {
-    var message = "An argument to send to Python";
+    var message = "An argument to send to Go";
     using var block = Pdk.Allocate(message);
-    
-    var ptr = PythonFunc(block.Offset);
+    var ptr = GoFunc(block.Offset);
     var response = MemoryBlock.Find(ptr).ReadString();
     Pdk.SetOutput(response);
     return 0;
@@ -384,15 +383,15 @@ public static int hello_from_python()
 
 F#:
 ```fsharp
-[<DllImport("env", EntryPoint = "a_python_func")>]
-extern uint64 PythonFunc(uint64 offset)
+[<DllImport("env", EntryPoint = "a_go_func")>]
+extern uint64 GoFunc(uint64 offset)
 
 [<UnmanagedCallersOnly>]
-let HelloFromPython () =
-    let message = "An argument to send to Python"
+let hello_from_go () =
+    let message = "An argument to send to Go"
     use block = Pdk.Allocate(message)
 
-    let ptr = PythonFunc(block.Offset)
+    let ptr = GoFunc(block.Offset)
     let response = MemoryBlock.Find ptr
     Pdk.SetOutput(response)
     
@@ -404,50 +403,65 @@ let HelloFromPython () =
 We can't really test this from the Extism CLI as something must provide the implementation. So let's
 write out the Python side here. Check out the [docs for Host SDKs](https://extism.org/docs/concepts/host-sdk) to implement a host function in a language of your choice.
 
-```python
-from extism import host_fn, Function, ValType, Plugin
+```go
+ctx := context.Background()
+config := extism.PluginConfig{
+    EnableWasi: true,
+}
 
-@host_fn
-def a_python_func(plugin, input_, output, _user_data):
-    # The plug-in is passing us a string
-    input_str = plugin.input_string(input_[0])
+go_func := extism.NewHostFunctionWithStack(
+    "a_go_func",
+    "env",
+    func(ctx context.Context, p *extism.CurrentPlugin, stack []uint64) {
+        input, err := p.ReadString(stack[0])
+        if err != nil {
+            panic(err)
+        }
 
-    # just printing this out to prove we're in Python land
-    print("Hello from Python!")
+        fmt.Println("Hello from Go!")
 
-    # let's just add "!" to the input string
-    # but you could imagine here we could add some
-    # applicaiton code like query or manipulate the database
-    # or our application APIs
-    input_str += "!"
+        offs, err := p.WriteString(input + "!")
+        if err != nil {
+            panic(err)
+        }
 
-    # set the new string as the return value to the plug-in
-    plugin.return_string(output[0], input_str)
+        stack[0] = offs
+    },
+    []api.ValueType{api.ValueTypeI64},
+    []api.ValueType{api.ValueTypeI64},
+)
 ```
 
 Now when we load the plug-in we pass the host function:
  
-```python
-functions = [
-    Function(
-        "a_python_func",
-        [ValType.I64],
-        [ValType.I64],
-        a_python_func,
-        None
-    )
-]
+```go
+manifest := extism.Manifest{
+    Wasm: []extism.Wasm{
+        extism.WasmFile{
+            Path: "/path/to/plugin.wasm",
+        },
+    },
+}
 
-manifest = {"wasm": [{"path": "/path/to/plugin.wasm"}]}
-plugin = Plugin(manifest, functions=functions, wasi=True)
-result = plugin.call('hello_from_python').decode('utf-8')
-print(result)
+plugin, err := extism.NewPlugin(ctx, manifest, config, []extism.HostFunction{go_func})
+
+if err != nil {
+    fmt.Printf("Failed to initialize plugin: %v\n", err)
+    os.Exit(1)
+}
+
+_, out, err := plugin.Call("hello_from_go", []byte("Hello, World!"))
+fmt.Println(string(out))
 ```
 
 ```bash
-python3 app.py
-# => Hello from Python!
-# => An argument to send to Python!
+go run .
+# => Hello from Go!
+# => An argument to send to Go!
+```
+### Optimize Size
+Normally, the .NET runtime is very conservative when trimming. This makes sure code doesn't break (when using reflection for example) but it also means large binary sizes. A hello world sample is about 20mb. To instruct the .NET compiler to be aggresive about trimming, you can try out these options:
+```xml
 ```
 
 ### Reach Out!
