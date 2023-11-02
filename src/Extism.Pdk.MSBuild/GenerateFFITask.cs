@@ -15,7 +15,7 @@ public class GenerateFFITask : Microsoft.Build.Utilities.Task
     public string OutputPath { get; set; }
 
     [Required]
-    public string EnvPath { get; set; }
+    public string ExtismPath { get; set; }
 
     public override bool Execute()
     {
@@ -36,7 +36,7 @@ public class GenerateFFITask : Microsoft.Build.Utilities.Task
                 }
             }
 
-            var generator = new FFIGenerator(File.ReadAllText(EnvPath), (string message) => Log.LogError(message));
+            var generator = new FFIGenerator(File.ReadAllText(ExtismPath), (string message) => Log.LogError(message));
 
             foreach (var file in generator.GenerateGlueCode(assembly, Path.GetDirectoryName(AssemblyPath)))
             {

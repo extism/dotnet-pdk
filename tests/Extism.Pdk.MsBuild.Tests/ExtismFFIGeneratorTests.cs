@@ -13,8 +13,8 @@ namespace Extism.Pdk.MsBuild.Tests
         [Fact]
         public void CanHandleEmptyAssemblies()
         {
-            var env = "";
-            var generator = new FFIGenerator(env, (m) => { });
+            var extism = "";
+            var generator = new FFIGenerator(extism, (m) => { });
 
             var assembly = CecilExtensions.CreateSampleAssembly("SampleApp");
 
@@ -22,25 +22,25 @@ namespace Extism.Pdk.MsBuild.Tests
         }
 
         [Fact]
-        public void CanImportFromEnv()
+        public void CanImportFromExtism()
         {
-            var env = "// env stuff";
-            var generator = new FFIGenerator(env, (m) => { });
+            var extism = "// extism stuff";
+            var generator = new FFIGenerator(extism, (m) => { });
 
             var assembly = CecilExtensions.CreateSampleAssembly("SampleApp");
 
             var type = assembly.MainModule.CreateType("MyNamespace", "MyClass");
 
             _ = type.CreateMethod("DoSomething", typeof(void), ("p1", typeof(int)), ("p2", typeof(byte)), ("p3", typeof(long)))
-                .AddImport("env", "do_something");
+                .AddImport("extism", "do_something");
 
             var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory());
 
-            var envFile = files.Single(f => f.Name == "env.c");
-            envFile.Content.Trim().ShouldBe(
+            var extismFile = files.Single(f => f.Name == "extism.c");
+            extismFile.Content.Trim().ShouldBe(
                 """
-                // env stuff
-                IMPORT("env", "do_something") extern void do_something_import(int32_t p1, uint8_t p2, int64_t p3);
+                // extism stuff
+                IMPORT("extism", "do_something") extern void do_something_import(int32_t p1, uint8_t p2, int64_t p3);
 
                 void do_something(int32_t p1, uint8_t p2, int64_t p3) {
                     do_something_import(p1, p2, p3);
@@ -53,40 +53,40 @@ namespace Extism.Pdk.MsBuild.Tests
         [Fact]
         public void CanImportFromCustomModules()
         {
-            var env = "// env stuff";
-            var generator = new FFIGenerator(env, (m) => { });
+            var extism = "// extism stuff";
+            var generator = new FFIGenerator(extism, (m) => { });
 
             var assembly = CecilExtensions.CreateSampleAssembly("SampleApp");
 
             var type = assembly.MainModule.CreateType("MyNamespace", "MyClass");
 
             _ = type.CreateMethod("DoSomething", typeof(void), ("p1", typeof(int)), ("p2", typeof(byte)), ("p3", typeof(long)))
-                .AddImport("host", "do_something");
+                .AddImport("env", "do_something");
 
             _ = type.CreateMethod("GetLength", typeof(int), ("p1", typeof(float)))
-                .AddImport("host", null);
+                .AddImport("env", null);
 
             var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory());
 
-            var hostFile = files.Single(f => f.Name == "host.c");
+            var envFile = files.Single(f => f.Name == "env.c");
             var expected = File.ReadAllText("snapshots/import-custom-module.txt");
-            hostFile.Content.Trim().ShouldBe(expected, StringCompareShould.IgnoreLineEndings);
+            envFile.Content.Trim().ShouldBe(expected, StringCompareShould.IgnoreLineEndings);
 
-            AssertContent(env, files, "env.c");
+            AssertContent(extism, files, "extism.c");
             files.ShouldNotContain(f => f.Name == "export.c");
         }
 
         private static void AssertContent(string content, IEnumerable<FileEntry> files, string fileName)
         {
-            var envFile = files.Single(f => f.Name == fileName);
-            envFile.Content.Trim().ShouldBe(content.Trim(), StringCompareShould.IgnoreLineEndings);
+            var extismFile = files.Single(f => f.Name == fileName);
+            extismFile.Content.Trim().ShouldBe(content.Trim(), StringCompareShould.IgnoreLineEndings);
         }
 
         [Fact]
         public void CanExportMethods()
         {
-            var env = "// env stuff";
-            var generator = new FFIGenerator(env, (m) => { });
+            var extism = "// extism stuff";
+            var generator = new FFIGenerator(extism, (m) => { });
 
             var assembly = CecilExtensions.CreateSampleAssembly("SampleApp");
 
@@ -104,7 +104,7 @@ namespace Extism.Pdk.MsBuild.Tests
             var expected = File.ReadAllText("snapshots/exports.txt");
             file.Content.Trim().ShouldBe(expected, StringCompareShould.IgnoreLineEndings);
 
-            AssertContent(env, files, "env.c");
+            AssertContent(extism, files, "extism.c");
         }
 
         [Fact]

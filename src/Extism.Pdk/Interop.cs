@@ -152,14 +152,12 @@ public static class Pdk
         var keyBlock = Allocate(key);
 
         var offset = Native.extism_config_get(keyBlock.Offset);
-        var valueBlock = MemoryBlock.Find(offset);
+        using var valueBlock = MemoryBlock.Find(offset);
 
         if (offset == 0 || valueBlock.Length == 0)
         {
             return false;
         }
-
-        valueBlock.Free();
 
         var bytes = valueBlock.ReadBytes();
         value = Encoding.UTF8.GetString(bytes);
@@ -443,18 +441,29 @@ public class HttpResponse : IDisposable
     public ushort Status { get; set; }
 
     /// <summary>
-    /// Frees up the body of the HTTP response.
+    /// Frees the current memory block.
     /// </summary>
     public void Dispose()
     {
-        Body.Free();
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            // free managed resources
+        }
+
+        Body.Dispose();
     }
 }
 
 /// <summary>
 /// A block of allocated memory.
 /// </summary>
-public struct MemoryBlock
+public class MemoryBlock : IDisposable
 {
     /// <summary>
     /// 
@@ -556,17 +565,6 @@ public struct MemoryBlock
     }
 
     /// <summary>
-    /// Frees the current memory block.
-    /// </summary>
-    public void Free()
-    {
-        if (!IsEmpty)
-        {
-            Native.extism_free(Offset);
-        }
-    }
-
-    /// <summary>
     /// Finds a memory block based on its start address.
     /// </summary>
     /// <param name="offset"></param>
@@ -575,5 +573,27 @@ public struct MemoryBlock
     {
         var length = Native.extism_length(offset);
         return new MemoryBlock(offset, length);
+    }
+
+    /// <summary>
+    /// Frees the current memory block.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            // free managed resources
+        }
+
+        if (!IsEmpty)
+        {
+            Native.extism_free(Offset);
+        }
     }
 }

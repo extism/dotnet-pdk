@@ -7,12 +7,12 @@ namespace Extism.Pdk.MSBuild
     public class FFIGenerator
     {
         private readonly Action<string> _logError;
-        private readonly string _env;
+        private readonly string _extism;
 
-        public FFIGenerator(string env, Action<string> logError)
+        public FFIGenerator(string extism, Action<string> logError)
         {
             _logError = logError;
-            _env = env;
+            _extism = extism;
         }
 
         public IEnumerable<FileEntry> GenerateGlueCode(AssemblyDefinition assembly, string directory)
@@ -37,13 +37,13 @@ namespace Extism.Pdk.MSBuild
                 .Where(m => m.HasPInvokeInfo)
                 .ToArray();
 
-            var files = GenerateImports(importedMethods, _env);
+            var files = GenerateImports(importedMethods, _extism);
             files.Add(GenerateExports(exportedMethods));
 
             return files;
         }
 
-        private List<FileEntry> GenerateImports(MethodDefinition[] importedMethods, string env)
+        private List<FileEntry> GenerateImports(MethodDefinition[] importedMethods, string extism)
         {
             var modules = importedMethods.GroupBy(m => m.PInvokeInfo.Module.Name)
                             .Select(g => new
@@ -53,7 +53,7 @@ namespace Extism.Pdk.MSBuild
                             })
                             .ToList();
 
-            var envWritten = false;
+            var extismWritten = false;
 
             var files = new List<FileEntry>();
 
@@ -63,10 +63,10 @@ namespace Extism.Pdk.MSBuild
             {
                 var builder = new StringBuilder();
 
-                if (module.Name == "env")
+                if (module.Name == "extism")
                 {
-                    envWritten = true;
-                    builder.AppendLine(env);
+                    extismWritten = true;
+                    builder.AppendLine(extism);
                 }
                 else
                 {
@@ -81,9 +81,9 @@ namespace Extism.Pdk.MSBuild
                 files.Add(new FileEntry { Name = $"{module.Name}.c", Content = builder.ToString() });
             }
 
-            if (!envWritten)
+            if (!extismWritten)
             {
-                files.Add(new FileEntry { Name = $"env.c", Content = env });
+                files.Add(new FileEntry { Name = $"extism.c", Content = extism });
             }
 
             return files;

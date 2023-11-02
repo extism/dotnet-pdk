@@ -8,3 +8,5 @@ obj/
 *.pdb
 src/Extism.Pdk/build/Extism.Pdk.MSBuild.xml
 src/Extism.Pdk/build/publish/Extism.Pdk.MSBuild.xml
+
+.fake
