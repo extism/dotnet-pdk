@@ -9,7 +9,7 @@ public class Class1
     [UnmanagedCallersOnly(EntryPoint = "samplelib_export")]
     public static void samplelib_export()
     {
-
+        samplelib_import();
     }
 
     public static void noop()

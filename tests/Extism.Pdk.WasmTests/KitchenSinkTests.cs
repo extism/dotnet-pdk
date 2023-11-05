@@ -1,126 +1,155 @@
 using CliWrap;
 using CliWrap.Buffered;
+using Extism.Sdk.Native;
 using Shouldly;
+using Extism.Sdk;
+using System.Text;
 
 namespace Extism.Pdk.WasmTests;
 
 public class KitchenSinkTests
 {
     [Fact]
-    public async void TestLen()
+    public void TestLen()
     {
-        var path = GetWasmPath("KitchenSink");
-        var (stdout, exit, stderr) = await Call(path, "len", new ExtismOptions
-        {
-            Loop = 3,
-            Input = "Hello World!"
-        });
+        using var plugin = CreatePlugin("KitchenSink");
 
-        stderr.ShouldBe("");
-        exit.ShouldBe(0);
-        stdout.ShouldBe("12\n12\n12\n");
+        for (var i = 0; i < 3; i++)
+        {
+            var result = plugin.Call("len", Encoding.UTF8.GetBytes("Hello World!"));
+            var stdout = Encoding.UTF8.GetString(result);
+            stdout.ShouldBe("12");
+        }
     }
 
     [Fact]
-    public async void TestConcat()
+    public void TestConcat()
     {
-        var path = GetWasmPath("KitchenSink");
-        var (stdout, exit, stderr) = await Call(path, "concat", new ExtismOptions
-        {
-            Loop = 3,
-            Input = $$"""{ "Separator": ",", "Parts": ["hello", "world!"]}"""
-        });
+        using var plugin = CreatePlugin("KitchenSink");
 
-        stderr.ShouldBe("");
-        exit.ShouldBe(0);
-        stdout.ShouldBe("hello,world!\nhello,world!\nhello,world!\n");
+        var input = Encoding.UTF8.GetBytes("""{ "Separator": ",", "Parts": ["hello", "world!"]}""");
+
+        for (var i = 0; i < 3; i++)
+        {
+            var result = plugin.Call("concat", input);
+            var stdout = Encoding.UTF8.GetString(result);
+            stdout.ShouldBe("hello,world!");
+        }
     }
 
     [Fact]
-    public async void TestCount()
+    public void TestCount()
     {
-        var path = GetWasmPath("KitchenSink");
-        var (stdout, exit, stderr) = await Call(path, "counter", new ExtismOptions
-        {
-            Loop = 3,
-            Input = ""
-        });
+        using var plugin = CreatePlugin("KitchenSink");
 
-        stderr.ShouldBe("");
-        exit.ShouldBe(0);
-        stdout.ShouldBe("1\n2\n3\n");
+        for (var i = 1; i <= 3; i++)
+        {
+            var result = plugin.Call("counter", []);
+            var stdout = Encoding.UTF8.GetString(result);
+            stdout.ShouldBe(i.ToString());
+        }
     }
 
     [Theory]
     [InlineData("", "Greetings, Anonymous!")]
     [InlineData("John", "Greetings, John!")]
-    public async void TestConfig(string name, string expected)
+    public void TestConfig(string name, string expected)
     {
-        var path = GetWasmPath("KitchenSink");
-        var (stdout, exit, stderr) = await Call(path, "greeter", new ExtismOptions
+        using var plugin = CreatePlugin("KitchenSink", manifest =>
         {
-            Loop = 3,
-            Input = "",
-            Config = new Dictionary<string, string>
-            {
-                { "name", name }
-            }
+            manifest.Config["name"] = name;
         });
 
-        stderr.ShouldBe("");
-        exit.ShouldBe(0);
-        stdout.ShouldBe($"{expected}\n{expected}\n{expected}\n");
+        for (var i = 0; i < 3; i++)
+        {
+            var result = plugin.Call("greeter", []);
+            var stdout = Encoding.UTF8.GetString(result);
+            stdout.ShouldBe(expected);
+        }
     }
 
     [Theory]
-    [InlineData("123", "jsonplaceholder.*.com", true)]
+    [InlineData("123", "jsonplaceholder.typicode.com", true)]
     [InlineData("123", "", false)]
     [InlineData("", "jsonplaceholder.typicode.com", false)]
-    public async void TestHttp(string token, string allowedHost, bool expected)
+    public void TestHttp(string token, string allowedHost, bool expected)
     {
-        var path = GetWasmPath("KitchenSink");
-        var (stdout, exit, stderr) = await Call(path, "get_todo", new ExtismOptions
+        using var plugin = CreatePlugin("KitchenSink", manifest =>
         {
-            Loop = 3,
-            Input = "1",
-            Config = new Dictionary<string, string>
-            {
-                { "api-token", token }
-            },
-            AllowedHosts = [allowedHost]
+            manifest.Config["api-token"] = token;
+
+            manifest.AllowedHosts.Add(allowedHost);
         });
+
+        var input = Encoding.UTF8.GetBytes("1");
 
         if (expected)
         {
-            exit.ShouldBe(0);
+            var result = plugin.Call("get_todo", input);
+            var stdout = Encoding.UTF8.GetString(result);
+            stdout.ShouldNotContain("error");
         }
         else
         {
-            exit.ShouldNotBe(0);
+            Should.Throw<ExtismException>(() => plugin.Call("get_todo", input));
         }
     }
 
     [Fact]
-    public async void TestThrow()
+    public void TestThrow()
     {
-        var path = GetWasmPath("KitchenSink");
-        var (_, exit, stderr) = await Call(path, "throw", new ExtismOptions
-        {
-            Loop = 3,
-            Input = "Hello World!"
-        });
+        using var plugin = CreatePlugin("KitchenSink");
 
-        stderr.ShouldContain("Something bad happened.");
-        exit.ShouldBe(1);
+        var input = Encoding.UTF8.GetBytes("Hello World!");
+
+        for (var i = 0; i < 3; i++)
+        {
+            Should.Throw<ExtismException>(() => plugin.Call("throw", []));
+        }
     }
 
-    // TODO: test function imports
+    [Fact]
+    public void TestReferencedExport()
+    {
+        using var plugin = CreatePlugin("KitchenSink");
+
+        for (var i = 0; i < 3; i++)
+        {
+            var result = plugin.Call("samplelib_export", []);
+        }
+    }
 
     private string GetWasmPath(string name)
     {
         return Path.Combine(
             Environment.CurrentDirectory,
             $"../../../../../samples/{name}/bin/Debug/net8.0/wasi-wasm/AppBundle/{name}.wasm");
+    }
+
+    private Plugin CreatePlugin(
+        string name,
+        Action<Manifest>? config = null,
+        HostFunction[]? hostFunctions = null)
+    {
+        var source = new PathWasmSource(GetWasmPath(name));
+        var manifest = new Manifest(source);
+
+        if (config is not null)
+        {
+            config(manifest);
+        }
+
+        HostFunction[] functions = [
+            HostFunction.FromMethod("samplelib_import", 0, (cp) => { }),
+            .. (hostFunctions ?? [])
+        ];
+
+        foreach (var function in functions)
+        {
+            function.SetNamespace("env");
+        }
+
+        return new Plugin(manifest, functions, withWasi: true);
     }
 
     private async Task<(string, int, string)> Call(string wasmPath, string functionName, ExtismOptions options)

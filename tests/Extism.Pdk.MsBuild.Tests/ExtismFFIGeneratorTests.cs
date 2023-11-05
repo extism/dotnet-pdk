@@ -134,7 +134,7 @@ namespace Extism.Pdk.MsBuild.Tests
             var expected = File.ReadAllText("snapshots/reference-exports.txt");
             file.Content.Trim().ShouldBe(expected, StringCompareShould.IgnoreLineEndings);
 
-            AssertContent(env, files, "env.c");
+            AssertContent(env, files, "extism.c");
         }
 
         [Fact]
@@ -163,7 +163,7 @@ namespace Extism.Pdk.MsBuild.Tests
             var expected = File.ReadAllText("snapshots/import-references.txt");
             hostFile.Content.Trim().ShouldBe(expected, StringCompareShould.IgnoreLineEndings);
 
-            AssertContent(env, files, "env.c");
+            AssertContent(env, files, "extism.c");
             files.ShouldNotContain(f => f.Name == "export.c");
         }
     }
