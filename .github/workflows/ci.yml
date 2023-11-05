@@ -34,7 +34,8 @@ jobs:
       - name: Install Extism CLI
         run: |
           go install github.com/extism/cli/extism@latest
-          extism lib install --libdir tests\Extism.Pdk.WasmTests\bin\Debug\net8.0\ --version git
+          extism lib install --version git
+          cp /usr/local/lib/** tests/Extism.Pdk.WasmTests/bin/Debug/net8.0
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.0.3
