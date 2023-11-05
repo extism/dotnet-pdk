@@ -460,6 +460,43 @@ go run .
 # => An argument to send to Go!
 ```
 
+### Referenced Assemblies
+
+Methods in referenced assemblies that are decorated with `[DllImport]` and `[UnmanagedCallersOnly]` are imported and exported respectively.
+
+**Note:** The library imports/exports are ignored if the app doesn't call at least one method from the library.
+
+For example, if we have a library that contains this class:
+```csharp
+namespace `MessagingBot.Pdk`;
+public class Events
+{
+    // This function will be imported  by all WASI apps that reference this library
+    [DllImport("env", EntryPoint = "send_message")]
+    public static extern void SendMessage(ulong offset);
+
+    // You can wrap the imports in your own functions to make them easier to use
+    public static void SendMessage(string message)
+    {
+        using var block = Pdk.Allocate(message);
+        SendMessage(block.Offset);
+    }
+
+    // This function will be exported by all WASI apps that reference this library
+    [UnmanagedCallersOnly]
+    public static extern void message_received(long offset);
+}
+```
+
+Then, we can reference the library in a WASI app and use the functions:
+
+```csharp
+using MessagingBot.Pdk;
+
+Events.SendMessage("Hello World!");
+```
+
+This is useful when you want to provide a common set of imports and exports that are specific to your use case.
 ### Optimize Size
 
 Normally, the .NET runtime is very conservative when trimming and includes a lot of metadata for debugging and exception purposes. This makes sure code doesn't break (when using reflection for example) but it also means large binary sizes. A hello world sample is about 20mb. To instruct the .NET compiler to be aggresive about trimming, you can try out these options:
