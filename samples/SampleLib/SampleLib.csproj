@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Extism.Pdk" Version="1.0.0-rc3" />
+    <ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
   </ItemGroup>
 
 </Project>
