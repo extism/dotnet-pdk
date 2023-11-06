@@ -100,11 +100,11 @@ public class KitchenSinkTests
     {
         using var plugin = CreatePlugin("KitchenSink");
 
-        var input = Encoding.UTF8.GetBytes("Hello World!");
-
         for (var i = 0; i < 3; i++)
         {
             Should.Throw<ExtismException>(() => plugin.Call("throw", []));
+            // Waiting for https://github.com/extism/extism/issues/567
+            //    .Message.ShouldContain("Something bad happened.");
         }
     }
 

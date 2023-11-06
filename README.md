@@ -497,6 +497,7 @@ Events.SendMessage("Hello World!");
 ```
 
 This is useful when you want to provide a common set of imports and exports that are specific to your use case.
+
 ### Optimize Size
 
 Normally, the .NET runtime is very conservative when trimming and includes a lot of metadata for debugging and exception purposes. This makes sure code doesn't break (when using reflection for example) but it also means large binary sizes. A hello world sample is about 20mb. To instruct the .NET compiler to be aggresive about trimming, you can try out these options:
@@ -511,7 +512,8 @@ Normally, the .NET runtime is very conservative when trimming and includes a lot
     <WasmSingleFileBundle>true</WasmSingleFileBundle>
     
     <InvariantGlobalization>true</InvariantGlobalization>
-    <TrimMode>full</TrimMode>
+    <!-- TrimMode full breaks Extism's global exception handling hook -->
+    <TrimMode>partial</TrimMode>
     <DebuggerSupport>false</DebuggerSupport>
     <EventSourceSupport>false</EventSourceSupport>
     <StackTraceSupport>false</StackTraceSupport>
@@ -519,6 +521,13 @@ Normally, the .NET runtime is very conservative when trimming and includes a lot
     <NativeDebugSymbols>false</NativeDebugSymbols>
   </PropertyGroup>
 </Project>
+```
+
+If you have imports in referenced assemblies, make sure [you mark them as roots](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#root-assemblies):
+```xml
+<ItemGroup>
+    <TrimmerRootAssembly Include="SampleLib" />
+</ItemGroup>
 ```
 
 And then, run:
