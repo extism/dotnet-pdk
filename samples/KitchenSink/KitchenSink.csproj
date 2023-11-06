@@ -11,12 +11,10 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<TrimmerSingleWarn>false</TrimmerSingleWarn>
 
-		<!-- TrimMode Full breaks Extism's global exception handling hook -->
+		<!-- Note: TrimMode Full breaks Extism's global exception handling hook -->
 		<TrimMode>partial</TrimMode>
-		<InvariantGlobalization>true</InvariantGlobalization>
 		<DebuggerSupport>false</DebuggerSupport>
 		<EventSourceSupport>false</EventSourceSupport>
-		<StackTraceSupport>true</StackTraceSupport>
 		<UseSystemResourceKeys>true</UseSystemResourceKeys>
 		<NativeDebugSymbols>false</NativeDebugSymbols>
 	</PropertyGroup>

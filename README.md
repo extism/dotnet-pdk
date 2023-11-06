@@ -511,12 +511,10 @@ Normally, the .NET runtime is very conservative when trimming and includes a lot
     <WasmBuildNative>true</WasmBuildNative>
     <WasmSingleFileBundle>true</WasmSingleFileBundle>
     
-    <InvariantGlobalization>true</InvariantGlobalization>
-    <!-- TrimMode full breaks Extism's global exception handling hook -->
+    <!-- Note: TrimMode Full breaks Extism's global exception handling hook -->
     <TrimMode>partial</TrimMode>
     <DebuggerSupport>false</DebuggerSupport>
     <EventSourceSupport>false</EventSourceSupport>
-    <StackTraceSupport>false</StackTraceSupport>
     <UseSystemResourceKeys>true</UseSystemResourceKeys>
     <NativeDebugSymbols>false</NativeDebugSymbols>
   </PropertyGroup>
