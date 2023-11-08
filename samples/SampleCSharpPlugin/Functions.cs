@@ -5,7 +5,7 @@ namespace SampleCSharpPlugin
 {
     public static class Functions
     {
-        [DllImport("host", EntryPoint = "is_vowel")]
+        [DllImport("extism", EntryPoint = "is_vowel")]
         public static extern int IsVowel(int c);
 
         [UnmanagedCallersOnly(EntryPoint = "count_vowels")]
