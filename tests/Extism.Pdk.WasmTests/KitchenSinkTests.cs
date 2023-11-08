@@ -102,9 +102,8 @@ public class KitchenSinkTests
 
         for (var i = 0; i < 3; i++)
         {
-            Should.Throw<ExtismException>(() => plugin.Call("throw", []));
-            // Waiting for https://github.com/extism/extism/issues/567
-            //    .Message.ShouldContain("Something bad happened.");
+            Should.Throw<ExtismException>(() => plugin.Call("throw", []))
+                .Message.ShouldContain("Something bad happened.");
         }
     }
 
