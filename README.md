@@ -521,7 +521,7 @@ Normally, the .NET runtime is very conservative when trimming and includes a lot
 </Project>
 ```
 
-If you have imports in referenced assemblies, make sure [you mark them as roots](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#root-assemblies):
+If you have imports in referenced assemblies, make sure [you mark them as roots](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#root-assemblies) so that they don't get trimmed:
 ```xml
 <ItemGroup>
     <TrimmerRootAssembly Include="SampleLib" />
