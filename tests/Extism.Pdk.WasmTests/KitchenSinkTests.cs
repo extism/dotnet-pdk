@@ -122,7 +122,7 @@ public class KitchenSinkTests
     {
         return Path.Combine(
             Environment.CurrentDirectory,
-            $"../../../../../samples/{name}/bin/Debug/net8.0/wasi-wasm/AppBundle/{name}.wasm");
+            $"../../../../../samples/{name}/bin/Release/net8.0/wasi-wasm/AppBundle/{name}.wasm");
     }
 
     private Plugin CreatePlugin(

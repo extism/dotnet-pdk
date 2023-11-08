@@ -75,7 +75,6 @@ module MyPlugin
 
 open System
 open System.Runtime.InteropServices
-open System.Text.Json
 open Extism
 
 [<UnmanagedCallersOnly(EntryPoint = "greet")>]
@@ -179,39 +178,38 @@ Extism export functions simply take bytes in and bytes out. Those can be whateve
 
 C#:
 ```csharp
+[JsonSerializable(typeof(Add))]
+[JsonSerializable(typeof(Sum))]
+public partial class SourceGenerationContext : JsonSerializerContext {}
+
 public record Add(int A, int B);
 public record Sum(int Result);
 
-[UnmanagedCallersOnly]
-public static int add()
+public static class Functions
 {
-    var inputJson = Pdk.GetInputString();
-    var options = new JsonSerializerOptions
+    [UnmanagedCallersOnly]
+    public static int add()
     {
-        PropertyNameCaseInsensitive = true
-    };
-
-    var parameters = JsonSerializer.Deserialize<Add>(inputJson, options);
-    var sum = new Sum(parameters.A + parameters.B);
-    var outputJson = JsonSerializer.Serialize(sum, options);
-    Pdk.SetOutput(outputJson);
-    return 0;
+        var inputJson = Pdk.GetInputString();
+        var parameters = JsonSerializer.Deserialize(inputJson, SourceGenerationContext.Defaul
+        var sum = new Sum(parameters.A + parameters.B);
+        var outputJson = JsonSerializer.Serialize(sum, SourceGenerationContext.Default.Sum);
+        Pdk.SetOutput(outputJson);
+        return 0;
+    }
 }
 ```
 
 F#:
 ```fsharp
-type Add = { A: int; B: int }
-type Sum = { Result: int }
-
 [<UnmanagedCallersOnly>]
 let add () =
     let inputJson = Pdk.GetInputString()
-    let options = JsonSerializerOptions(PropertyNameCaseInsensitive = true)
-    let parameters = JsonSerializer.Deserialize<Add>(inputJson, options)
-    
-    let sum = { Result = parameters.A + parameters.B }
-    let outputJson = JsonSerializer.Serialize(sum, options)
+    let jsonData = JsonDocument.Parse(inputJson).RootElement
+    let a = jsonData.GetProperty("a").GetInt32()
+    let b = jsonData.GetProperty("b").GetInt32()
+    let result = a + b
+    let outputJson = $"{{ \"result\": {result} }}"
     
     Pdk.SetOutput(outputJson)
     0
@@ -221,6 +219,8 @@ let add () =
 extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\readmeapp.wasm --wasi add --input='{"a": 20, "b": 21}'
 # => {"Result":41}
 ```
+
+**Note:** When enabling trimming, make sure you use the [source generation](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation) as reflection is disabled in that mode.
 
 ## Configs
 

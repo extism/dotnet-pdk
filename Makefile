@@ -7,8 +7,10 @@ NUGET_API_KEY ?= $(shell env | grep NUGET_API_KEY)
 prepare:
 	dotnet build
 
-test: prepare
-	dotnet test
+test:
+	dotnet publish -c Release ./samples/KitchenSink
+	dotnet test ./tests/Extism.Pdk.MsBuild.Tests
+	dotnet test ./tests/Extism.Pdk.WasmTests
 
 clean:
 	dotnet clean
