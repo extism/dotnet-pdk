@@ -30,7 +30,7 @@ jobs:
           go install github.com/extism/cli/extism@latest
           extism lib install --prefix ~/extism --version git
           mkdir -p ./tests/Extism.Pdk.WasmTests/bin/Debug/net8.0
-          cp ~/extism/lib/** ./tests/Extism.Pdk.WasmTests/bin/Debug/net8.0
+          cp ~/extism/lib/libextism.so ./tests/Extism.Pdk.WasmTests/bin/Debug/net8.0
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.0.3
