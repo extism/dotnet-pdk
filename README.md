@@ -182,7 +182,7 @@ C#:
 [JsonSerializable(typeof(Sum))]
 public partial class SourceGenerationContext : JsonSerializerContext {}
 
-public record Add(int A, int B);
+public record Add(int a, int b);
 public record Sum(int Result);
 
 public static class Functions
@@ -192,7 +192,7 @@ public static class Functions
     {
         var inputJson = Pdk.GetInputString();
         var parameters = JsonSerializer.Deserialize(inputJson, SourceGenerationContext.Defaul
-        var sum = new Sum(parameters.A + parameters.B);
+        var sum = new Sum(parameters.a + parameters.b);
         var outputJson = JsonSerializer.Serialize(sum, SourceGenerationContext.Default.Sum);
         Pdk.SetOutput(outputJson);
         return 0;
@@ -209,7 +209,7 @@ let add () =
     let a = jsonData.GetProperty("a").GetInt32()
     let b = jsonData.GetProperty("b").GetInt32()
     let result = a + b
-    let outputJson = $"{{ \"result\": {result} }}"
+    let outputJson = $"{{ \"Result\": {result} }}"
     
     Pdk.SetOutput(outputJson)
     0
