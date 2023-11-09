@@ -114,8 +114,6 @@ public class KitchenSinkTests
         exit.ShouldBe(1);
     }
 
-    // TODO: test function imports
-
     private string GetWasmPath(string name)
     {
         return Path.Combine(
