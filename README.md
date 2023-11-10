@@ -299,6 +299,7 @@ let count () =
     Pdk.SetOutput(count.ToString())
     
     0
+```
 
 From [Extism CLI](https://github.com/extism/cli):
 ```
