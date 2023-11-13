@@ -368,7 +368,7 @@ Host functions have a similar interface as exports. You just need to declare the
 
 C#:
 ```csharp
-[DllImport("env", EntryPoint = "a_go_func")]
+[DllImport("extism", EntryPoint = "a_go_func")]
 public static extern ulong GoFunc(ulong offset);
 [UnmanagedCallersOnly]
 public static int hello_from_go()
@@ -384,7 +384,7 @@ public static int hello_from_go()
 
 F#:
 ```fsharp
-[<DllImport("env", EntryPoint = "a_go_func")>]
+[<DllImport("extism", EntryPoint = "a_go_func")>]
 extern uint64 GoFunc(uint64 offset)
 
 [<UnmanagedCallersOnly>]
@@ -412,7 +412,7 @@ config := extism.PluginConfig{
 
 go_func := extism.NewHostFunctionWithStack(
     "a_go_func",
-    "env",
+    "extism:host/user",
     func(ctx context.Context, p *extism.CurrentPlugin, stack []uint64) {
         input, err := p.ReadString(stack[0])
         if err != nil {

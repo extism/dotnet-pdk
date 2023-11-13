@@ -201,7 +201,15 @@ __attribute__((export_name("{{exportName}}"))) int {{exportName}}()
         private string ToImportStatement(MethodDefinition method)
         {
             var moduleName = method.PInvokeInfo.Module.Name;
-            var functionName = string.IsNullOrEmpty(method.PInvokeInfo.EntryPoint) ? method.Name : method.PInvokeInfo.EntryPoint;
+            if (moduleName == "extism")
+            {
+                // Redirect imported host functions to extism:host/user
+                // The PDK functions don't use this generator, so we can safely assume
+                // every `extism` import is a user host function
+                moduleName = "extism:host/user";
+            }
+
+            var functionName = method.PInvokeInfo.EntryPoint ?? method.Name;
 
             if (!_types.ContainsKey(method.ReturnType.Name))
             {

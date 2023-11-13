@@ -40,7 +40,7 @@ namespace Extism.Pdk.MsBuild.Tests
             extismFile.Content.Trim().ShouldBe(
                 """
                 // extism stuff
-                IMPORT("extism", "do_something") extern void do_something_import(int32_t p1, uint8_t p2, int64_t p3);
+                IMPORT("extism:host/user", "do_something") extern void do_something_import(int32_t p1, uint8_t p2, int64_t p3);
 
                 void do_something(int32_t p1, uint8_t p2, int64_t p3) {
                     do_something_import(p1, p2, p3);
