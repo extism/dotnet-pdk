@@ -209,7 +209,7 @@ __attribute__((export_name("{{exportName}}"))) int {{exportName}}()
                 moduleName = "extism:host/user";
             }
 
-            var functionName = method.PInvokeInfo.EntryPoint ?? method.Name;
+            var functionName = string.IsNullOrEmpty(method.PInvokeInfo.EntryPoint) ? method.Name : method.PInvokeInfo.EntryPoint;
 
             if (!_types.ContainsKey(method.ReturnType.Name))
             {
