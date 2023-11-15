@@ -1,0 +1,47 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "src",
+          "files": [
+            "Extism.Pdk/*.csproj"
+          ]
+        }
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "**/*.{md,yml}"
+        ],
+        "exclude": [
+          "_site/**"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ]
+      }
+    ],
+    "output": "_site",
+    "template": [
+      "default",
+      "modern"
+    ],
+    "globalMetadata": {
+      "_appName": "Extism .NET PDK",
+      "_appTitle": "Extism .NET PDK",
+      "_enableSearch": true,
+      "_appFaviconPath": "images/favicon.ico",
+      "_appLogoPath": "images/logo.png",
+      "pdf": true
+    }
+  }
+}

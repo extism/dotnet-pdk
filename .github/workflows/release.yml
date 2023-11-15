@@ -43,8 +43,19 @@ jobs:
           export WASI_SDK_PATH=~/wasi-sdk/wasi-sdk-20.0
           make test
 
+      - name: Generate Docs
+        run: |
+          dotnet tool update -g docfx
+          docfx ./docfx.json
+
       - name: Publish .NET Sdk
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           make publish
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_site
