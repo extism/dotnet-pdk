@@ -38,7 +38,7 @@ public class GenerateFFITask : Microsoft.Build.Utilities.Task
 
             var generator = new FFIGenerator(File.ReadAllText(ExtismPath), (string message) => Log.LogError(message));
 
-            foreach (var file in generator.GenerateGlueCode(assembly))
+            foreach (var file in generator.GenerateGlueCode(assembly, Path.GetDirectoryName(AssemblyPath)))
             {
                 File.WriteAllText(Path.Combine(OutputPath, file.Name), file.Content);
             }

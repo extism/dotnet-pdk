@@ -2,7 +2,10 @@
 using System;
 using Extism;
 using System.Text.Json;
+using SampleLib;
+using System.Text.Json.Serialization;
 
+Class1.noop(); // Import Class1 from SampleLib so that it's included during compilation
 Console.WriteLine("Hello world!");
 
 namespace Functions
@@ -22,7 +25,7 @@ namespace Functions
         public static int Concat()
         {
             var json = Pdk.GetInput();
-            var payload = JsonSerializer.Deserialize<ConcatInput>(json);
+            var payload = JsonSerializer.Deserialize(json, SourceGenerationContext.Default.ConcatInput);
 
             if (payload is null)
             {
@@ -86,6 +89,9 @@ namespace Functions
             throw new InvalidOperationException("Something bad happened.");
         }
     }
+
+    [JsonSerializable(typeof(ConcatInput))]
+    public partial class SourceGenerationContext : JsonSerializerContext {}
 
     public class ConcatInput
     {

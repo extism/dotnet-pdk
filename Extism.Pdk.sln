@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KitchenSink", "samples\Kitc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extism.Pdk.WasmTests", "tests\Extism.Pdk.WasmTests\Extism.Pdk.WasmTests.csproj", "{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLib", "samples\SampleLib\SampleLib.csproj", "{FD3EBC89-BE62-402F-A5E4-D7298134658E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD3EBC89-BE62-402F-A5E4-D7298134658E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD3EBC89-BE62-402F-A5E4-D7298134658E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD3EBC89-BE62-402F-A5E4-D7298134658E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD3EBC89-BE62-402F-A5E4-D7298134658E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +78,7 @@ Global
 		{21861C9B-3C91-46BA-A4D1-5A919FF0113F} = {604F9655-E3D7-4E42-9D5D-91FBCACCD565}
 		{F045BCA5-71DC-483F-8D9F-D1416F6AB588} = {E54FB503-86BE-459F-A7B4-DF2AA9094CEE}
 		{F603C66E-1821-4E5F-94EF-09D5BB9A04A3} = {604F9655-E3D7-4E42-9D5D-91FBCACCD565}
+		{FD3EBC89-BE62-402F-A5E4-D7298134658E} = {E54FB503-86BE-459F-A7B4-DF2AA9094CEE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F37E205A-FB9F-4C44-B098-ACBF87CF9FF5}

@@ -10,10 +10,19 @@
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<TrimmerSingleWarn>false</TrimmerSingleWarn>
+
+		<!-- Note: TrimMode Full breaks Extism's global exception handling hook -->
+		<TrimMode>partial</TrimMode>
+		<DebuggerSupport>false</DebuggerSupport>
+		<EventSourceSupport>false</EventSourceSupport>
+		<UseSystemResourceKeys>true</UseSystemResourceKeys>
+		<NativeDebugSymbols>false</NativeDebugSymbols>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
+		<ProjectReference Include="..\SampleLib\SampleLib.csproj" />
+		<TrimmerRootAssembly Include="SampleLib" />
 	</ItemGroup>
 
 	<!--This is only necessary for ProjectReference, when using the nuget package this will not be necessary-->

@@ -75,7 +75,6 @@ module MyPlugin
 
 open System
 open System.Runtime.InteropServices
-open System.Text.Json
 open Extism
 
 [<UnmanagedCallersOnly(EntryPoint = "greet")>]
@@ -179,39 +178,38 @@ Extism export functions simply take bytes in and bytes out. Those can be whateve
 
 C#:
 ```csharp
-public record Add(int A, int B);
+[JsonSerializable(typeof(Add))]
+[JsonSerializable(typeof(Sum))]
+public partial class SourceGenerationContext : JsonSerializerContext {}
+
+public record Add(int a, int b);
 public record Sum(int Result);
 
-[UnmanagedCallersOnly]
-public static int add()
+public static class Functions
 {
-    var inputJson = Pdk.GetInputString();
-    var options = new JsonSerializerOptions
+    [UnmanagedCallersOnly]
+    public static int add()
     {
-        PropertyNameCaseInsensitive = true
-    };
-
-    var parameters = JsonSerializer.Deserialize<Add>(inputJson, options);
-    var sum = new Sum(parameters.A + parameters.B);
-    var outputJson = JsonSerializer.Serialize(sum, options);
-    Pdk.SetOutput(outputJson);
-    return 0;
+        var inputJson = Pdk.GetInputString();
+        var parameters = JsonSerializer.Deserialize(inputJson, SourceGenerationContext.Defaul
+        var sum = new Sum(parameters.a + parameters.b);
+        var outputJson = JsonSerializer.Serialize(sum, SourceGenerationContext.Default.Sum);
+        Pdk.SetOutput(outputJson);
+        return 0;
+    }
 }
 ```
 
 F#:
 ```fsharp
-type Add = { A: int; B: int }
-type Sum = { Result: int }
-
 [<UnmanagedCallersOnly>]
 let add () =
     let inputJson = Pdk.GetInputString()
-    let options = JsonSerializerOptions(PropertyNameCaseInsensitive = true)
-    let parameters = JsonSerializer.Deserialize<Add>(inputJson, options)
-    
-    let sum = { Result = parameters.A + parameters.B }
-    let outputJson = JsonSerializer.Serialize(sum, options)
+    let jsonData = JsonDocument.Parse(inputJson).RootElement
+    let a = jsonData.GetProperty("a").GetInt32()
+    let b = jsonData.GetProperty("b").GetInt32()
+    let result = a + b
+    let outputJson = $"{{ \"Result\": {result} }}"
     
     Pdk.SetOutput(outputJson)
     0
@@ -221,6 +219,8 @@ let add () =
 extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\readmeapp.wasm --wasi add --input='{"a": 20, "b": 21}'
 # => {"Result":41}
 ```
+
+**Note:** When enabling trimming, make sure you use the [source generation](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation) as reflection is disabled in that mode.
 
 ## Configs
 
@@ -299,6 +299,7 @@ let count () =
     Pdk.SetOutput(count.ToString())
     
     0
+```
 
 From [Extism CLI](https://github.com/extism/cli):
 ```
@@ -459,10 +460,83 @@ go run .
 # => Hello from Go!
 # => An argument to send to Go!
 ```
-### Optimize Size
-Normally, the .NET runtime is very conservative when trimming. This makes sure code doesn't break (when using reflection for example) but it also means large binary sizes. A hello world sample is about 20mb. To instruct the .NET compiler to be aggresive about trimming, you can try out these options:
-```xml
+
+### Referenced Assemblies
+
+Methods in referenced assemblies that are decorated with `[DllImport]` and `[UnmanagedCallersOnly]` are imported and exported respectively.
+
+**Note:** The library imports/exports are ignored if the app doesn't call at least one method from the library.
+
+For example, if we have a library that contains this class:
+```csharp
+namespace `MessagingBot.Pdk`;
+public class Events
+{
+    // This function will be imported  by all WASI apps that reference this library
+    [DllImport("env", EntryPoint = "send_message")]
+    public static extern void SendMessage(ulong offset);
+
+    // You can wrap the imports in your own functions to make them easier to use
+    public static void SendMessage(string message)
+    {
+        using var block = Pdk.Allocate(message);
+        SendMessage(block.Offset);
+    }
+
+    // This function will be exported by all WASI apps that reference this library
+    [UnmanagedCallersOnly]
+    public static extern void message_received(long offset);
+}
 ```
+
+Then, we can reference the library in a WASI app and use the functions:
+
+```csharp
+using MessagingBot.Pdk;
+
+Events.SendMessage("Hello World!");
+```
+
+This is useful when you want to provide a common set of imports and exports that are specific to your use case.
+
+### Optimize Size
+
+Normally, the .NET runtime is very conservative when trimming and includes a lot of metadata for debugging and exception purposes. This makes sure code doesn't break (when using reflection for example) but it also means large binary sizes. A hello world sample is about 20mb. To instruct the .NET compiler to be aggresive about trimming, you can try out these options:
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RuntimeIdentifier>wasi-wasm</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <PublishTrimmed>true</PublishTrimmed>
+    <WasmBuildNative>true</WasmBuildNative>
+    <WasmSingleFileBundle>true</WasmSingleFileBundle>
+    
+    <!-- Note: TrimMode Full breaks Extism's global exception handling hook -->
+    <TrimMode>partial</TrimMode>
+    <DebuggerSupport>false</DebuggerSupport>
+    <EventSourceSupport>false</EventSourceSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <NativeDebugSymbols>false</NativeDebugSymbols>
+  </PropertyGroup>
+</Project>
+```
+
+If you have imports in referenced assemblies, make sure [you mark them as roots](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#root-assemblies) so that they don't get trimmed:
+```xml
+<ItemGroup>
+    <TrimmerRootAssembly Include="SampleLib" />
+</ItemGroup>
+```
+
+And then, run:
+```
+dotnet publish -c Release
+```
+
+Now, you'll have a significantly smaller `.wasm` file in `bin\Release\net8.0\wasi-wasm\AppBundle`.
+
+For more details, refer to [the official documentation](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#trimming-framework-library-features).
 
 ### Reach Out!
 

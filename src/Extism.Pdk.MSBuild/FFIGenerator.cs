@@ -15,21 +15,30 @@ namespace Extism.Pdk.MSBuild
             _extism = extism;
         }
 
-        public IEnumerable<FileEntry> GenerateGlueCode(AssemblyDefinition assembly)
+        public IEnumerable<FileEntry> GenerateGlueCode(AssemblyDefinition assembly, string directory)
         {
-            var exportedMethods = assembly.MainModule.Types
-                .SelectMany(t => t.Methods)
-                .Where(m => m.IsStatic && m.CustomAttributes.Any(a => a.AttributeType.FullName == "System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute"))
+            var assemblies = assembly.MainModule.AssemblyReferences
+                .Where(r => !r.Name.StartsWith("System") && !r.Name.StartsWith("Microsoft") && r.Name != "Extism.Pdk")
+                .Select(r => AssemblyDefinition.ReadAssembly(Path.Combine(directory, r.Name + ".dll")))
+                .ToList();
+
+            assemblies.Add(assembly);
+
+            var types = assemblies.SelectMany(a => a.MainModule.Types).ToArray();
+
+            var exportedMethods = types
+                    .SelectMany(t => t.Methods)
+                    .Where(m => m.IsStatic && m.CustomAttributes.Any(a => a.AttributeType.FullName == "System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute"))
                 .ToArray();
 
             // TODO: also find F# module functions
-            var importedMethods = assembly.MainModule.Types
+            var importedMethods = types
                 .SelectMany(t => t.Methods)
                 .Where(m => m.HasPInvokeInfo)
                 .ToArray();
 
             var files = GenerateImports(importedMethods, _extism);
-            files.Add(GenerateExports(assembly.Name.Name + ".dll", exportedMethods));
+            files.Add(GenerateExports(exportedMethods));
 
             return files;
         }
@@ -80,7 +89,7 @@ namespace Extism.Pdk.MSBuild
             return files;
         }
 
-        private FileEntry GenerateExports(string assemblyFileName, MethodDefinition[] exportedMethods)
+        private FileEntry GenerateExports(MethodDefinition[] exportedMethods)
         {
             var sb = new StringBuilder();
 
@@ -140,6 +149,7 @@ namespace Extism.Pdk.MSBuild
 
                 foreach (var method in exportedMethods)
                 {
+                    var assemblyFileName = method.Module.Assembly.Name.Name + ".dll";
                     var attribute = method.CustomAttributes.First(a => a.AttributeType.Name == "UnmanagedCallersOnlyAttribute");
 
                     var exportName = attribute.Fields.FirstOrDefault(p => p.Name == "EntryPoint").Argument.Value?.ToString() ?? method.Name;
@@ -199,7 +209,7 @@ __attribute__((export_name("{{exportName}}"))) int {{exportName}}()
                 moduleName = "extism:host/user";
             }
 
-            var functionName = method.PInvokeInfo.EntryPoint ?? method.Name;
+            var functionName = string.IsNullOrEmpty(method.PInvokeInfo.EntryPoint) ? method.Name : method.PInvokeInfo.EntryPoint;
 
             if (!_types.ContainsKey(method.ReturnType.Name))
             {
