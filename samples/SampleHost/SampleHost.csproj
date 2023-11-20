@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,7 +9,7 @@
 
   <ItemGroup>
 	  <PackageReference Include="Extism.runtime.win-x64" Version="0.7.0" />
-	  <PackageReference Include="Extism.Sdk" Version="0.7.0" />
+	  <PackageReference Include="Extism.Sdk" Version="1.0.0-rc4" />
   </ItemGroup>
 
 </Project>
