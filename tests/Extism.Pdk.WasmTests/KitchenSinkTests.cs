@@ -44,8 +44,7 @@ public class KitchenSinkTests
 
         for (var i = 1; i <= 3; i++)
         {
-            var result = plugin.Call("counter", []);
-            var stdout = Encoding.UTF8.GetString(result);
+            var stdout = plugin.Call("counter", "");
             stdout.ShouldBe(i.ToString());
         }
     }
@@ -62,8 +61,7 @@ public class KitchenSinkTests
 
         for (var i = 0; i < 3; i++)
         {
-            var result = plugin.Call("greeter", []);
-            var stdout = Encoding.UTF8.GetString(result);
+            var stdout = plugin.Call("greeter", "");
             stdout.ShouldBe(expected);
         }
     }
@@ -102,7 +100,7 @@ public class KitchenSinkTests
 
         for (var i = 0; i < 3; i++)
         {
-            Should.Throw<ExtismException>(() => plugin.Call("throw", []))
+            Should.Throw<ExtismException>(() => plugin.Call("throw", ""))
                 .Message.ShouldContain("Something bad happened.");
         }
     }
@@ -114,7 +112,7 @@ public class KitchenSinkTests
 
         for (var i = 0; i < 3; i++)
         {
-            var result = plugin.Call("samplelib_export", []);
+            var result = plugin.Call("samplelib_export", "");
         }
     }
 
