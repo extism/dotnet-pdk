@@ -95,7 +95,7 @@ namespace Functions
 
     public class ConcatInput
     {
-        public string[] Parts { get; set; }
+        public string[] Parts { get; set; } = default!;
         public string? Separator { get; set; }
     }
 }
