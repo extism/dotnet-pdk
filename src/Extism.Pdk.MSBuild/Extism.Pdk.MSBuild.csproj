@@ -8,7 +8,8 @@
 		<OutputType>Library</OutputType>
 		<OutputPath>../Extism.Pdk/build/</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+		
 		<!-- Copy Mono.Cecil DLL to output folder -->
 		<!-- https://stackoverflow.com/a/76432422/7003797 -->
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -16,8 +17,7 @@
 
 	<ItemGroup>
 
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.3"
-			ExcludeAssets="Runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.3" ExcludeAssets="Runtime" />
 
 		<PackageReference Include="Mono.Cecil" Version="0.11.5">
 			<PrivateAssets>All</PrivateAssets>

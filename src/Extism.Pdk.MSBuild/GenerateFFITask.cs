@@ -6,17 +6,33 @@ using Mono.Cecil;
 
 namespace Extism.Pdk.MsBuild;
 
+/// <summary>
+/// An MSBuild task that generates the necessary glue code for importing/exporting .NET functions.
+/// </summary>
 public class GenerateFFITask : Microsoft.Build.Utilities.Task
 {
+    /// <summary>
+    /// Path of the WASI app assembly
+    /// </summary>
     [Required]
-    public string AssemblyPath { get; set; }
+    public string AssemblyPath { get; set; } = default!;
 
+    /// <summary>
+    /// Path of the generated c files
+    /// </summary>
     [Required]
-    public string OutputPath { get; set; }
+    public string OutputPath { get; set; } = default!;
 
+    /// <summary>
+    /// Path of extism.c
+    /// </summary>
     [Required]
-    public string ExtismPath { get; set; }
+    public string ExtismPath { get; set; } = default!;
 
+    /// <summary>
+    /// Run the task
+    /// </summary>
+    /// <returns></returns>
     public override bool Execute()
     {
         try
