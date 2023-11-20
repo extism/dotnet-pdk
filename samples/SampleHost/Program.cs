@@ -1,5 +1,4 @@
 ﻿using Extism.Sdk;
-using Extism.Sdk.Native;
 
 using System.Text;
 
@@ -8,13 +7,12 @@ var path = "../SampleCSharpPlugin/bin/debug/net8.0/wasi-wasm/AppBundle/SampleCSh
 
 Console.WriteLine(path);
 var bytes = File.ReadAllBytes(path);
-var context = new Context();
 
-var hf = new HostFunction("is_vowel", "host", new ExtismValType[] { ExtismValType.I32 }, new ExtismValType[] { ExtismValType.I32 }, 0, IsVowel);
+var hf = HostFunction.FromMethod<int, int>("is_vowel", IntPtr.Zero, IsVowel);
 
-void IsVowel(CurrentPlugin plugin, Span<ExtismVal> inputs, Span<ExtismVal> outputs, nint userData)
+int IsVowel(CurrentPlugin plugin, int x)
 {
-    var c = (char)inputs[0].v.i32;
+    var c = (char)x;
 
     switch (char.ToLowerInvariant(c))
     {
@@ -29,17 +27,16 @@ void IsVowel(CurrentPlugin plugin, Span<ExtismVal> inputs, Span<ExtismVal> outpu
         case 'O':
         case 'u':
         case 'U':
-            outputs[0].v.i32 = 1;
-            return;
+            return 1;
     }
 
-    outputs[0].v.i32 = 0;
+    return 0;
 }
 
-var plugin = context.CreatePlugin(bytes, new HostFunction[] { hf }, withWasi: true);
+var plugin = new Plugin(bytes, new HostFunction[] { hf }, withWasi: true);
 
-var output = plugin.CallFunction("count_vowels", Encoding.UTF8.GetBytes("Hello World!"));
+var output = plugin.Call("count_vowels", Encoding.UTF8.GetBytes("Hello World!"));
 Console.WriteLine(Encoding.UTF8.GetString(output));
 
-output = plugin.CallFunction("count_vowels", Encoding.UTF8.GetBytes("Hello World!"));
+output = plugin.Call("count_vowels", Encoding.UTF8.GetBytes("Hello World!"));
 Console.WriteLine(Encoding.UTF8.GetString(output));
