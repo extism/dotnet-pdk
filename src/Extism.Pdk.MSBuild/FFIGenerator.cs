@@ -163,6 +163,12 @@ namespace Extism.Pdk.MSBuild
 
                 foreach (var method in exportedMethods)
                 {
+                    if (method.Parameters.Count > 0)
+                    {
+                        var parameterNames = string.Join(",", method.Parameters.Select(p => $"{p.ParameterType.Name} {p.Name}"));
+                        _logError($"Extism doesn't support exporting functions that have parameters: {method.DeclaringType.FullName}.{method.Name}({parameterNames})");
+                    }
+
                     var assemblyFileName = method.Module.Assembly.Name.Name + ".dll";
                     var attribute = method.CustomAttributes.First(a => a.AttributeType.Name == "UnmanagedCallersOnlyAttribute");
 
