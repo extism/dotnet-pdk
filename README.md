@@ -19,6 +19,7 @@ Create a new project and add this nuget package to your project:
 
 ```
 dotnet new wasiconsole -o MyPlugin
+# OR, for F#: dotnet new console -o MyPlugin -lang F#
 cd MyPlugin
 dotnet add package Extism.Pdk --prerelease
 ```
@@ -75,6 +76,7 @@ module MyPlugin
 
 open System
 open System.Runtime.InteropServices
+open System.Text.Json
 open Extism
 
 [<UnmanagedCallersOnly(EntryPoint = "greet")>]
@@ -93,7 +95,7 @@ let Main args  =
 Some things to note about this code:
 1. The `[UnmanagedCallersOnly(EntryPoint = "greet")]` is required, this marks the `Greet` function as an export with the name `greet` that can be called by the host. `EntryPoint` is optional.
 1. We need a `Main` but it's unused. If you do want to use it, it's exported as a function called `_start`.
-1. Exports in the .NET PDK care coded to the raw ABI. You get parameters from the host by calling `Pdk.GetInput*` functions and you send returns back with the `Pdk.SetOutput` functions.
+1. Exports in the .NET PDK are coded to the raw ABI. You get parameters from the host by calling `Pdk.GetInput*` functions and you send returns back with the `Pdk.SetOutput` functions.
 1. An Extism export expects an `Int32` return code. `0` is success and `1` is a failure.
 
 Compile with this command:
@@ -147,11 +149,11 @@ let Greet () =
 
 Now when we try again:
 ```
-extism call plugin.wasm greet --input="Benjamin" --wasi
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input="Benjamin" --wasi
 # => Error: Sorry, we don't greet Benjamins!
 echo $? # print last status code
 # => 1
-extism call plugin.wasm greet --input="Zach" --wasi
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input="Zach" --wasi
 # => Hello, Zach!
 echo $?
 # => 0
@@ -168,7 +170,7 @@ if (name == "Benjamin")
 
 Now when we try again:
 ```
-extism call plugin.wasm greet --input="Benjamin" --wasi
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input="Benjamin" --wasi
 # => Error: System.ArgumentException: Sorry, we don't greet Benjamins!
    at MyPlugin.Functions.Greet()
 ```
@@ -191,7 +193,7 @@ public static class Functions
     public static int add()
     {
         var inputJson = Pdk.GetInputString();
-        var parameters = JsonSerializer.Deserialize(inputJson, SourceGenerationContext.Defaul
+        var parameters = JsonSerializer.Deserialize(inputJson, SourceGenerationContext.Default.Add);
         var sum = new Sum(parameters.a + parameters.b);
         var outputJson = JsonSerializer.Serialize(sum, SourceGenerationContext.Default.Sum);
         Pdk.SetOutput(outputJson);
@@ -215,8 +217,10 @@ let add () =
     0
 ```
 
+**Note:** For F#, please make sure the [System.Text.Json](https://www.nuget.org/packages/System.Text.Json) NuGet package is installed in your project.
+
 ```
-extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\readmeapp.wasm --wasi add --input='{"a": 20, "b": 21}'
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi add --input='{"a": 20, "b": 21}'
 # => {"Result":41}
 ```
 
@@ -358,7 +362,7 @@ extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi http_get
 
 ## Imports (Host Functions)
 
-Like any other code module, Wasm not only let's you export functions to the outside world, you can import them too. Host Functions allow a plug-in to import functions defined in the host. For example, if you host application is written in Python, it can pass a Python function down to your Go plug-in where you can invoke it.
+Like any other code module, Wasm not only let's you export functions to the outside world, you can import them too. Host Functions allow a plug-in to import functions defined in the host. For example, if you host application is written in Go, it can pass a Go function down to your Go plug-in where you can invoke it.
 
 This topic can get fairly complicated and we have not yet fully abstracted the Wasm knowledge you need to do this correctly. So we recommend reading our [concept doc on Host Functions](https://extism.org/docs/concepts/host-functions) before you get started.
 
@@ -402,7 +406,7 @@ let hello_from_go () =
 ### Testing it out
 
 We can't really test this from the Extism CLI as something must provide the implementation. So let's
-write out the Python side here. Check out the [docs for Host SDKs](https://extism.org/docs/concepts/host-sdk) to implement a host function in a language of your choice.
+write out the Go side here. Check out the [docs for Host SDKs](https://extism.org/docs/concepts/host-sdk) to implement a host function in a language of your choice.
 
 ```go
 ctx := context.Background()
@@ -412,7 +416,6 @@ config := extism.PluginConfig{
 
 go_func := extism.NewHostFunctionWithStack(
     "a_go_func",
-    "extism:host/user",
     func(ctx context.Context, p *extism.CurrentPlugin, stack []uint64) {
         input, err := p.ReadString(stack[0])
         if err != nil {
@@ -434,7 +437,7 @@ go_func := extism.NewHostFunctionWithStack(
 ```
 
 Now when we load the plug-in we pass the host function:
- 
+
 ```go
 manifest := extism.Manifest{
     Wasm: []extism.Wasm{
@@ -469,7 +472,7 @@ Methods in referenced assemblies that are decorated with `[DllImport]` and `[Unm
 
 For example, if we have a library that contains this class:
 ```csharp
-namespace `MessagingBot.Pdk`;
+namespace MessagingBot.Pdk;
 public class Events
 {
     // This function will be imported  by all WASI apps that reference this library
@@ -479,13 +482,17 @@ public class Events
     // You can wrap the imports in your own functions to make them easier to use
     public static void SendMessage(string message)
     {
-        using var block = Pdk.Allocate(message);
+        using var block = Extism.Pdk.Allocate(message);
         SendMessage(block.Offset);
     }
 
     // This function will be exported by all WASI apps that reference this library
     [UnmanagedCallersOnly]
-    public static extern void message_received(long offset);
+    public static void message_received()
+    {
+        var message = Extism.Pdk.GetInputString();
+        // TODO: do stuff with message
+    }
 }
 ```
 
