@@ -4,7 +4,7 @@
 	</ItemGroup>
 
 	<UsingTask TaskName="GenerateFFITask" AssemblyFile="$(MSBuildThisFileDirectory)..\build\Extism.Pdk.MSBuild.dll" Condition="'$(RuntimeIdentifier)' == 'wasi-wasm'"/>
-	<Target Name="GenerateGlueCode" AfterTargets="Build" BeforeTargets="_BeforeWasmBuildApp">
+	<Target Name="GenerateGlueCode" AfterTargets="Build" BeforeTargets="_BeforeWasmBuildApp" Condition="'$(RuntimeIdentifier)' == 'wasi-wasm'">
 		<GenerateFFITask AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism" ExtismPath="$(MSBuildThisFileDirectory)..\native\extism.c" />
 		<ItemGroup>
 			<NativeFileReference Include="$(IntermediateOutputPath)extism\*.c" />
