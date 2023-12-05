@@ -1,2 +1,5 @@
+- name: Home
+  href: /
+
 - name: API
   href: api/
