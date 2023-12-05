@@ -1,0 +1,641 @@
+### YamlMime:XRefMap
+sorted: true
+references:
+- uid: Extism
+  name: Extism
+  href: api/Extism.html
+  commentId: N:Extism
+  fullName: Extism
+  nameWithType: Extism
+- uid: Extism.HttpMethod
+  name: HttpMethod
+  href: api/Extism.HttpMethod.html
+  commentId: T:Extism.HttpMethod
+  fullName: Extism.HttpMethod
+  nameWithType: HttpMethod
+- uid: Extism.HttpMethod.DELETE
+  name: DELETE
+  href: api/Extism.HttpMethod.html#Extism_HttpMethod_DELETE
+  commentId: F:Extism.HttpMethod.DELETE
+  fullName: Extism.HttpMethod.DELETE
+  nameWithType: HttpMethod.DELETE
+- uid: Extism.HttpMethod.GET
+  name: GET
+  href: api/Extism.HttpMethod.html#Extism_HttpMethod_GET
+  commentId: F:Extism.HttpMethod.GET
+  fullName: Extism.HttpMethod.GET
+  nameWithType: HttpMethod.GET
+- uid: Extism.HttpMethod.HEAD
+  name: HEAD
+  href: api/Extism.HttpMethod.html#Extism_HttpMethod_HEAD
+  commentId: F:Extism.HttpMethod.HEAD
+  fullName: Extism.HttpMethod.HEAD
+  nameWithType: HttpMethod.HEAD
+- uid: Extism.HttpMethod.PATCH
+  name: PATCH
+  href: api/Extism.HttpMethod.html#Extism_HttpMethod_PATCH
+  commentId: F:Extism.HttpMethod.PATCH
+  fullName: Extism.HttpMethod.PATCH
+  nameWithType: HttpMethod.PATCH
+- uid: Extism.HttpMethod.POST
+  name: POST
+  href: api/Extism.HttpMethod.html#Extism_HttpMethod_POST
+  commentId: F:Extism.HttpMethod.POST
+  fullName: Extism.HttpMethod.POST
+  nameWithType: HttpMethod.POST
+- uid: Extism.HttpMethod.PUT
+  name: PUT
+  href: api/Extism.HttpMethod.html#Extism_HttpMethod_PUT
+  commentId: F:Extism.HttpMethod.PUT
+  fullName: Extism.HttpMethod.PUT
+  nameWithType: HttpMethod.PUT
+- uid: Extism.HttpRequest
+  name: HttpRequest
+  href: api/Extism.HttpRequest.html
+  commentId: T:Extism.HttpRequest
+  fullName: Extism.HttpRequest
+  nameWithType: HttpRequest
+- uid: Extism.HttpRequest.#ctor(System.String)
+  name: HttpRequest(string)
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest__ctor_System_String_
+  commentId: M:Extism.HttpRequest.#ctor(System.String)
+  name.vb: New(String)
+  fullName: Extism.HttpRequest.HttpRequest(string)
+  fullName.vb: Extism.HttpRequest.New(String)
+  nameWithType: HttpRequest.HttpRequest(string)
+  nameWithType.vb: HttpRequest.New(String)
+- uid: Extism.HttpRequest.#ctor(System.Uri)
+  name: HttpRequest(Uri)
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest__ctor_System_Uri_
+  commentId: M:Extism.HttpRequest.#ctor(System.Uri)
+  name.vb: New(Uri)
+  fullName: Extism.HttpRequest.HttpRequest(System.Uri)
+  fullName.vb: Extism.HttpRequest.New(System.Uri)
+  nameWithType: HttpRequest.HttpRequest(Uri)
+  nameWithType.vb: HttpRequest.New(Uri)
+- uid: Extism.HttpRequest.#ctor*
+  name: HttpRequest
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest__ctor_
+  commentId: Overload:Extism.HttpRequest.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Extism.HttpRequest.HttpRequest
+  fullName.vb: Extism.HttpRequest.New
+  nameWithType: HttpRequest.HttpRequest
+  nameWithType.vb: HttpRequest.New
+- uid: Extism.HttpRequest.Body
+  name: Body
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest_Body
+  commentId: P:Extism.HttpRequest.Body
+  fullName: Extism.HttpRequest.Body
+  nameWithType: HttpRequest.Body
+- uid: Extism.HttpRequest.Body*
+  name: Body
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest_Body_
+  commentId: Overload:Extism.HttpRequest.Body
+  isSpec: "True"
+  fullName: Extism.HttpRequest.Body
+  nameWithType: HttpRequest.Body
+- uid: Extism.HttpRequest.Headers
+  name: Headers
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest_Headers
+  commentId: P:Extism.HttpRequest.Headers
+  fullName: Extism.HttpRequest.Headers
+  nameWithType: HttpRequest.Headers
+- uid: Extism.HttpRequest.Headers*
+  name: Headers
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest_Headers_
+  commentId: Overload:Extism.HttpRequest.Headers
+  isSpec: "True"
+  fullName: Extism.HttpRequest.Headers
+  nameWithType: HttpRequest.Headers
+- uid: Extism.HttpRequest.Method
+  name: Method
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest_Method
+  commentId: P:Extism.HttpRequest.Method
+  fullName: Extism.HttpRequest.Method
+  nameWithType: HttpRequest.Method
+- uid: Extism.HttpRequest.Method*
+  name: Method
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest_Method_
+  commentId: Overload:Extism.HttpRequest.Method
+  isSpec: "True"
+  fullName: Extism.HttpRequest.Method
+  nameWithType: HttpRequest.Method
+- uid: Extism.HttpRequest.Url
+  name: Url
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest_Url
+  commentId: P:Extism.HttpRequest.Url
+  fullName: Extism.HttpRequest.Url
+  nameWithType: HttpRequest.Url
+- uid: Extism.HttpRequest.Url*
+  name: Url
+  href: api/Extism.HttpRequest.html#Extism_HttpRequest_Url_
+  commentId: Overload:Extism.HttpRequest.Url
+  isSpec: "True"
+  fullName: Extism.HttpRequest.Url
+  nameWithType: HttpRequest.Url
+- uid: Extism.HttpResponse
+  name: HttpResponse
+  href: api/Extism.HttpResponse.html
+  commentId: T:Extism.HttpResponse
+  fullName: Extism.HttpResponse
+  nameWithType: HttpResponse
+- uid: Extism.HttpResponse.#ctor(Extism.MemoryBlock,System.UInt16)
+  name: HttpResponse(MemoryBlock, ushort)
+  href: api/Extism.HttpResponse.html#Extism_HttpResponse__ctor_Extism_MemoryBlock_System_UInt16_
+  commentId: M:Extism.HttpResponse.#ctor(Extism.MemoryBlock,System.UInt16)
+  name.vb: New(MemoryBlock, UShort)
+  fullName: Extism.HttpResponse.HttpResponse(Extism.MemoryBlock, ushort)
+  fullName.vb: Extism.HttpResponse.New(Extism.MemoryBlock, UShort)
+  nameWithType: HttpResponse.HttpResponse(MemoryBlock, ushort)
+  nameWithType.vb: HttpResponse.New(MemoryBlock, UShort)
+- uid: Extism.HttpResponse.#ctor*
+  name: HttpResponse
+  href: api/Extism.HttpResponse.html#Extism_HttpResponse__ctor_
+  commentId: Overload:Extism.HttpResponse.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Extism.HttpResponse.HttpResponse
+  fullName.vb: Extism.HttpResponse.New
+  nameWithType: HttpResponse.HttpResponse
+  nameWithType.vb: HttpResponse.New
+- uid: Extism.HttpResponse.Body
+  name: Body
+  href: api/Extism.HttpResponse.html#Extism_HttpResponse_Body
+  commentId: P:Extism.HttpResponse.Body
+  fullName: Extism.HttpResponse.Body
+  nameWithType: HttpResponse.Body
+- uid: Extism.HttpResponse.Body*
+  name: Body
+  href: api/Extism.HttpResponse.html#Extism_HttpResponse_Body_
+  commentId: Overload:Extism.HttpResponse.Body
+  isSpec: "True"
+  fullName: Extism.HttpResponse.Body
+  nameWithType: HttpResponse.Body
+- uid: Extism.HttpResponse.Dispose
+  name: Dispose()
+  href: api/Extism.HttpResponse.html#Extism_HttpResponse_Dispose
+  commentId: M:Extism.HttpResponse.Dispose
+  fullName: Extism.HttpResponse.Dispose()
+  nameWithType: HttpResponse.Dispose()
+- uid: Extism.HttpResponse.Dispose*
+  name: Dispose
+  href: api/Extism.HttpResponse.html#Extism_HttpResponse_Dispose_
+  commentId: Overload:Extism.HttpResponse.Dispose
+  isSpec: "True"
+  fullName: Extism.HttpResponse.Dispose
+  nameWithType: HttpResponse.Dispose
+- uid: Extism.HttpResponse.Status
+  name: Status
+  href: api/Extism.HttpResponse.html#Extism_HttpResponse_Status
+  commentId: P:Extism.HttpResponse.Status
+  fullName: Extism.HttpResponse.Status
+  nameWithType: HttpResponse.Status
+- uid: Extism.HttpResponse.Status*
+  name: Status
+  href: api/Extism.HttpResponse.html#Extism_HttpResponse_Status_
+  commentId: Overload:Extism.HttpResponse.Status
+  isSpec: "True"
+  fullName: Extism.HttpResponse.Status
+  nameWithType: HttpResponse.Status
+- uid: Extism.LogLevel
+  name: LogLevel
+  href: api/Extism.LogLevel.html
+  commentId: T:Extism.LogLevel
+  fullName: Extism.LogLevel
+  nameWithType: LogLevel
+- uid: Extism.LogLevel.Debug
+  name: Debug
+  href: api/Extism.LogLevel.html#Extism_LogLevel_Debug
+  commentId: F:Extism.LogLevel.Debug
+  fullName: Extism.LogLevel.Debug
+  nameWithType: LogLevel.Debug
+- uid: Extism.LogLevel.Error
+  name: Error
+  href: api/Extism.LogLevel.html#Extism_LogLevel_Error
+  commentId: F:Extism.LogLevel.Error
+  fullName: Extism.LogLevel.Error
+  nameWithType: LogLevel.Error
+- uid: Extism.LogLevel.Info
+  name: Info
+  href: api/Extism.LogLevel.html#Extism_LogLevel_Info
+  commentId: F:Extism.LogLevel.Info
+  fullName: Extism.LogLevel.Info
+  nameWithType: LogLevel.Info
+- uid: Extism.LogLevel.Warn
+  name: Warn
+  href: api/Extism.LogLevel.html#Extism_LogLevel_Warn
+  commentId: F:Extism.LogLevel.Warn
+  fullName: Extism.LogLevel.Warn
+  nameWithType: LogLevel.Warn
+- uid: Extism.MemoryBlock
+  name: MemoryBlock
+  href: api/Extism.MemoryBlock.html
+  commentId: T:Extism.MemoryBlock
+  fullName: Extism.MemoryBlock
+  nameWithType: MemoryBlock
+- uid: Extism.MemoryBlock.#ctor(System.UInt64,System.UInt64)
+  name: MemoryBlock(ulong, ulong)
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock__ctor_System_UInt64_System_UInt64_
+  commentId: M:Extism.MemoryBlock.#ctor(System.UInt64,System.UInt64)
+  name.vb: New(ULong, ULong)
+  fullName: Extism.MemoryBlock.MemoryBlock(ulong, ulong)
+  fullName.vb: Extism.MemoryBlock.New(ULong, ULong)
+  nameWithType: MemoryBlock.MemoryBlock(ulong, ulong)
+  nameWithType.vb: MemoryBlock.New(ULong, ULong)
+- uid: Extism.MemoryBlock.#ctor*
+  name: MemoryBlock
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock__ctor_
+  commentId: Overload:Extism.MemoryBlock.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Extism.MemoryBlock.MemoryBlock
+  fullName.vb: Extism.MemoryBlock.New
+  nameWithType: MemoryBlock.MemoryBlock
+  nameWithType.vb: MemoryBlock.New
+- uid: Extism.MemoryBlock.CopyTo(System.Span{System.Byte})
+  name: CopyTo(Span<byte>)
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_CopyTo_System_Span_System_Byte__
+  commentId: M:Extism.MemoryBlock.CopyTo(System.Span{System.Byte})
+  name.vb: CopyTo(Span(Of Byte))
+  fullName: Extism.MemoryBlock.CopyTo(System.Span<byte>)
+  fullName.vb: Extism.MemoryBlock.CopyTo(System.Span(Of Byte))
+  nameWithType: MemoryBlock.CopyTo(Span<byte>)
+  nameWithType.vb: MemoryBlock.CopyTo(Span(Of Byte))
+- uid: Extism.MemoryBlock.CopyTo*
+  name: CopyTo
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_CopyTo_
+  commentId: Overload:Extism.MemoryBlock.CopyTo
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.CopyTo
+  nameWithType: MemoryBlock.CopyTo
+- uid: Extism.MemoryBlock.Dispose
+  name: Dispose()
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_Dispose
+  commentId: M:Extism.MemoryBlock.Dispose
+  fullName: Extism.MemoryBlock.Dispose()
+  nameWithType: MemoryBlock.Dispose()
+- uid: Extism.MemoryBlock.Dispose*
+  name: Dispose
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_Dispose_
+  commentId: Overload:Extism.MemoryBlock.Dispose
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.Dispose
+  nameWithType: MemoryBlock.Dispose
+- uid: Extism.MemoryBlock.Empty
+  name: Empty
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_Empty
+  commentId: P:Extism.MemoryBlock.Empty
+  fullName: Extism.MemoryBlock.Empty
+  nameWithType: MemoryBlock.Empty
+- uid: Extism.MemoryBlock.Empty*
+  name: Empty
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_Empty_
+  commentId: Overload:Extism.MemoryBlock.Empty
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.Empty
+  nameWithType: MemoryBlock.Empty
+- uid: Extism.MemoryBlock.Find(System.UInt64)
+  name: Find(ulong)
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_Find_System_UInt64_
+  commentId: M:Extism.MemoryBlock.Find(System.UInt64)
+  name.vb: Find(ULong)
+  fullName: Extism.MemoryBlock.Find(ulong)
+  fullName.vb: Extism.MemoryBlock.Find(ULong)
+  nameWithType: MemoryBlock.Find(ulong)
+  nameWithType.vb: MemoryBlock.Find(ULong)
+- uid: Extism.MemoryBlock.Find*
+  name: Find
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_Find_
+  commentId: Overload:Extism.MemoryBlock.Find
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.Find
+  nameWithType: MemoryBlock.Find
+- uid: Extism.MemoryBlock.IsEmpty
+  name: IsEmpty
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_IsEmpty
+  commentId: P:Extism.MemoryBlock.IsEmpty
+  fullName: Extism.MemoryBlock.IsEmpty
+  nameWithType: MemoryBlock.IsEmpty
+- uid: Extism.MemoryBlock.IsEmpty*
+  name: IsEmpty
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_IsEmpty_
+  commentId: Overload:Extism.MemoryBlock.IsEmpty
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.IsEmpty
+  nameWithType: MemoryBlock.IsEmpty
+- uid: Extism.MemoryBlock.Length
+  name: Length
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_Length
+  commentId: P:Extism.MemoryBlock.Length
+  fullName: Extism.MemoryBlock.Length
+  nameWithType: MemoryBlock.Length
+- uid: Extism.MemoryBlock.Length*
+  name: Length
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_Length_
+  commentId: Overload:Extism.MemoryBlock.Length
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.Length
+  nameWithType: MemoryBlock.Length
+- uid: Extism.MemoryBlock.Offset
+  name: Offset
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_Offset
+  commentId: P:Extism.MemoryBlock.Offset
+  fullName: Extism.MemoryBlock.Offset
+  nameWithType: MemoryBlock.Offset
+- uid: Extism.MemoryBlock.Offset*
+  name: Offset
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_Offset_
+  commentId: Overload:Extism.MemoryBlock.Offset
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.Offset
+  nameWithType: MemoryBlock.Offset
+- uid: Extism.MemoryBlock.ReadBytes
+  name: ReadBytes()
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_ReadBytes
+  commentId: M:Extism.MemoryBlock.ReadBytes
+  fullName: Extism.MemoryBlock.ReadBytes()
+  nameWithType: MemoryBlock.ReadBytes()
+- uid: Extism.MemoryBlock.ReadBytes*
+  name: ReadBytes
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_ReadBytes_
+  commentId: Overload:Extism.MemoryBlock.ReadBytes
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.ReadBytes
+  nameWithType: MemoryBlock.ReadBytes
+- uid: Extism.MemoryBlock.ReadString
+  name: ReadString()
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_ReadString
+  commentId: M:Extism.MemoryBlock.ReadString
+  fullName: Extism.MemoryBlock.ReadString()
+  nameWithType: MemoryBlock.ReadString()
+- uid: Extism.MemoryBlock.ReadString*
+  name: ReadString
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_ReadString_
+  commentId: Overload:Extism.MemoryBlock.ReadString
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.ReadString
+  nameWithType: MemoryBlock.ReadString
+- uid: Extism.MemoryBlock.WriteBytes(System.ReadOnlySpan{System.Byte})
+  name: WriteBytes(ReadOnlySpan<byte>)
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_WriteBytes_System_ReadOnlySpan_System_Byte__
+  commentId: M:Extism.MemoryBlock.WriteBytes(System.ReadOnlySpan{System.Byte})
+  name.vb: WriteBytes(ReadOnlySpan(Of Byte))
+  fullName: Extism.MemoryBlock.WriteBytes(System.ReadOnlySpan<byte>)
+  fullName.vb: Extism.MemoryBlock.WriteBytes(System.ReadOnlySpan(Of Byte))
+  nameWithType: MemoryBlock.WriteBytes(ReadOnlySpan<byte>)
+  nameWithType.vb: MemoryBlock.WriteBytes(ReadOnlySpan(Of Byte))
+- uid: Extism.MemoryBlock.WriteBytes*
+  name: WriteBytes
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_WriteBytes_
+  commentId: Overload:Extism.MemoryBlock.WriteBytes
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.WriteBytes
+  nameWithType: MemoryBlock.WriteBytes
+- uid: Extism.MemoryBlock.WriteString(System.String)
+  name: WriteString(string)
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_WriteString_System_String_
+  commentId: M:Extism.MemoryBlock.WriteString(System.String)
+  name.vb: WriteString(String)
+  fullName: Extism.MemoryBlock.WriteString(string)
+  fullName.vb: Extism.MemoryBlock.WriteString(String)
+  nameWithType: MemoryBlock.WriteString(string)
+  nameWithType.vb: MemoryBlock.WriteString(String)
+- uid: Extism.MemoryBlock.WriteString*
+  name: WriteString
+  href: api/Extism.MemoryBlock.html#Extism_MemoryBlock_WriteString_
+  commentId: Overload:Extism.MemoryBlock.WriteString
+  isSpec: "True"
+  fullName: Extism.MemoryBlock.WriteString
+  nameWithType: MemoryBlock.WriteString
+- uid: Extism.Pdk
+  name: Pdk
+  href: api/Extism.Pdk.html
+  commentId: T:Extism.Pdk
+  fullName: Extism.Pdk
+  nameWithType: Pdk
+- uid: Extism.Pdk.Allocate(System.ReadOnlySpan{System.Byte})
+  name: Allocate(ReadOnlySpan<byte>)
+  href: api/Extism.Pdk.html#Extism_Pdk_Allocate_System_ReadOnlySpan_System_Byte__
+  commentId: M:Extism.Pdk.Allocate(System.ReadOnlySpan{System.Byte})
+  name.vb: Allocate(ReadOnlySpan(Of Byte))
+  fullName: Extism.Pdk.Allocate(System.ReadOnlySpan<byte>)
+  fullName.vb: Extism.Pdk.Allocate(System.ReadOnlySpan(Of Byte))
+  nameWithType: Pdk.Allocate(ReadOnlySpan<byte>)
+  nameWithType.vb: Pdk.Allocate(ReadOnlySpan(Of Byte))
+- uid: Extism.Pdk.Allocate(System.String)
+  name: Allocate(string)
+  href: api/Extism.Pdk.html#Extism_Pdk_Allocate_System_String_
+  commentId: M:Extism.Pdk.Allocate(System.String)
+  name.vb: Allocate(String)
+  fullName: Extism.Pdk.Allocate(string)
+  fullName.vb: Extism.Pdk.Allocate(String)
+  nameWithType: Pdk.Allocate(string)
+  nameWithType.vb: Pdk.Allocate(String)
+- uid: Extism.Pdk.Allocate(System.UInt64)
+  name: Allocate(ulong)
+  href: api/Extism.Pdk.html#Extism_Pdk_Allocate_System_UInt64_
+  commentId: M:Extism.Pdk.Allocate(System.UInt64)
+  name.vb: Allocate(ULong)
+  fullName: Extism.Pdk.Allocate(ulong)
+  fullName.vb: Extism.Pdk.Allocate(ULong)
+  nameWithType: Pdk.Allocate(ulong)
+  nameWithType.vb: Pdk.Allocate(ULong)
+- uid: Extism.Pdk.Allocate*
+  name: Allocate
+  href: api/Extism.Pdk.html#Extism_Pdk_Allocate_
+  commentId: Overload:Extism.Pdk.Allocate
+  isSpec: "True"
+  fullName: Extism.Pdk.Allocate
+  nameWithType: Pdk.Allocate
+- uid: Extism.Pdk.GetInput
+  name: GetInput()
+  href: api/Extism.Pdk.html#Extism_Pdk_GetInput
+  commentId: M:Extism.Pdk.GetInput
+  fullName: Extism.Pdk.GetInput()
+  nameWithType: Pdk.GetInput()
+- uid: Extism.Pdk.GetInput*
+  name: GetInput
+  href: api/Extism.Pdk.html#Extism_Pdk_GetInput_
+  commentId: Overload:Extism.Pdk.GetInput
+  isSpec: "True"
+  fullName: Extism.Pdk.GetInput
+  nameWithType: Pdk.GetInput
+- uid: Extism.Pdk.GetInputString
+  name: GetInputString()
+  href: api/Extism.Pdk.html#Extism_Pdk_GetInputString
+  commentId: M:Extism.Pdk.GetInputString
+  fullName: Extism.Pdk.GetInputString()
+  nameWithType: Pdk.GetInputString()
+- uid: Extism.Pdk.GetInputString*
+  name: GetInputString
+  href: api/Extism.Pdk.html#Extism_Pdk_GetInputString_
+  commentId: Overload:Extism.Pdk.GetInputString
+  isSpec: "True"
+  fullName: Extism.Pdk.GetInputString
+  nameWithType: Pdk.GetInputString
+- uid: Extism.Pdk.Log(Extism.LogLevel,Extism.MemoryBlock)
+  name: Log(LogLevel, MemoryBlock)
+  href: api/Extism.Pdk.html#Extism_Pdk_Log_Extism_LogLevel_Extism_MemoryBlock_
+  commentId: M:Extism.Pdk.Log(Extism.LogLevel,Extism.MemoryBlock)
+  fullName: Extism.Pdk.Log(Extism.LogLevel, Extism.MemoryBlock)
+  nameWithType: Pdk.Log(LogLevel, MemoryBlock)
+- uid: Extism.Pdk.Log(Extism.LogLevel,System.String)
+  name: Log(LogLevel, string)
+  href: api/Extism.Pdk.html#Extism_Pdk_Log_Extism_LogLevel_System_String_
+  commentId: M:Extism.Pdk.Log(Extism.LogLevel,System.String)
+  name.vb: Log(LogLevel, String)
+  fullName: Extism.Pdk.Log(Extism.LogLevel, string)
+  fullName.vb: Extism.Pdk.Log(Extism.LogLevel, String)
+  nameWithType: Pdk.Log(LogLevel, string)
+  nameWithType.vb: Pdk.Log(LogLevel, String)
+- uid: Extism.Pdk.Log*
+  name: Log
+  href: api/Extism.Pdk.html#Extism_Pdk_Log_
+  commentId: Overload:Extism.Pdk.Log
+  isSpec: "True"
+  fullName: Extism.Pdk.Log
+  nameWithType: Pdk.Log
+- uid: Extism.Pdk.RemoveVar(System.String)
+  name: RemoveVar(string)
+  href: api/Extism.Pdk.html#Extism_Pdk_RemoveVar_System_String_
+  commentId: M:Extism.Pdk.RemoveVar(System.String)
+  name.vb: RemoveVar(String)
+  fullName: Extism.Pdk.RemoveVar(string)
+  fullName.vb: Extism.Pdk.RemoveVar(String)
+  nameWithType: Pdk.RemoveVar(string)
+  nameWithType.vb: Pdk.RemoveVar(String)
+- uid: Extism.Pdk.RemoveVar*
+  name: RemoveVar
+  href: api/Extism.Pdk.html#Extism_Pdk_RemoveVar_
+  commentId: Overload:Extism.Pdk.RemoveVar
+  isSpec: "True"
+  fullName: Extism.Pdk.RemoveVar
+  nameWithType: Pdk.RemoveVar
+- uid: Extism.Pdk.SendRequest(Extism.HttpRequest)
+  name: SendRequest(HttpRequest)
+  href: api/Extism.Pdk.html#Extism_Pdk_SendRequest_Extism_HttpRequest_
+  commentId: M:Extism.Pdk.SendRequest(Extism.HttpRequest)
+  fullName: Extism.Pdk.SendRequest(Extism.HttpRequest)
+  nameWithType: Pdk.SendRequest(HttpRequest)
+- uid: Extism.Pdk.SendRequest*
+  name: SendRequest
+  href: api/Extism.Pdk.html#Extism_Pdk_SendRequest_
+  commentId: Overload:Extism.Pdk.SendRequest
+  isSpec: "True"
+  fullName: Extism.Pdk.SendRequest
+  nameWithType: Pdk.SendRequest
+- uid: Extism.Pdk.SetError(System.String)
+  name: SetError(string)
+  href: api/Extism.Pdk.html#Extism_Pdk_SetError_System_String_
+  commentId: M:Extism.Pdk.SetError(System.String)
+  name.vb: SetError(String)
+  fullName: Extism.Pdk.SetError(string)
+  fullName.vb: Extism.Pdk.SetError(String)
+  nameWithType: Pdk.SetError(string)
+  nameWithType.vb: Pdk.SetError(String)
+- uid: Extism.Pdk.SetError*
+  name: SetError
+  href: api/Extism.Pdk.html#Extism_Pdk_SetError_
+  commentId: Overload:Extism.Pdk.SetError
+  isSpec: "True"
+  fullName: Extism.Pdk.SetError
+  nameWithType: Pdk.SetError
+- uid: Extism.Pdk.SetOutput(Extism.MemoryBlock)
+  name: SetOutput(MemoryBlock)
+  href: api/Extism.Pdk.html#Extism_Pdk_SetOutput_Extism_MemoryBlock_
+  commentId: M:Extism.Pdk.SetOutput(Extism.MemoryBlock)
+  fullName: Extism.Pdk.SetOutput(Extism.MemoryBlock)
+  nameWithType: Pdk.SetOutput(MemoryBlock)
+- uid: Extism.Pdk.SetOutput(System.ReadOnlySpan{System.Byte})
+  name: SetOutput(ReadOnlySpan<byte>)
+  href: api/Extism.Pdk.html#Extism_Pdk_SetOutput_System_ReadOnlySpan_System_Byte__
+  commentId: M:Extism.Pdk.SetOutput(System.ReadOnlySpan{System.Byte})
+  name.vb: SetOutput(ReadOnlySpan(Of Byte))
+  fullName: Extism.Pdk.SetOutput(System.ReadOnlySpan<byte>)
+  fullName.vb: Extism.Pdk.SetOutput(System.ReadOnlySpan(Of Byte))
+  nameWithType: Pdk.SetOutput(ReadOnlySpan<byte>)
+  nameWithType.vb: Pdk.SetOutput(ReadOnlySpan(Of Byte))
+- uid: Extism.Pdk.SetOutput(System.String)
+  name: SetOutput(string)
+  href: api/Extism.Pdk.html#Extism_Pdk_SetOutput_System_String_
+  commentId: M:Extism.Pdk.SetOutput(System.String)
+  name.vb: SetOutput(String)
+  fullName: Extism.Pdk.SetOutput(string)
+  fullName.vb: Extism.Pdk.SetOutput(String)
+  nameWithType: Pdk.SetOutput(string)
+  nameWithType.vb: Pdk.SetOutput(String)
+- uid: Extism.Pdk.SetOutput*
+  name: SetOutput
+  href: api/Extism.Pdk.html#Extism_Pdk_SetOutput_
+  commentId: Overload:Extism.Pdk.SetOutput
+  isSpec: "True"
+  fullName: Extism.Pdk.SetOutput
+  nameWithType: Pdk.SetOutput
+- uid: Extism.Pdk.SetVar(System.String,Extism.MemoryBlock)
+  name: SetVar(string, MemoryBlock)
+  href: api/Extism.Pdk.html#Extism_Pdk_SetVar_System_String_Extism_MemoryBlock_
+  commentId: M:Extism.Pdk.SetVar(System.String,Extism.MemoryBlock)
+  name.vb: SetVar(String, MemoryBlock)
+  fullName: Extism.Pdk.SetVar(string, Extism.MemoryBlock)
+  fullName.vb: Extism.Pdk.SetVar(String, Extism.MemoryBlock)
+  nameWithType: Pdk.SetVar(string, MemoryBlock)
+  nameWithType.vb: Pdk.SetVar(String, MemoryBlock)
+- uid: Extism.Pdk.SetVar(System.String,System.ReadOnlySpan{System.Byte})
+  name: SetVar(string, ReadOnlySpan<byte>)
+  href: api/Extism.Pdk.html#Extism_Pdk_SetVar_System_String_System_ReadOnlySpan_System_Byte__
+  commentId: M:Extism.Pdk.SetVar(System.String,System.ReadOnlySpan{System.Byte})
+  name.vb: SetVar(String, ReadOnlySpan(Of Byte))
+  fullName: Extism.Pdk.SetVar(string, System.ReadOnlySpan<byte>)
+  fullName.vb: Extism.Pdk.SetVar(String, System.ReadOnlySpan(Of Byte))
+  nameWithType: Pdk.SetVar(string, ReadOnlySpan<byte>)
+  nameWithType.vb: Pdk.SetVar(String, ReadOnlySpan(Of Byte))
+- uid: Extism.Pdk.SetVar(System.String,System.String)
+  name: SetVar(string, string)
+  href: api/Extism.Pdk.html#Extism_Pdk_SetVar_System_String_System_String_
+  commentId: M:Extism.Pdk.SetVar(System.String,System.String)
+  name.vb: SetVar(String, String)
+  fullName: Extism.Pdk.SetVar(string, string)
+  fullName.vb: Extism.Pdk.SetVar(String, String)
+  nameWithType: Pdk.SetVar(string, string)
+  nameWithType.vb: Pdk.SetVar(String, String)
+- uid: Extism.Pdk.SetVar*
+  name: SetVar
+  href: api/Extism.Pdk.html#Extism_Pdk_SetVar_
+  commentId: Overload:Extism.Pdk.SetVar
+  isSpec: "True"
+  fullName: Extism.Pdk.SetVar
+  nameWithType: Pdk.SetVar
+- uid: Extism.Pdk.TryGetConfig(System.String,System.String@)
+  name: TryGetConfig(string, out string)
+  href: api/Extism.Pdk.html#Extism_Pdk_TryGetConfig_System_String_System_String__
+  commentId: M:Extism.Pdk.TryGetConfig(System.String,System.String@)
+  name.vb: TryGetConfig(String, String)
+  fullName: Extism.Pdk.TryGetConfig(string, out string)
+  fullName.vb: Extism.Pdk.TryGetConfig(String, String)
+  nameWithType: Pdk.TryGetConfig(string, out string)
+  nameWithType.vb: Pdk.TryGetConfig(String, String)
+- uid: Extism.Pdk.TryGetConfig*
+  name: TryGetConfig
+  href: api/Extism.Pdk.html#Extism_Pdk_TryGetConfig_
+  commentId: Overload:Extism.Pdk.TryGetConfig
+  isSpec: "True"
+  fullName: Extism.Pdk.TryGetConfig
+  nameWithType: Pdk.TryGetConfig
+- uid: Extism.Pdk.TryGetVar(System.String,Extism.MemoryBlock@)
+  name: TryGetVar(string, out MemoryBlock)
+  href: api/Extism.Pdk.html#Extism_Pdk_TryGetVar_System_String_Extism_MemoryBlock__
+  commentId: M:Extism.Pdk.TryGetVar(System.String,Extism.MemoryBlock@)
+  name.vb: TryGetVar(String, MemoryBlock)
+  fullName: Extism.Pdk.TryGetVar(string, out Extism.MemoryBlock)
+  fullName.vb: Extism.Pdk.TryGetVar(String, Extism.MemoryBlock)
+  nameWithType: Pdk.TryGetVar(string, out MemoryBlock)
+  nameWithType.vb: Pdk.TryGetVar(String, MemoryBlock)
+- uid: Extism.Pdk.TryGetVar*
+  name: TryGetVar
+  href: api/Extism.Pdk.html#Extism_Pdk_TryGetVar_
+  commentId: Overload:Extism.Pdk.TryGetVar
+  isSpec: "True"
+  fullName: Extism.Pdk.TryGetVar
+  nameWithType: Pdk.TryGetVar

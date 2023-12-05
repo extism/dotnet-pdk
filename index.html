@@ -1,0 +1,576 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>.NET PDK | Extism .NET PDK </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content=".NET PDK | Extism .NET PDK ">
+      
+      <link rel="icon" href="images/favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/extism/dotnet-pdk/blob/fix/docs-deployment/index.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="landing" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="images/logo.png" alt="Extism .NET PDK">
+            Extism .NET PDK
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled="" placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="net-pdk">.NET PDK</h1>
+
+<p>This library can be used to write Extism <a href="https://extism.org/docs/concepts/plug-in">Plug-ins</a> in C# and F#.</p>
+<blockquote>
+<p>NOTE: This is an experimental PDK. We'd love to hear your feedback.</p>
+</blockquote>
+<h2 id="prerequisites">Prerequisites</h2>
+<ol>
+<li>.NET SDK 8: <a href="https://dotnet.microsoft.com/en-us/download/dotnet/8.0">https://dotnet.microsoft.com/en-us/download/dotnet/8.0</a></li>
+<li>WASI Workload:</li>
+</ol>
+<pre><code>dotnet workload install wasi-experimental
+</code></pre>
+<ol start="3">
+<li>WASI SDK: <a href="https://github.com/WebAssembly/wasi-sdk/releases">https://github.com/WebAssembly/wasi-sdk/releases</a></li>
+</ol>
+<h2 id="install">Install</h2>
+<p>Create a new project and add this nuget package to your project:</p>
+<pre><code>dotnet new wasiconsole -o MyPlugin
+# OR, for F#: dotnet new console -o MyPlugin -lang F#
+cd MyPlugin
+dotnet add package Extism.Pdk --prerelease
+</code></pre>
+<p>Update your <code>MyPlugin.csproj</code>/<code>MyPlugin.fsproj</code> as follows:</p>
+<pre><code class="lang-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net8.0&lt;/TargetFramework&gt;
+    &lt;RuntimeIdentifier&gt;wasi-wasm&lt;/RuntimeIdentifier&gt;
+    &lt;OutputType&gt;Exe&lt;/OutputType&gt;
+    &lt;PublishTrimmed&gt;true&lt;/PublishTrimmed&gt;
+
+    &lt;!-- Make sure we create a standalone wasm file for our plugin --&gt;
+    &lt;WasmSingleFileBundle&gt;true&lt;/WasmSingleFileBundle&gt;
+    &lt;WasmBuildNative&gt;true&lt;/WasmBuildNative&gt;
+  &lt;/PropertyGroup&gt;
+&lt;/Project&gt;
+</code></pre>
+<h2 id="getting-started">Getting Started</h2>
+<p>The goal of writing an Extism plug-in is to compile your C#/F# code to a Wasm module with exported functions that the host application can invoke. The first thing you should understand is creating an export. Let's write a simple program that exports a greet function which will take a name as a string and return a greeting string. Paste this into your Program.cs/Program.fs:</p>
+<p>C#:</p>
+<pre><code class="lang-csharp">using System;
+using System.Runtime.InteropServices;
+using System.Text.Json;
+using Extism;
+
+namespace MyPlugin;
+public class Functions
+{
+    public static void Main()
+    {
+        // Note: a `Main` method is required for the app to compile
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = &quot;greet&quot;)]
+    public static int Greet()
+    {
+        var name = Pdk.GetInputString();
+        var greeting = $&quot;Hello, {name}!&quot;;
+        Pdk.SetOutput(greeting);
+
+        return 0;
+    }
+}
+</code></pre>
+<p>F#:</p>
+<pre><code class="lang-fsharp">module MyPlugin
+
+open System
+open System.Runtime.InteropServices
+open System.Text.Json
+open Extism
+
+[&lt;UnmanagedCallersOnly(EntryPoint = &quot;greet&quot;)&gt;]
+let Greet () : int32 =
+    let name = Pdk.GetInputString()
+    let greeting = $&quot;Hello, {name}!&quot;
+    Pdk.SetOutput(greeting)
+    0
+    
+[&lt;EntryPoint&gt;]
+let Main args  =
+    // Note: an `EntryPoint` function is required for the app to compile
+    0
+</code></pre>
+<p>Some things to note about this code:</p>
+<ol>
+<li>The <code>[UnmanagedCallersOnly(EntryPoint = &quot;greet&quot;)]</code> is required, this marks the <code>Greet</code> function as an export with the name <code>greet</code> that can be called by the host. <code>EntryPoint</code> is optional.</li>
+<li>We need a <code>Main</code> but it's unused. If you do want to use it, it's exported as a function called <code>_start</code>.</li>
+<li>Exports in the .NET PDK are coded to the raw ABI. You get parameters from the host by calling <code>Pdk.GetInput*</code> functions and you send returns back with the <code>Pdk.SetOutput</code> functions.</li>
+<li>An Extism export expects an <code>Int32</code> return code. <code>0</code> is success and <code>1</code> is a failure.</li>
+</ol>
+<p>Compile with this command:</p>
+<pre><code>dotnet build
+</code></pre>
+<p>This will create a <code>MyPlugin.wasm</code> file in <code>bin/Debug/net8.0/wasi-wasm/AppBundle</code>. Now, you can try out your plugin by using any of the <a href="https://extism.org/docs/category/integrate-into-your-codebase">Extism SDKs</a> or by using <a href="https://extism.org/docs/install">Extism CLI</a>'s <code>run</code> command:</p>
+<pre><code>extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input &quot;Benjamin&quot; --wasi
+# =&gt; Hello, Benjamin!
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> Currently wasi must be provided for all .NET plug-ins even if they don't need system access.</p>
+</blockquote>
+<h2 id="more-exports-error-handling">More Exports: Error Handling</h2>
+<p>Suppose we want to re-write our greeting function to never greet Benjamis. We can use <code>Pdk.SetError</code>:</p>
+<p>C#:</p>
+<pre><code class="lang-csharp">[UnmanagedCallersOnly(EntryPoint = &quot;greet&quot;)]
+public static int Greet()
+{
+    var name = Pdk.GetInputString();
+    if (name == &quot;Benjamin&quot;)
+    {
+        Pdk.SetError(&quot;Sorry, we don't greet Benjamins!&quot;);
+        return 1;
+    }
+
+    var greeting = $&quot;Hello, {name}!&quot;;
+    Pdk.SetOutput(greeting);
+
+    return 0;
+}
+</code></pre>
+<p>F#:</p>
+<pre><code class="lang-fsharp">[&lt;UnmanagedCallersOnly(EntryPoint = &quot;greet&quot;)&gt;]
+let Greet () =
+    let name = Pdk.GetInputString()
+    if name = &quot;Benjamin&quot; then
+        Pdk.SetError(&quot;Sorry, we don't greet Benjamins!&quot;)
+        1
+    else
+        let greeting = $&quot;Hello, {name}!&quot;
+        Pdk.SetOutput(greeting)
+        0
+</code></pre>
+<p>Now when we try again:</p>
+<pre><code>extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input=&quot;Benjamin&quot; --wasi
+# =&gt; Error: Sorry, we don't greet Benjamins!
+echo $? # print last status code
+# =&gt; 1
+extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input=&quot;Zach&quot; --wasi
+# =&gt; Hello, Zach!
+echo $?
+# =&gt; 0
+</code></pre>
+<p>We can also throw a normal .NET Exception:</p>
+<pre><code>var name = Pdk.GetInputString();
+if (name == &quot;Benjamin&quot;)
+{
+    throw new ArgumentException(&quot;Sorry, we don't greet Benjamins!&quot;);
+}
+</code></pre>
+<p>Now when we try again:</p>
+<pre><code>extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input=&quot;Benjamin&quot; --wasi
+# =&gt; Error: System.ArgumentException: Sorry, we don't greet Benjamins!
+   at MyPlugin.Functions.Greet()
+</code></pre>
+<h2 id="json">Json</h2>
+<p>Extism export functions simply take bytes in and bytes out. Those can be whatever you want them to be. A common and simple way to get more complex types to and from the host is with json:</p>
+<p>C#:</p>
+<pre><code class="lang-csharp">[JsonSerializable(typeof(Add))]
+[JsonSerializable(typeof(Sum))]
+public partial class SourceGenerationContext : JsonSerializerContext {}
+
+public record Add(int a, int b);
+public record Sum(int Result);
+
+public static class Functions
+{
+    [UnmanagedCallersOnly]
+    public static int add()
+    {
+        var inputJson = Pdk.GetInputString();
+        var parameters = JsonSerializer.Deserialize(inputJson, SourceGenerationContext.Default.Add);
+        var sum = new Sum(parameters.a + parameters.b);
+        var outputJson = JsonSerializer.Serialize(sum, SourceGenerationContext.Default.Sum);
+        Pdk.SetOutput(outputJson);
+        return 0;
+    }
+}
+</code></pre>
+<p>F#:</p>
+<pre><code class="lang-fsharp">[&lt;UnmanagedCallersOnly&gt;]
+let add () =
+    let inputJson = Pdk.GetInputString()
+    let jsonData = JsonDocument.Parse(inputJson).RootElement
+    let a = jsonData.GetProperty(&quot;a&quot;).GetInt32()
+    let b = jsonData.GetProperty(&quot;b&quot;).GetInt32()
+    let result = a + b
+    let outputJson = $&quot;{{ \&quot;Result\&quot;: {result} }}&quot;
+    
+    Pdk.SetOutput(outputJson)
+    0
+</code></pre>
+<p><strong>Note:</strong> For F#, please make sure the <a href="https://www.nuget.org/packages/System.Text.Json">System.Text.Json</a> NuGet package is installed in your project.</p>
+<pre><code>extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi add --input='{&quot;a&quot;: 20, &quot;b&quot;: 21}'
+# =&gt; {&quot;Result&quot;:41}
+</code></pre>
+<p><strong>Note:</strong> When enabling trimming, make sure you use the <a href="https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation">source generation</a> as reflection is disabled in that mode.</p>
+<h2 id="configs">Configs</h2>
+<p>Configs are key-value pairs that can be passed in by the host when creating a plug-in. These can be useful to statically configure the plug-in with some data that exists across every function call. Here is a trivial example using Pdk.TryGetConfig:</p>
+<p>C#:</p>
+<pre><code class="lang-csharp">[UnmanagedCallersOnly(EntryPoint = &quot;greet&quot;)]
+public static int Greet()
+{
+    if (!Pdk.TryGetConfig(&quot;user&quot;, out var user)) {
+        throw new InvalidOperationException(&quot;This plug-in requires a 'user' key in the config&quot;);
+    }
+
+    var greeting = $&quot;Hello, {user}!&quot;;
+    Pdk.SetOutput(greeting);
+
+    return 0;
+}
+</code></pre>
+<p>F#:</p>
+<pre><code class="lang-fsharp">[&lt;UnmanagedCallersOnly(EntryPoint = &quot;greet&quot;)&gt;]
+let Greet () =
+    match Pdk.TryGetConfig &quot;user&quot; with
+    | true, user -&gt;
+        let greeting = $&quot;Hello, {user}!&quot;
+        Pdk.SetOutput(greeting)
+        0
+    | false, _ -&gt;
+        failwith &quot;This plug-in requires a 'user' key in the config&quot;
+</code></pre>
+<p>To test it, the <a href="https://github.com/extism/cli">Extism CLI</a> has a --config option that lets you pass in key=value pairs:</p>
+<pre><code>extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi greet --config user=Benjamin
+# =&gt; Hello, Benjamin!
+</code></pre>
+<h2 id="variables">Variables</h2>
+<p>Variables are another key-value mechanism but it's a mutable data store that will persist across function calls. These variables will persist as long as the host has loaded and not freed the plug-in.</p>
+<p>C#:</p>
+<pre><code class="lang-csharp">[UnmanagedCallersOnly]
+public static int count()
+{
+    int count = 0;
+    if (Pdk.TryGetVar(&quot;count&quot;, out var memoryBlock))
+    {
+        count = BitConverter.ToInt32(memoryBlock.ReadBytes());
+    }
+    count += 1;
+    Pdk.SetVar(&quot;count&quot;, BitConverter.GetBytes(count));
+    Pdk.SetOutput(count.ToString());
+    return 0;
+}
+</code></pre>
+<p>F#:</p>
+<pre><code class="lang-fsharp">[&lt;UnmanagedCallersOnly&gt;]
+let count () =
+
+    let count =
+        match Pdk.TryGetVar &quot;count&quot; with
+        | true, buffer -&gt;
+            BitConverter.ToInt32(buffer.ReadBytes())
+        | false, _ -&gt;
+            0
+    
+    let count = count + 1
+
+    Pdk.SetVar(&quot;count&quot;, BitConverter.GetBytes(count))
+    Pdk.SetOutput(count.ToString())
+    
+    0
+</code></pre>
+<p>From <a href="https://github.com/extism/cli">Extism CLI</a>:</p>
+<pre><code>extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi count --loop 3
+1
+2
+3
+</code></pre>
+<h2 id="http">HTTP</h2>
+<p>Sometimes it is useful to let a plug-in make HTTP calls:</p>
+<p>C#:</p>
+<pre><code class="lang-csharp">[UnmanagedCallersOnly]
+public static int http_get()
+{
+    // create an HTTP Request (withuot relying on WASI), set headers as needed
+    var request = new HttpRequest(&quot;https://jsonplaceholder.typicode.com/todos/1&quot;)
+    {
+        Method = HttpMethod.GET,
+    };
+    request.Headers.Add(&quot;some-name&quot;, &quot;some-value&quot;);
+    request.Headers.Add(&quot;another&quot;, &quot;again&quot;);
+    var response = Pdk.SendRequest(request);
+    Pdk.SetOutput(response.Body);
+    return 0;
+}
+</code></pre>
+<p>F#:</p>
+<pre><code class="lang-fsharp">[&lt;UnmanagedCallersOnly&gt;]
+let http_get () =
+    let request = HttpRequest(&quot;https://jsonplaceholder.typicode.com/todos/1&quot;)
+    request.Headers.Add(&quot;some-name&quot;, &quot;some-value&quot;)
+    request.Headers.Add(&quot;another&quot;, &quot;again&quot;)
+
+    let response = Pdk.SendRequest(request)
+    Pdk.SetOutput(response.Body)
+    
+    0
+</code></pre>
+<p>From <a href="https://github.com/extism/cli">Extism CLI</a>:</p>
+<pre><code>extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi http_get --allow-host='*.typicode.com'
+{
+  &quot;userId&quot;: 1,
+  &quot;id&quot;: 1,
+  &quot;title&quot;: &quot;delectus aut autem&quot;,
+  &quot;completed&quot;: false
+}
+</code></pre>
+<blockquote>
+<p><strong>NOTE</strong>: <code>HttpClient</code> doesn't work in Wasm yet.</p>
+</blockquote>
+<h2 id="imports-host-functions">Imports (Host Functions)</h2>
+<p>Like any other code module, Wasm not only let's you export functions to the outside world, you can import them too. Host Functions allow a plug-in to import functions defined in the host. For example, if you host application is written in Go, it can pass a Go function down to your Go plug-in where you can invoke it.</p>
+<p>This topic can get fairly complicated and we have not yet fully abstracted the Wasm knowledge you need to do this correctly. So we recommend reading our <a href="https://extism.org/docs/concepts/host-functions">concept doc on Host Functions</a> before you get started.</p>
+<h3 id="a-simple-example">A Simple Example</h3>
+<p>Host functions have a similar interface as exports. You just need to declare them as extern on the top of your <code>Program.cs</code>/<code>Program.fs</code>. You only declare the interface as it is the host's responsibility to provide the implementation:</p>
+<p>C#:</p>
+<pre><code class="lang-csharp">[DllImport(&quot;extism&quot;, EntryPoint = &quot;a_go_func&quot;)]
+public static extern ulong GoFunc(ulong offset);
+[UnmanagedCallersOnly]
+public static int hello_from_go()
+{
+    var message = &quot;An argument to send to Go&quot;;
+    using var block = Pdk.Allocate(message);
+    var ptr = GoFunc(block.Offset);
+    var response = MemoryBlock.Find(ptr).ReadString();
+    Pdk.SetOutput(response);
+    return 0;
+}
+</code></pre>
+<p>F#:</p>
+<pre><code class="lang-fsharp">[&lt;DllImport(&quot;extism&quot;, EntryPoint = &quot;a_go_func&quot;)&gt;]
+extern uint64 GoFunc(uint64 offset)
+
+[&lt;UnmanagedCallersOnly&gt;]
+let hello_from_go () =
+    let message = &quot;An argument to send to Go&quot;
+    use block = Pdk.Allocate(message)
+
+    let ptr = GoFunc(block.Offset)
+    let response = MemoryBlock.Find ptr
+    Pdk.SetOutput(response)
+    
+    0
+</code></pre>
+<h3 id="testing-it-out">Testing it out</h3>
+<p>We can't really test this from the Extism CLI as something must provide the implementation. So let's
+write out the Go side here. Check out the <a href="https://extism.org/docs/concepts/host-sdk">docs for Host SDKs</a> to implement a host function in a language of your choice.</p>
+<pre><code class="lang-go">ctx := context.Background()
+config := extism.PluginConfig{
+    EnableWasi: true,
+}
+
+go_func := extism.NewHostFunctionWithStack(
+    &quot;a_go_func&quot;,
+    func(ctx context.Context, p *extism.CurrentPlugin, stack []uint64) {
+        input, err := p.ReadString(stack[0])
+        if err != nil {
+            panic(err)
+        }
+
+        fmt.Println(&quot;Hello from Go!&quot;)
+
+        offs, err := p.WriteString(input + &quot;!&quot;)
+        if err != nil {
+            panic(err)
+        }
+
+        stack[0] = offs
+    },
+    []api.ValueType{api.ValueTypeI64},
+    []api.ValueType{api.ValueTypeI64},
+)
+</code></pre>
+<p>Now when we load the plug-in we pass the host function:</p>
+<pre><code class="lang-go">manifest := extism.Manifest{
+    Wasm: []extism.Wasm{
+        extism.WasmFile{
+            Path: &quot;/path/to/plugin.wasm&quot;,
+        },
+    },
+}
+
+plugin, err := extism.NewPlugin(ctx, manifest, config, []extism.HostFunction{go_func})
+
+if err != nil {
+    fmt.Printf(&quot;Failed to initialize plugin: %v\n&quot;, err)
+    os.Exit(1)
+}
+
+_, out, err := plugin.Call(&quot;hello_from_go&quot;, []byte(&quot;Hello, World!&quot;))
+fmt.Println(string(out))
+</code></pre>
+<pre><code class="lang-bash">go run .
+# =&gt; Hello from Go!
+# =&gt; An argument to send to Go!
+</code></pre>
+<h3 id="referenced-assemblies">Referenced Assemblies</h3>
+<p>Methods in referenced assemblies that are decorated with <code>[DllImport]</code> and <code>[UnmanagedCallersOnly]</code> are imported and exported respectively.</p>
+<p><strong>Note:</strong> The library imports/exports are ignored if the app doesn't call at least one method from the library.</p>
+<p>For example, if we have a library that contains this class:</p>
+<pre><code class="lang-csharp">namespace MessagingBot.Pdk;
+public class Events
+{
+    // This function will be imported  by all WASI apps that reference this library
+    [DllImport(&quot;env&quot;, EntryPoint = &quot;send_message&quot;)]
+    public static extern void SendMessage(ulong offset);
+
+    // You can wrap the imports in your own functions to make them easier to use
+    public static void SendMessage(string message)
+    {
+        using var block = Extism.Pdk.Allocate(message);
+        SendMessage(block.Offset);
+    }
+
+    // This function will be exported by all WASI apps that reference this library
+    [UnmanagedCallersOnly]
+    public static void message_received()
+    {
+        var message = Extism.Pdk.GetInputString();
+        // TODO: do stuff with message
+    }
+}
+</code></pre>
+<p>Then, we can reference the library in a WASI app and use the functions:</p>
+<pre><code class="lang-csharp">using MessagingBot.Pdk;
+
+Events.SendMessage(&quot;Hello World!&quot;);
+</code></pre>
+<p>This is useful when you want to provide a common set of imports and exports that are specific to your use case.</p>
+<h3 id="optimize-size">Optimize Size</h3>
+<p>Normally, the .NET runtime is very conservative when trimming and includes a lot of metadata for debugging and exception purposes. This makes sure code doesn't break (when using reflection for example) but it also means large binary sizes. A hello world sample is about 20mb. To instruct the .NET compiler to be aggresive about trimming, you can try out these options:</p>
+<pre><code class="lang-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;
+  &lt;PropertyGroup&gt;
+    &lt;TargetFramework&gt;net8.0&lt;/TargetFramework&gt;
+    &lt;RuntimeIdentifier&gt;wasi-wasm&lt;/RuntimeIdentifier&gt;
+    &lt;OutputType&gt;Exe&lt;/OutputType&gt;
+    &lt;PublishTrimmed&gt;true&lt;/PublishTrimmed&gt;
+    &lt;WasmBuildNative&gt;true&lt;/WasmBuildNative&gt;
+    &lt;WasmSingleFileBundle&gt;true&lt;/WasmSingleFileBundle&gt;
+    
+    &lt;!-- Note: TrimMode Full breaks Extism's global exception handling hook --&gt;
+    &lt;TrimMode&gt;partial&lt;/TrimMode&gt;
+    &lt;DebuggerSupport&gt;false&lt;/DebuggerSupport&gt;
+    &lt;EventSourceSupport&gt;false&lt;/EventSourceSupport&gt;
+    &lt;UseSystemResourceKeys&gt;true&lt;/UseSystemResourceKeys&gt;
+    &lt;NativeDebugSymbols&gt;false&lt;/NativeDebugSymbols&gt;
+  &lt;/PropertyGroup&gt;
+&lt;/Project&gt;
+</code></pre>
+<p>If you have imports in referenced assemblies, make sure <a href="https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#root-assemblies">you mark them as roots</a> so that they don't get trimmed:</p>
+<pre><code class="lang-xml">&lt;ItemGroup&gt;
+    &lt;TrimmerRootAssembly Include=&quot;SampleLib&quot; /&gt;
+&lt;/ItemGroup&gt;
+</code></pre>
+<p>And then, run:</p>
+<pre><code>dotnet publish -c Release
+</code></pre>
+<p>Now, you'll have a significantly smaller <code>.wasm</code> file in <code>bin\Release\net8.0\wasi-wasm\AppBundle</code>.</p>
+<p>For more details, refer to <a href="https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#trimming-framework-library-features">the official documentation</a>.</p>
+<h3 id="reach-out">Reach Out!</h3>
+<p>Have a question or just want to drop in and say hi? <a href="https://extism.org/discord">Hop on the Discord</a>!</p>
+<h2 id="api-docs">API Docs</h2>
+<p>Please see our <a class="xref" href="api/Extism.Pdk.html">API docs</a> for detailed information on each type.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/extism/dotnet-pdk/blob/fix/docs-deployment/index.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
