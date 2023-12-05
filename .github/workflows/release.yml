@@ -1,7 +1,5 @@
 on:
   push:
-    tags:
-      - 'v*'
 
 name: Release .NET PDK
 
