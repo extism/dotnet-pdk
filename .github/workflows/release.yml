@@ -1,10 +1,12 @@
 on:
   push:
+    tags:
+      - 'v*'
 
 name: Release .NET PDK
 
 jobs:
-  release-sdks:
+  release-pdk:
     name: release-dotnet
     runs-on: ubuntu-latest
     steps:
@@ -39,7 +41,7 @@ jobs:
         run: |
           dotnet workload install wasi-experimental
 
-      - name: Test .NET Sdk
+      - name: Test .NET PDK
         run: |
           export WASI_SDK_PATH=~/wasi-sdk/wasi-sdk-20.0
           make test
@@ -49,11 +51,11 @@ jobs:
           dotnet tool update -g docfx
           docfx ./docfx.json
 
-      # - name: Publish .NET Sdk
-      #   env:
-      #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      #   run: |
-      #     make publish
+      - name: Publish .NET PDK
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          make publish
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
