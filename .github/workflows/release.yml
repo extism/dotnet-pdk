@@ -49,11 +49,11 @@ jobs:
           dotnet tool update -g docfx
           docfx ./docfx.json
 
-      - name: Publish .NET Sdk
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: |
-          make publish
+      # - name: Publish .NET Sdk
+      #   env:
+      #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      #   run: |
+      #     make publish
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
