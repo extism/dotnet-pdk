@@ -21,7 +21,7 @@ Create a new project and add this nuget package to your project:
 dotnet new wasiconsole -o MyPlugin
 # OR, for F#: dotnet new console -o MyPlugin -lang F#
 cd MyPlugin
-dotnet add package Extism.Pdk --prerelease
+dotnet add package Extism.Pdk
 ```
 
 Update your `MyPlugin.csproj`/`MyPlugin.fsproj` as follows:
