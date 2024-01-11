@@ -19,11 +19,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{604F9655
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{E54FB503-86BE-459F-A7B4-DF2AA9094CEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KitchenSink", "samples\KitchenSink\KitchenSink.csproj", "{F045BCA5-71DC-483F-8D9F-D1416F6AB588}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KitchenSink", "samples\KitchenSink\KitchenSink.csproj", "{F045BCA5-71DC-483F-8D9F-D1416F6AB588}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extism.Pdk.WasmTests", "tests\Extism.Pdk.WasmTests\Extism.Pdk.WasmTests.csproj", "{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Extism.Pdk.WasmTests", "tests\Extism.Pdk.WasmTests\Extism.Pdk.WasmTests.csproj", "{F603C66E-1821-4E5F-94EF-09D5BB9A04A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLib", "samples\SampleLib\SampleLib.csproj", "{FD3EBC89-BE62-402F-A5E4-D7298134658E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleLib", "samples\SampleLib\SampleLib.csproj", "{FD3EBC89-BE62-402F-A5E4-D7298134658E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extism.Pdk.SourceGenerators", "src\Extism.Pdk.SourceGenerators\Extism.Pdk.SourceGenerators.csproj", "{E1838046-5C53-432A-8411-A82681B4B30C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +69,10 @@ Global
 		{FD3EBC89-BE62-402F-A5E4-D7298134658E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD3EBC89-BE62-402F-A5E4-D7298134658E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD3EBC89-BE62-402F-A5E4-D7298134658E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1838046-5C53-432A-8411-A82681B4B30C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1838046-5C53-432A-8411-A82681B4B30C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1838046-5C53-432A-8411-A82681B4B30C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1838046-5C53-432A-8411-A82681B4B30C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
