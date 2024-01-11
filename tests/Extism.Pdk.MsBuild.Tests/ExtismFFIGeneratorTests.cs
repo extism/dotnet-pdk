@@ -92,10 +92,10 @@ namespace Extism.Pdk.MsBuild.Tests
 
             var type = assembly.MainModule.CreateType("MyNamespace", "MyClass");
 
-            _ = type.CreateMethod("DoSomething", typeof(void), ("p1", typeof(int)), ("p2", typeof(byte)), ("p3", typeof(long)))
+            _ = type.CreateMethod("DoSomething", typeof(void))
                     .AddExport();
 
-            _ = type.CreateMethod("DoSomeOtherStuff", typeof(int), ("longParameterNameHere", typeof(double)))
+            _ = type.CreateMethod("DoSomeOtherStuff", typeof(int))
                   .AddExport("fancy_name");
 
             var files = generator.GenerateGlueCode(assembly, Directory.GetCurrentDirectory());
@@ -117,10 +117,10 @@ namespace Extism.Pdk.MsBuild.Tests
 
             var type = lib.MainModule.CreateType("MyNamespace", "MyClass");
 
-            _ = type.CreateMethod("DoSomething", typeof(void), ("p1", typeof(int)), ("p2", typeof(byte)), ("p3", typeof(long)))
+            _ = type.CreateMethod("DoSomething", typeof(void))
                     .AddExport();
 
-            _ = type.CreateMethod("DoSomeOtherStuff", typeof(int), ("longParameterNameHere", typeof(double)))
+            _ = type.CreateMethod("DoSomeOtherStuff", typeof(int))
                   .AddExport("fancy_name");
 
             lib.Write("SampleLib.dll");
