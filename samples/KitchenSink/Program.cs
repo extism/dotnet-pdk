@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System;
 using Extism;
-using System.Text.Json;
 using SampleLib;
 using System.Text.Json.Serialization;
 
