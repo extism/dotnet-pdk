@@ -192,11 +192,9 @@ public static class Functions
     [UnmanagedCallersOnly]
     public static int add()
     {
-        var inputJson = Pdk.GetInputString();
-        var parameters = JsonSerializer.Deserialize(inputJson, SourceGenerationContext.Default.Add);
+        var parameters = Pdk.GetInputJson(SourceGenerationContext.Default.Add);
         var sum = new Sum(parameters.a + parameters.b);
-        var outputJson = JsonSerializer.Serialize(sum, SourceGenerationContext.Default.Sum);
-        Pdk.SetOutput(outputJson);
+        Pdk.SetOutputJson(sum, SourceGenerationContext.Default.Sum);
         return 0;
     }
 }
