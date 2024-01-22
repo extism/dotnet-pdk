@@ -1,9 +1,7 @@
-using CliWrap;
-using CliWrap.Buffered;
-using Extism.Sdk.Native;
 using Shouldly;
 using Extism.Sdk;
 using System.Text;
+using System.Text.Json;
 
 namespace Extism.Pdk.WasmTests;
 
@@ -33,7 +31,11 @@ public class KitchenSinkTests
         {
             var result = plugin.Call("concat", input);
             var stdout = Encoding.UTF8.GetString(result);
-            stdout.ShouldBe("hello,world!");
+
+            var output = JsonSerializer.Deserialize<ConcatOutput>(stdout);
+            output.ShouldNotBeNull();
+
+            output.Result.ShouldBe("hello,world!");
         }
     }
 
@@ -112,7 +114,7 @@ public class KitchenSinkTests
 
         for (var i = 0; i < 3; i++)
         {
-            var result = plugin.Call("samplelib_export", "");
+            _ = plugin.Call("samplelib_export", "");
         }
     }
 
@@ -149,34 +151,8 @@ public class KitchenSinkTests
         return new Plugin(manifest, functions, withWasi: true);
     }
 
-    private async Task<(string, int, string)> Call(string wasmPath, string functionName, ExtismOptions options)
+    public class ConcatOutput
     {
-        var args = new[] { "call", wasmPath, functionName }.Concat(options.ToCliArguments());
-
-        var result = await Cli.Wrap("extism")
-            .WithArguments(args)
-            .WithValidation(CommandResultValidation.None)
-            .ExecuteBufferedAsync();
-
-        return (result.StandardOutput, result.ExitCode, result.StandardError);
-    }
-
-    class ExtismOptions
-    {
-        public int Loop { get; set; }
-        public string Input { get; set; } = "";
-        public bool Wasi { get; set; } = true;
-        public Dictionary<string, string> Config { get; set; } = new();
-        public List<string> AllowedHosts { get; set; } = new List<string>();
-
-        public string[] ToCliArguments()
-        {
-            var wasiArg = Wasi ? "--wasi" : "";
-
-            var configs = Config.Where(c => !string.IsNullOrEmpty(c.Value)).SelectMany(c => new string[] { "--config", $"{c.Key}={c.Value}" });
-            var hosts = AllowedHosts.Where(h => !string.IsNullOrEmpty(h)).SelectMany(h => new string[] { "--allow-host", h });
-
-            return ["--loop", Loop.ToString(), "--input", Input, wasiArg, .. configs, .. hosts];
-        }
+        public string Result { get; set; } = default!;
     }
 }
