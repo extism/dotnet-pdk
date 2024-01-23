@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace Extism;
 
@@ -52,6 +53,20 @@ public static class Pdk
     }
 
     /// <summary>
+    /// Read the input data sent by the host as a UTF-8 encoded string and then deserialize it as JSON.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="typeInfo"></param>
+    /// <returns></returns>
+    public static T? GetInputJson<T>(JsonTypeInfo<T> typeInfo)
+    {
+        var json = GetInput();
+        var reader = new Utf8JsonReader(json);
+
+        return JsonSerializer.Deserialize(ref reader, typeInfo);
+    }
+
+    /// <summary>
     /// Set the output data to be sent back to the host.
     /// </summary>
     /// <param name="block">The memory block containing the output data.</param>
@@ -82,6 +97,22 @@ public static class Pdk
     public static void SetOutput(string data)
     {
         SetOutput(Encoding.UTF8.GetBytes(data));
+    }
+
+    /// <summary>
+    /// Serialize the output data as JSON to be sent back to the host as a UTF-8 encoded string.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="output"></param>
+    /// <param name="typeInfo"></param>
+    public static void SetOutputJson<T>(T output, JsonTypeInfo<T> typeInfo)
+    {
+        using var stream = new MemoryStream();
+        using var writer = new Utf8JsonWriter(stream);
+
+        JsonSerializer.Serialize(writer, output, typeInfo);
+
+        SetOutput(stream.ToArray());
     }
 
     /// <summary>

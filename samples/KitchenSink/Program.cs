@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System;
 using Extism;
-using System.Text.Json;
 using SampleLib;
 using System.Text.Json.Serialization;
 
@@ -24,8 +23,7 @@ namespace Functions
         [UnmanagedCallersOnly(EntryPoint = "concat")]
         public static int Concat()
         {
-            var json = Pdk.GetInput();
-            var payload = JsonSerializer.Deserialize(json, SourceGenerationContext.Default.ConcatInput);
+            var payload = Pdk.GetInputJson(JsonContext.Default.ConcatInput);
 
             if (payload is null)
             {
@@ -33,7 +31,12 @@ namespace Functions
                 return 3;
             }
 
-            Pdk.SetOutput(string.Join(payload.Separator, payload.Parts));
+            var output = new ConcatOutput
+            {
+                Result = string.Join(payload.Separator, payload.Parts)
+            };
+
+            Pdk.SetOutputJson(output, JsonContext.Default.ConcatOutput);
             return 0;
         }
 
@@ -91,11 +94,17 @@ namespace Functions
     }
 
     [JsonSerializable(typeof(ConcatInput))]
-    public partial class SourceGenerationContext : JsonSerializerContext {}
+    [JsonSerializable(typeof(ConcatOutput))]
+    public partial class JsonContext : JsonSerializerContext {}
 
     public class ConcatInput
     {
         public string[] Parts { get; set; } = default!;
         public string? Separator { get; set; }
+    }
+
+    public class ConcatOutput
+    {
+        public string Result { get; set; } = default!;
     }
 }
