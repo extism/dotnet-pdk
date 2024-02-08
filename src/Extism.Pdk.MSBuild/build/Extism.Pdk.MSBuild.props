@@ -1,0 +1,13 @@
+<Project>    
+    <RuntimeIdentifier>wasi-wasm</RuntimeIdentifier>
+    <PublishTrimmed>true</PublishTrimmed>
+    <WasmBuildNative>true</WasmBuildNative>
+    <WasmSingleFileBundle>true</WasmSingleFileBundle>
+    
+    <!-- Note: TrimMode Full breaks Extism's global exception handling hook -->
+    <TrimMode>partial</TrimMode>
+    <DebuggerSupport>false</DebuggerSupport>
+    <EventSourceSupport>false</EventSourceSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <NativeDebugSymbols>false</NativeDebugSymbols>
+</Project>
