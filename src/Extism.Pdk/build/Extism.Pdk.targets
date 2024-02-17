@@ -2,7 +2,6 @@
 	<ItemGroup>
 		<TrimmerRootAssembly Include="Extism.Pdk" />
 
-		<RuntimeIdentifier>wasi-wasm</RuntimeIdentifier>
 		<PublishTrimmed>true</PublishTrimmed>
 		<WasmBuildNative>true</WasmBuildNative>
 		<WasmSingleFileBundle>true</WasmSingleFileBundle>
