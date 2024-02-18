@@ -506,26 +506,7 @@ This is useful when you want to provide a common set of imports and exports that
 
 ### Optimize Size
 
-Normally, the .NET runtime is very conservative when trimming and includes a lot of metadata for debugging and exception purposes. This makes sure code doesn't break (when using reflection for example) but it also means large binary sizes. A hello world sample is about 20mb. To instruct the .NET compiler to be aggresive about trimming, you can try out these options:
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <RuntimeIdentifier>wasi-wasm</RuntimeIdentifier>
-    <OutputType>Exe</OutputType>
-    <PublishTrimmed>true</PublishTrimmed>
-    <WasmBuildNative>true</WasmBuildNative>
-    <WasmSingleFileBundle>true</WasmSingleFileBundle>
-    
-    <!-- Note: TrimMode Full breaks Extism's global exception handling hook -->
-    <TrimMode>partial</TrimMode>
-    <DebuggerSupport>false</DebuggerSupport>
-    <EventSourceSupport>false</EventSourceSupport>
-    <UseSystemResourceKeys>true</UseSystemResourceKeys>
-    <NativeDebugSymbols>false</NativeDebugSymbols>
-  </PropertyGroup>
-</Project>
-```
+Normally, the .NET runtime is very conservative when trimming and includes a lot of metadata for debugging and exception purposes. We have enabled some options in Release mode by default that would make the resulting binary smaller (6mb for a hello world sample vs 20mb in debug mode).
 
 If you have imports in referenced assemblies, make sure [you mark them as roots](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#root-assemblies) so that they don't get trimmed:
 ```xml
@@ -539,7 +520,7 @@ And then, run:
 dotnet publish -c Release
 ```
 
-Now, you'll have a significantly smaller `.wasm` file in `bin\Release\net8.0\wasi-wasm\AppBundle`.
+Now, you'll have a smaller `.wasm` file in `bin\Release\net8.0\wasi-wasm\AppBundle`.
 
 For more details, refer to [the official documentation](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#trimming-framework-library-features).
 
