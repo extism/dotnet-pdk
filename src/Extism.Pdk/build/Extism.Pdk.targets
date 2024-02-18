@@ -3,6 +3,19 @@
 		<TrimmerRootAssembly Include="Extism.Pdk" />
 	</ItemGroup>
 
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<PublishTrimmed>true</PublishTrimmed>
+		<WasmBuildNative>true</WasmBuildNative>
+		<WasmSingleFileBundle>true</WasmSingleFileBundle>
+
+		<!-- Note: TrimMode Full breaks Extism's global exception handling hook -->
+		<TrimMode>partial</TrimMode>
+		<DebuggerSupport>false</DebuggerSupport>
+		<EventSourceSupport>false</EventSourceSupport>
+		<UseSystemResourceKeys>true</UseSystemResourceKeys>
+		<NativeDebugSymbols>false</NativeDebugSymbols>
+	</PropertyGroup>
+
 	<UsingTask TaskName="GenerateFFITask" AssemblyFile="$(MSBuildThisFileDirectory)..\build\Extism.Pdk.MSBuild.dll" Condition="'$(RuntimeIdentifier)' == 'wasi-wasm'"/>
 	<Target Name="GenerateGlueCode" AfterTargets="Build" BeforeTargets="_BeforeWasmBuildApp" Condition="'$(RuntimeIdentifier)' == 'wasi-wasm'">
 		<GenerateFFITask AssemblyPath="$(TargetPath)" OutputPath="$(IntermediateOutputPath)extism" ExtismPath="$(MSBuildThisFileDirectory)..\native\extism.c" />
