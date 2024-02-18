@@ -31,11 +31,6 @@ Update your `MyPlugin.csproj`/`MyPlugin.fsproj` as follows:
     <TargetFramework>net8.0</TargetFramework>
     <RuntimeIdentifier>wasi-wasm</RuntimeIdentifier>
     <OutputType>Exe</OutputType>
-    <PublishTrimmed>true</PublishTrimmed>
-
-    <!-- Make sure we create a standalone wasm file for our plugin -->
-    <WasmSingleFileBundle>true</WasmSingleFileBundle>
-    <WasmBuildNative>true</WasmBuildNative>
   </PropertyGroup>
 </Project>
 ```
