@@ -462,6 +462,22 @@ references:
   isSpec: "True"
   fullName: Extism.Pdk.GetInput
   nameWithType: Pdk.GetInput
+- uid: Extism.Pdk.GetInputJson*
+  name: GetInputJson
+  href: api/Extism.Pdk.html#Extism_Pdk_GetInputJson_
+  commentId: Overload:Extism.Pdk.GetInputJson
+  isSpec: "True"
+  fullName: Extism.Pdk.GetInputJson
+  nameWithType: Pdk.GetInputJson
+- uid: Extism.Pdk.GetInputJson``1(System.Text.Json.Serialization.Metadata.JsonTypeInfo{``0})
+  name: GetInputJson<T>(JsonTypeInfo<T>)
+  href: api/Extism.Pdk.html#Extism_Pdk_GetInputJson__1_System_Text_Json_Serialization_Metadata_JsonTypeInfo___0__
+  commentId: M:Extism.Pdk.GetInputJson``1(System.Text.Json.Serialization.Metadata.JsonTypeInfo{``0})
+  name.vb: GetInputJson(Of T)(JsonTypeInfo(Of T))
+  fullName: Extism.Pdk.GetInputJson<T>(System.Text.Json.Serialization.Metadata.JsonTypeInfo<T>)
+  fullName.vb: Extism.Pdk.GetInputJson(Of T)(System.Text.Json.Serialization.Metadata.JsonTypeInfo(Of T))
+  nameWithType: Pdk.GetInputJson<T>(JsonTypeInfo<T>)
+  nameWithType.vb: Pdk.GetInputJson(Of T)(JsonTypeInfo(Of T))
 - uid: Extism.Pdk.GetInputString
   name: GetInputString()
   href: api/Extism.Pdk.html#Extism_Pdk_GetInputString
@@ -573,6 +589,22 @@ references:
   isSpec: "True"
   fullName: Extism.Pdk.SetOutput
   nameWithType: Pdk.SetOutput
+- uid: Extism.Pdk.SetOutputJson*
+  name: SetOutputJson
+  href: api/Extism.Pdk.html#Extism_Pdk_SetOutputJson_
+  commentId: Overload:Extism.Pdk.SetOutputJson
+  isSpec: "True"
+  fullName: Extism.Pdk.SetOutputJson
+  nameWithType: Pdk.SetOutputJson
+- uid: Extism.Pdk.SetOutputJson``1(``0,System.Text.Json.Serialization.Metadata.JsonTypeInfo{``0})
+  name: SetOutputJson<T>(T, JsonTypeInfo<T>)
+  href: api/Extism.Pdk.html#Extism_Pdk_SetOutputJson__1___0_System_Text_Json_Serialization_Metadata_JsonTypeInfo___0__
+  commentId: M:Extism.Pdk.SetOutputJson``1(``0,System.Text.Json.Serialization.Metadata.JsonTypeInfo{``0})
+  name.vb: SetOutputJson(Of T)(T, JsonTypeInfo(Of T))
+  fullName: Extism.Pdk.SetOutputJson<T>(T, System.Text.Json.Serialization.Metadata.JsonTypeInfo<T>)
+  fullName.vb: Extism.Pdk.SetOutputJson(Of T)(T, System.Text.Json.Serialization.Metadata.JsonTypeInfo(Of T))
+  nameWithType: Pdk.SetOutputJson<T>(T, JsonTypeInfo<T>)
+  nameWithType.vb: Pdk.SetOutputJson(Of T)(T, JsonTypeInfo(Of T))
 - uid: Extism.Pdk.SetVar(System.String,Extism.MemoryBlock)
   name: SetVar(string, MemoryBlock)
   href: api/Extism.Pdk.html#Extism_Pdk_SetVar_System_String_Extism_MemoryBlock_

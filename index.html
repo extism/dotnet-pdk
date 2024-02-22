@@ -6,6 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content=".NET PDK | Extism .NET PDK ">
       
+      
       <link rel="icon" href="images/favicon.ico">
       <link rel="stylesheet" href="public/docfx.min.css">
       <link rel="stylesheet" href="public/main.css">
@@ -15,7 +16,7 @@
       <meta name="docfx:rel" content="">
       
       
-      <meta name="docfx:docurl" content="https://github.com/extism/dotnet-pdk/blob/v1.0.0/index.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/extism/dotnet-pdk/blob/v1.0.1/index.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -113,11 +114,6 @@ dotnet add package Extism.Pdk
     &lt;TargetFramework&gt;net8.0&lt;/TargetFramework&gt;
     &lt;RuntimeIdentifier&gt;wasi-wasm&lt;/RuntimeIdentifier&gt;
     &lt;OutputType&gt;Exe&lt;/OutputType&gt;
-    &lt;PublishTrimmed&gt;true&lt;/PublishTrimmed&gt;
-
-    &lt;!-- Make sure we create a standalone wasm file for our plugin --&gt;
-    &lt;WasmSingleFileBundle&gt;true&lt;/WasmSingleFileBundle&gt;
-    &lt;WasmBuildNative&gt;true&lt;/WasmBuildNative&gt;
   &lt;/PropertyGroup&gt;
 &lt;/Project&gt;
 </code></pre>
@@ -253,11 +249,9 @@ public static class Functions
     [UnmanagedCallersOnly]
     public static int add()
     {
-        var inputJson = Pdk.GetInputString();
-        var parameters = JsonSerializer.Deserialize(inputJson, SourceGenerationContext.Default.Add);
+        var parameters = Pdk.GetInputJson(SourceGenerationContext.Default.Add);
         var sum = new Sum(parameters.a + parameters.b);
-        var outputJson = JsonSerializer.Serialize(sum, SourceGenerationContext.Default.Sum);
-        Pdk.SetOutput(outputJson);
+        Pdk.SetOutputJson(sum, SourceGenerationContext.Default.Sum);
         return 0;
     }
 }
@@ -514,25 +508,7 @@ Events.SendMessage(&quot;Hello World!&quot;);
 </code></pre>
 <p>This is useful when you want to provide a common set of imports and exports that are specific to your use case.</p>
 <h3 id="optimize-size">Optimize Size</h3>
-<p>Normally, the .NET runtime is very conservative when trimming and includes a lot of metadata for debugging and exception purposes. This makes sure code doesn't break (when using reflection for example) but it also means large binary sizes. A hello world sample is about 20mb. To instruct the .NET compiler to be aggresive about trimming, you can try out these options:</p>
-<pre><code class="lang-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;
-  &lt;PropertyGroup&gt;
-    &lt;TargetFramework&gt;net8.0&lt;/TargetFramework&gt;
-    &lt;RuntimeIdentifier&gt;wasi-wasm&lt;/RuntimeIdentifier&gt;
-    &lt;OutputType&gt;Exe&lt;/OutputType&gt;
-    &lt;PublishTrimmed&gt;true&lt;/PublishTrimmed&gt;
-    &lt;WasmBuildNative&gt;true&lt;/WasmBuildNative&gt;
-    &lt;WasmSingleFileBundle&gt;true&lt;/WasmSingleFileBundle&gt;
-    
-    &lt;!-- Note: TrimMode Full breaks Extism's global exception handling hook --&gt;
-    &lt;TrimMode&gt;partial&lt;/TrimMode&gt;
-    &lt;DebuggerSupport&gt;false&lt;/DebuggerSupport&gt;
-    &lt;EventSourceSupport&gt;false&lt;/EventSourceSupport&gt;
-    &lt;UseSystemResourceKeys&gt;true&lt;/UseSystemResourceKeys&gt;
-    &lt;NativeDebugSymbols&gt;false&lt;/NativeDebugSymbols&gt;
-  &lt;/PropertyGroup&gt;
-&lt;/Project&gt;
-</code></pre>
+<p>Normally, the .NET runtime is very conservative when trimming and includes a lot of metadata for debugging and exception purposes. We have enabled some options in Release mode by default that would make the resulting binary smaller (6mb for a hello world sample vs 20mb in debug mode).</p>
 <p>If you have imports in referenced assemblies, make sure <a href="https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#root-assemblies">you mark them as roots</a> so that they don't get trimmed:</p>
 <pre><code class="lang-xml">&lt;ItemGroup&gt;
     &lt;TrimmerRootAssembly Include=&quot;SampleLib&quot; /&gt;
@@ -541,7 +517,7 @@ Events.SendMessage(&quot;Hello World!&quot;);
 <p>And then, run:</p>
 <pre><code>dotnet publish -c Release
 </code></pre>
-<p>Now, you'll have a significantly smaller <code>.wasm</code> file in <code>bin\Release\net8.0\wasi-wasm\AppBundle</code>.</p>
+<p>Now, you'll have a smaller <code>.wasm</code> file in <code>bin\Release\net8.0\wasi-wasm\AppBundle</code>.</p>
 <p>For more details, refer to <a href="https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#trimming-framework-library-features">the official documentation</a>.</p>
 <h3 id="reach-out">Reach Out!</h3>
 <p>Have a question or just want to drop in and say hi? <a href="https://extism.org/discord">Hop on the Discord</a>!</p>
@@ -551,7 +527,7 @@ Events.SendMessage(&quot;Hello World!&quot;);
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/extism/dotnet-pdk/blob/v1.0.0/index.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/extism/dotnet-pdk/blob/v1.0.1/index.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
