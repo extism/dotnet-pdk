@@ -11,7 +11,7 @@ This library can be used to write Extism [Plug-ins](https://extism.org/docs/conc
 ```
 dotnet workload install wasi-experimental
 ```
-3. WASI SDK: https://github.com/WebAssembly/wasi-sdk/releases
+3. Extract [WASI SDK](https://github.com/WebAssembly/wasi-sdk/releases) into local file system and set the `WASI_SDK_PATH` environment variable to point to it
 
 ## Install
 
