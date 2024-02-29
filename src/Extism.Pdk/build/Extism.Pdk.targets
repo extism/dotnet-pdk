@@ -3,7 +3,7 @@
 		<TrimmerRootAssembly Include="Extism.Pdk" />
 	</ItemGroup>
 
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	<PropertyGroup>
 		<PublishTrimmed>true</PublishTrimmed>
 		<WasmBuildNative>true</WasmBuildNative>
 		<WasmSingleFileBundle>true</WasmSingleFileBundle>
