@@ -315,7 +315,7 @@ public static class Pdk
 
             if (request.Headers.Count > 0)
             {
-                writer.WriteStartObject("header");
+                writer.WriteStartObject("headers");
                 foreach (var kvp in request.Headers)
                 {
                     writer.WriteString(kvp.Key, kvp.Value);
