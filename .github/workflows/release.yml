@@ -28,7 +28,7 @@ jobs:
       - name: Install Extism CLI
         run: |
           go install github.com/extism/cli/extism@latest
-          extism lib install --prefix ~/extism --version git
+          extism lib install --prefix ~/extism --version git --github-token ${{ github.token }}
           mkdir -p ./tests/Extism.Pdk.WasmTests/bin/Debug/net8.0
           cp ~/extism/lib/libextism.so ./tests/Extism.Pdk.WasmTests/bin/Debug/net8.0
 
