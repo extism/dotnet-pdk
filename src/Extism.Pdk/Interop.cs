@@ -235,11 +235,11 @@ public static class Pdk
     }
 
     /// <summary>
-    /// Log a message with the specified log level to the host.
+    /// Read a var that's persisted by the host. See <see cref="SetVar(string, MemoryBlock)"/>
     /// </summary>
-    /// <param name="key">The log level for the message.</param>
-    /// <param name="block">The log message as a string.</param>
-    /// <returns></returns>
+    /// <param name="key">The variable name.</param>
+    /// <param name="block">The value of the variable. The plugin should take ownership of the block and free it after reading the data.</param>
+    /// <returns>true if the variable is found, false otherwise.</returns>
     public static bool TryGetVar(string key, out MemoryBlock block)
     {
         var keyBlock = Allocate(key);
@@ -303,7 +303,7 @@ public static class Pdk
     /// Send an HTTP request synchronously and get the response from the host.
     /// </summary>
     /// <param name="request">The HTTP request to send.</param>
-    /// <returns>The HTTP response received from the host.</returns>
+    /// <returns>The HTTP response received from the host. The plugin takes ownership of the memory block and is expected to free it.</returns>
     public static HttpResponse SendRequest(HttpRequest request)
     {
         using var stream = new MemoryStream();
