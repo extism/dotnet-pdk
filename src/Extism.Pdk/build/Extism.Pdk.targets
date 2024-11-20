@@ -14,7 +14,12 @@
 		<EventSourceSupport>false</EventSourceSupport>
 		<UseSystemResourceKeys>true</UseSystemResourceKeys>
 		<NativeDebugSymbols>false</NativeDebugSymbols>
+		<UseAppHost>false</UseAppHost>
 	</PropertyGroup>
+
+	<Target Name="EnforceDotNet8" BeforeTargets="Build">
+		<Error Condition="'$(TargetFramework)' != 'net8.0'" Text="Extism PDK can only be used in projects targeting .NET 8. See https://github.com/extism/dotnet-pdk/issues/110" />
+	</Target>
 
 	<UsingTask TaskName="GenerateFFITask" AssemblyFile="$(MSBuildThisFileDirectory)..\build\Extism.Pdk.MSBuild.dll" Condition="'$(RuntimeIdentifier)' == 'wasi-wasm'"/>
 	<Target Name="GenerateGlueCode" AfterTargets="Build" BeforeTargets="_BeforeWasmBuildApp" Condition="'$(RuntimeIdentifier)' == 'wasi-wasm'">
