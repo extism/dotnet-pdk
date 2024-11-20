@@ -1,6 +1,7 @@
 # .NET PDK
 
-This library can be used to write Extism [Plug-ins](https://extism.org/docs/concepts/plug-in) in C# and F#.
+This library can be used to write Extism
+[Plug-ins](https://extism.org/docs/concepts/plug-in) in C# and F#.
 
 > NOTE: This is an experimental PDK. We'd love to hear your feedback.
 
@@ -8,10 +9,14 @@ This library can be used to write Extism [Plug-ins](https://extism.org/docs/conc
 
 1. .NET SDK 8: https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 2. WASI Workload:
+
 ```
 dotnet workload install wasi-experimental
 ```
-3. Extract [WASI SDK](https://github.com/WebAssembly/wasi-sdk/releases) into local file system and set the `WASI_SDK_PATH` environment variable to point to it
+
+3. Extract [WASI SDK](https://github.com/WebAssembly/wasi-sdk/releases) into
+   local file system and set the `WASI_SDK_PATH` environment variable to point
+   to it
 
 ## Install
 
@@ -25,6 +30,7 @@ dotnet add package Extism.Pdk
 ```
 
 Update your `MyPlugin.csproj`/`MyPlugin.fsproj` as follows:
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
@@ -36,9 +42,15 @@ Update your `MyPlugin.csproj`/`MyPlugin.fsproj` as follows:
 ```
 
 ## Getting Started
-The goal of writing an Extism plug-in is to compile your C#/F# code to a Wasm module with exported functions that the host application can invoke. The first thing you should understand is creating an export. Let's write a simple program that exports a greet function which will take a name as a string and return a greeting string. Paste this into your Program.cs/Program.fs:
+
+The goal of writing an Extism plug-in is to compile your C#/F# code to a Wasm
+module with exported functions that the host application can invoke. The first
+thing you should understand is creating an export. Let's write a simple program
+that exports a greet function which will take a name as a string and return a
+greeting string. Paste this into your Program.cs/Program.fs:
 
 C#:
+
 ```csharp
 using System;
 using System.Runtime.InteropServices;
@@ -66,6 +78,7 @@ public class Functions
 ```
 
 F#:
+
 ```fsharp
 module MyPlugin
 
@@ -88,28 +101,45 @@ let Main args  =
 ```
 
 Some things to note about this code:
-1. The `[UnmanagedCallersOnly(EntryPoint = "greet")]` is required, this marks the `Greet` function as an export with the name `greet` that can be called by the host. `EntryPoint` is optional.
-1. We need a `Main` but it's unused. If you do want to use it, it's exported as a function called `_start`.
-1. Exports in the .NET PDK are coded to the raw ABI. You get parameters from the host by calling `Pdk.GetInput*` functions and you send returns back with the `Pdk.SetOutput` functions.
-1. An Extism export expects an `Int32` return code. `0` is success and `1` is a failure.
+
+1. The `[UnmanagedCallersOnly(EntryPoint = "greet")]` is required, this marks
+   the `Greet` function as an export with the name `greet` that can be called by
+   the host. `EntryPoint` is optional.
+1. We need a `Main` but it's unused. If you do want to use it, it's exported as
+   a function called `_start`.
+1. Exports in the .NET PDK are coded to the raw ABI. You get parameters from the
+   host by calling `Pdk.GetInput*` functions and you send returns back with the
+   `Pdk.SetOutput` functions.
+1. An Extism export expects an `Int32` return code. `0` is success and `1` is a
+   failure.
 
 Compile with this command:
+
 ```
 dotnet build
 ```
 
-This will create a `MyPlugin.wasm` file in `bin/Debug/net8.0/wasi-wasm/AppBundle`. Now, you can try out your plugin by using any of the [Extism SDKs](https://extism.org/docs/category/integrate-into-your-codebase) or by using [Extism CLI](https://extism.org/docs/install)'s `run` command:
+This will create a `MyPlugin.wasm` file in
+`bin/Debug/net8.0/wasi-wasm/AppBundle`. Now, you can try out your plugin by
+using any of the
+[Extism SDKs](https://extism.org/docs/category/integrate-into-your-codebase) or
+by using [Extism CLI](https://extism.org/docs/install)'s `run` command:
+
 ```
 extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input "Benjamin" --wasi
 # => Hello, Benjamin!
 ```
 
-> **Note:** Currently wasi must be provided for all .NET plug-ins even if they don't need system access.
+> **Note:** Currently wasi must be provided for all .NET plug-ins even if they
+> don't need system access.
 
 ## More Exports: Error Handling
-Suppose we want to re-write our greeting function to never greet Benjamis. We can use `Pdk.SetError`:
+
+Suppose we want to re-write our greeting function to never greet Benjamis. We
+can use `Pdk.SetError`:
 
 C#:
+
 ```csharp
 [UnmanagedCallersOnly(EntryPoint = "greet")]
 public static int Greet()
@@ -129,6 +159,7 @@ public static int Greet()
 ```
 
 F#:
+
 ```fsharp
 [<UnmanagedCallersOnly(EntryPoint = "greet")>]
 let Greet () =
@@ -143,6 +174,7 @@ let Greet () =
 ```
 
 Now when we try again:
+
 ```
 extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input="Benjamin" --wasi
 # => Error: Sorry, we don't greet Benjamins!
@@ -155,6 +187,7 @@ echo $?
 ```
 
 We can also throw a normal .NET Exception:
+
 ```
 var name = Pdk.GetInputString();
 if (name == "Benjamin")
@@ -164,6 +197,7 @@ if (name == "Benjamin")
 ```
 
 Now when we try again:
+
 ```
 extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input="Benjamin" --wasi
 # => Error: System.ArgumentException: Sorry, we don't greet Benjamins!
@@ -171,9 +205,13 @@ extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm greet --input="
 ```
 
 ## Json
-Extism export functions simply take bytes in and bytes out. Those can be whatever you want them to be. A common and simple way to get more complex types to and from the host is with json:
+
+Extism export functions simply take bytes in and bytes out. Those can be
+whatever you want them to be. A common and simple way to get more complex types
+to and from the host is with json:
 
 C#:
+
 ```csharp
 [JsonSerializable(typeof(Add))]
 [JsonSerializable(typeof(Sum))]
@@ -196,6 +234,7 @@ public static class Functions
 ```
 
 F#:
+
 ```fsharp
 [<UnmanagedCallersOnly>]
 let add () =
@@ -210,20 +249,28 @@ let add () =
     0
 ```
 
-**Note:** For F#, please make sure the [System.Text.Json](https://www.nuget.org/packages/System.Text.Json) NuGet package is installed in your project.
+**Note:** For F#, please make sure the
+[System.Text.Json](https://www.nuget.org/packages/System.Text.Json) NuGet
+package is installed in your project.
 
 ```
 extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi add --input='{"a": 20, "b": 21}'
 # => {"Result":41}
 ```
 
-**Note:** When enabling trimming, make sure you use the [source generation](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation) as reflection is disabled in that mode.
+**Note:** When enabling trimming, make sure you use the
+[source generation](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation)
+as reflection is disabled in that mode.
 
 ## Configs
 
-Configs are key-value pairs that can be passed in by the host when creating a plug-in. These can be useful to statically configure the plug-in with some data that exists across every function call. Here is a trivial example using Pdk.TryGetConfig:
+Configs are key-value pairs that can be passed in by the host when creating a
+plug-in. These can be useful to statically configure the plug-in with some data
+that exists across every function call. Here is a trivial example using
+Pdk.TryGetConfig:
 
 C#:
+
 ```csharp
 [UnmanagedCallersOnly(EntryPoint = "greet")]
 public static int Greet()
@@ -240,6 +287,7 @@ public static int Greet()
 ```
 
 F#:
+
 ```fsharp
 [<UnmanagedCallersOnly(EntryPoint = "greet")>]
 let Greet () =
@@ -252,16 +300,22 @@ let Greet () =
         failwith "This plug-in requires a 'user' key in the config"
 ```
 
-To test it, the [Extism CLI](https://github.com/extism/cli) has a --config option that lets you pass in key=value pairs:
+To test it, the [Extism CLI](https://github.com/extism/cli) has a --config
+option that lets you pass in key=value pairs:
+
 ```
 extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi greet --config user=Benjamin
 # => Hello, Benjamin!
 ```
 
 ## Variables
-Variables are another key-value mechanism but it's a mutable data store that will persist across function calls. These variables will persist as long as the host has loaded and not freed the plug-in.
+
+Variables are another key-value mechanism but it's a mutable data store that
+will persist across function calls. These variables will persist as long as the
+host has loaded and not freed the plug-in.
 
 C#:
+
 ```csharp
 [UnmanagedCallersOnly]
 public static int count()
@@ -279,6 +333,7 @@ public static int count()
 ```
 
 F#:
+
 ```fsharp
 [<UnmanagedCallersOnly>]
 let count () =
@@ -299,6 +354,7 @@ let count () =
 ```
 
 From [Extism CLI](https://github.com/extism/cli):
+
 ```
 extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi count --loop 3
 1
@@ -307,9 +363,11 @@ extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi count --
 ```
 
 ## HTTP
+
 Sometimes it is useful to let a plug-in make HTTP calls:
 
 C#:
+
 ```csharp
 [UnmanagedCallersOnly]
 public static int http_get()
@@ -328,6 +386,7 @@ public static int http_get()
 ```
 
 F#:
+
 ```fsharp
 [<UnmanagedCallersOnly>]
 let http_get () =
@@ -342,6 +401,7 @@ let http_get () =
 ```
 
 From [Extism CLI](https://github.com/extism/cli):
+
 ```
 extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi http_get --allow-host='*.typicode.com'
 {
@@ -351,19 +411,30 @@ extism call .\bin\Debug\net8.0\wasi-wasm\AppBundle\MyPlugin.wasm --wasi http_get
   "completed": false
 }
 ```
+
 > **NOTE**: `HttpClient` doesn't work in Wasm yet.
 
 ## Imports (Host Functions)
 
-Like any other code module, Wasm not only let's you export functions to the outside world, you can import them too. Host Functions allow a plug-in to import functions defined in the host. For example, if you host application is written in Go, it can pass a Go function down to your Go plug-in where you can invoke it.
+Like any other code module, Wasm not only let's you export functions to the
+outside world, you can import them too. Host Functions allow a plug-in to import
+functions defined in the host. For example, if you host application is written
+in Go, it can pass a Go function down to your Go plug-in where you can invoke
+it.
 
-This topic can get fairly complicated and we have not yet fully abstracted the Wasm knowledge you need to do this correctly. So we recommend reading our [concept doc on Host Functions](https://extism.org/docs/concepts/host-functions) before you get started.
+This topic can get fairly complicated and we have not yet fully abstracted the
+Wasm knowledge you need to do this correctly. So we recommend reading our
+[concept doc on Host Functions](https://extism.org/docs/concepts/host-functions)
+before you get started.
 
 ### A Simple Example
 
-Host functions have a similar interface as exports. You just need to declare them as extern on the top of your `Program.cs`/`Program.fs`. You only declare the interface as it is the host's responsibility to provide the implementation:
+Host functions have a similar interface as exports. You just need to declare
+them as extern on the top of your `Program.cs`/`Program.fs`. You only declare
+the interface as it is the host's responsibility to provide the implementation:
 
 C#:
+
 ```csharp
 [DllImport("extism", EntryPoint = "a_go_func")]
 public static extern ulong GoFunc(ulong offset);
@@ -380,6 +451,7 @@ public static int hello_from_go()
 ```
 
 F#:
+
 ```fsharp
 [<DllImport("extism", EntryPoint = "a_go_func")>]
 extern uint64 GoFunc(uint64 offset)
@@ -398,8 +470,10 @@ let hello_from_go () =
 
 ### Testing it out
 
-We can't really test this from the Extism CLI as something must provide the implementation. So let's
-write out the Go side here. Check out the [docs for Host SDKs](https://extism.org/docs/concepts/host-sdk) to implement a host function in a language of your choice.
+We can't really test this from the Extism CLI as something must provide the
+implementation. So let's write out the Go side here. Check out the
+[docs for Host SDKs](https://extism.org/docs/concepts/host-sdk) to implement a
+host function in a language of your choice.
 
 ```go
 ctx := context.Background()
@@ -459,11 +533,14 @@ go run .
 
 ### Referenced Assemblies
 
-Methods in referenced assemblies that are decorated with `[DllImport]` and `[UnmanagedCallersOnly]` are imported and exported respectively.
+Methods in referenced assemblies that are decorated with `[DllImport]` and
+`[UnmanagedCallersOnly]` are imported and exported respectively.
 
-**Note:** The library imports/exports are ignored if the app doesn't call at least one method from the library.
+**Note:** The library imports/exports are ignored if the app doesn't call at
+least one method from the library.
 
 For example, if we have a library that contains this class:
+
 ```csharp
 namespace MessagingBot.Pdk;
 public class Events
@@ -497,13 +574,20 @@ using MessagingBot.Pdk;
 Events.SendMessage("Hello World!");
 ```
 
-This is useful when you want to provide a common set of imports and exports that are specific to your use case.
+This is useful when you want to provide a common set of imports and exports that
+are specific to your use case.
 
 ### Optimize Size
 
-Normally, the .NET runtime is very conservative when trimming and includes a lot of metadata for debugging and exception purposes. We have enabled some options in Release mode by default that would make the resulting binary smaller (6mb for a hello world sample vs 20mb in debug mode).
+Normally, the .NET runtime is very conservative when trimming and includes a lot
+of metadata for debugging and exception purposes. We have enabled some options
+in Release mode by default that would make the resulting binary smaller (6mb for
+a hello world sample vs 20mb in debug mode).
 
-If you have imports in referenced assemblies, make sure [you mark them as roots](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#root-assemblies) so that they don't get trimmed:
+If you have imports in referenced assemblies, make sure
+[you mark them as roots](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#root-assemblies)
+so that they don't get trimmed:
+
 ```xml
 <ItemGroup>
     <TrimmerRootAssembly Include="SampleLib" />
@@ -511,14 +595,87 @@ If you have imports in referenced assemblies, make sure [you mark them as roots]
 ```
 
 And then, run:
+
 ```
 dotnet publish -c Release
 ```
 
-Now, you'll have a smaller `.wasm` file in `bin\Release\net8.0\wasi-wasm\AppBundle`.
+Now, you'll have a smaller `.wasm` file in
+`bin\Release\net8.0\wasi-wasm\AppBundle`.
 
-For more details, refer to [the official documentation](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#trimming-framework-library-features).
+For more details, refer to
+[the official documentation](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options?pivots=dotnet-7-0#trimming-framework-library-features).
 
-### Reach Out!
+## Generating Bindings
 
-Have a question or just want to drop in and say hi? [Hop on the Discord](https://extism.org/discord)!
+It's often very useful to define a schema to describe the function signatures
+and types you want to use between Extism SDK and PDK languages.
+
+[XTP Bindgen](https://github.com/dylibso/xtp-bindgen) is an open source
+framework to generate PDK bindings for Extism plug-ins. It's used by the
+[XTP Platform](https://www.getxtp.com/), but can be used outside of the platform
+to define any Extism compatible plug-in system.
+
+### 1. Install the `xtp` CLI.
+
+See installation instructions
+[here](https://docs.xtp.dylibso.com/docs/cli#installation).
+
+### 2. Create a schema using our OpenAPI-inspired IDL:
+
+```yaml
+version: v1-draft
+exports: 
+  CountVowels:
+      input: 
+          type: string
+          contentType: text/plain; charset=utf-8
+      output:
+          $ref: "#/components/schemas/VowelReport"
+          contentType: application/json
+# components.schemas defined in example-schema.yaml...
+```
+
+> See an example in [example-schema.yaml](./example-schema.yaml), or a full
+> "kitchen sink" example on
+> [the docs page](https://docs.xtp.dylibso.com/docs/concepts/xtp-schema/).
+
+### 3. Generate bindings to use from your plugins:
+
+```
+xtp plugin init --schema-file ./example-schema.yaml
+    1. TypeScript                      
+    2. Go                              
+    3. Rust                            
+    4. Python                          
+  > 5. C#                              
+    6. Zig                             
+    7. C++                             
+    8. GitHub Template                 
+    9. Local Template
+```
+
+This will create an entire boilerplate plugin project for you to get started
+with:
+
+```csharp
+/// <returns>The result of counting vowels on the Vowels input.</returns>
+public static VowelReport CountVowels(string input)
+{
+    // TODO: fill out your implementation here
+    throw new NotImplementedException();
+}
+```
+
+Implement the empty function(s), and run `xtp plugin build` to compile your
+plugin.
+
+> For more information about XTP Bindgen, see the
+> [dylibso/xtp-bindgen](https://github.com/dylibso/xtp-bindgen) repository and
+> the official
+> [XTP Schema documentation](https://docs.xtp.dylibso.com/docs/concepts/xtp-schema).
+
+## Reach Out!
+
+Have a question or just want to drop in and say hi?
+[Hop on the Discord](https://extism.org/discord)!
