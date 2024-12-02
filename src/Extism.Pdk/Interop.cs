@@ -17,7 +17,7 @@ public static class Pdk
     /// Read the input data sent by the host.
     /// </summary>
     /// <returns>The input data as a byte array.</returns>
-    public static unsafe byte[] GetInput()
+    public static byte[] GetInput()
     {
         var length = Native.extism_input_length();
         if (length == 0)
@@ -122,7 +122,7 @@ public static class Pdk
     /// Set plugin error
     /// </summary>
     /// <param name="errorMessage"></param>
-    public static unsafe void SetError(string errorMessage)
+    public static void SetError(string errorMessage)
     {
         var block = Allocate(errorMessage);
         Native.extism_error_set(block.Offset);
