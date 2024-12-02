@@ -361,27 +361,27 @@ public static class Pdk
 public enum LogLevel
 {
     /// <summary>
-    /// Trace level logging 
+    /// Trace 
     /// </summary>
     Trace = 0,
 
     /// <summary>
-    /// Debug level logging
+    /// Debug
     /// </summary>
     Debug = 1,
 
     /// <summary>
-    /// Information level logging
+    /// Information
     /// </summary>
     Info = 2,
 
     /// <summary>
-    /// Warning level logging
+    /// Warning
     /// </summary>
     Warn = 3,
 
     /// <summary>
-    /// Error level logging
+    /// Error
     /// </summary>
     Error = 4,
 }
