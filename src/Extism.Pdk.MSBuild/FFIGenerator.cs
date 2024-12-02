@@ -102,7 +102,6 @@ namespace Extism.Pdk.MSBuild
 
             return files;
         }
-
         private FileEntry GenerateExports(MethodDefinition[] exportedMethods)
         {
             var sb = new StringBuilder();
@@ -110,57 +109,106 @@ namespace Extism.Pdk.MSBuild
             if (exportedMethods.Length > 0)
             {
                 sb.AppendLine(Preamble);
-                sb.AppendLine(
-                """          
-                // _initialize
+
+                // Add runtime initialization code
+                sb.AppendLine("""          
+                // Runtime initialization
                 void mono_wasm_load_runtime(const char* unused, int debug_level);
 
                 #ifdef WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
-                // This is supplied from the MSBuild itemgroup @(WasiAfterRuntimeLoaded)
                 WASI_AFTER_RUNTIME_LOADED_DECLARATIONS
                 #endif
 
                 void initialize_runtime() {
                     mono_wasm_load_runtime("", 0);
                 }
-
-                // end of _initialize
                 """);
 
-                sb.AppendLine(
-                """
+                // Add enhanced exception handling utilities
+                sb.AppendLine("""
 
                 void mono_wasm_invoke_method_ref(MonoMethod* method, MonoObject** this_arg_in, void* params[], MonoObject** _out_exc, MonoObject** out_result);
-                MonoString* mono_object_try_to_string (MonoObject *obj, MonoObject **exc, MonoError *error);
+                MonoString* mono_object_try_to_string(MonoObject *obj, MonoObject **exc, MonoError *error);
                 void mono_print_unhandled_exception(MonoObject *exc);
+                MonoObject* mono_get_exception_runtime_wrapped(MonoString* wrapped_exception_type, MonoString* wrapped_exception_message);
 
-                MonoMethod* method_extism_print_exception;
+                // Cache method lookups
+                MonoMethod* method_extism_print_exception = NULL;
+                MonoMethod* method_get_exception_message = NULL;
+
+                // Enhanced exception printing that ensures all exceptions are properly handled
                 void extism_print_exception(MonoObject* exc)
                 {
                     if (!method_extism_print_exception)
                     {
                         method_extism_print_exception = lookup_dotnet_method("Extism.Pdk.dll", "Extism", "Native", "PrintException", -1);
-
-                        if (method_extism_print_exception == NULL) {
-                            printf("Fatal: Failed to find Extism.Native.PrintException");
+                        if (!method_extism_print_exception) {
+                            // If we can't find the method, set a basic error
+                            const char* message = "Fatal: Failed to find Extism.Native.PrintException";
+                            ExtismPointer ptr = extism_alloc(strlen(message));
+                            memcpy((void*)ptr, message, strlen(message));
+                            extism_error_set(ptr);
+                            return;
                         }
-
-                        assert(method_extism_print_exception);
                     }
 
+                    // Try to get detailed exception info
                     void* method_params[] = { exc };
-                    MonoObject* exception = NULL;
+                    MonoObject* nested_exception = NULL;
                     MonoObject* result = NULL;
-                    mono_wasm_invoke_method_ref(method_extism_print_exception, NULL, method_params, &exception, &result);
+                    
+                    mono_wasm_invoke_method_ref(method_extism_print_exception, NULL, method_params, &nested_exception, &result);
                 
-                    if (exception != NULL) {
-                        const char* message = "An exception was thrown while trying to print the previous exception. Please check stderr for details.";
-                        mono_print_unhandled_exception(exception);
+                    if (nested_exception != NULL) {
+                        // If we hit an exception while handling the exception, 
+                        // fall back to basic error reporting
+                        MonoError error;
+                        MonoObject* string_exc = NULL;
+                        MonoString* message = mono_object_try_to_string(nested_exception, &string_exc, &error);
+                        
+                        if (!string_exc && message) {
+                            char* utf8_message = mono_string_to_utf8(message);
+                            ExtismPointer ptr = extism_alloc(strlen(utf8_message));
+                            memcpy((void*)ptr, utf8_message, strlen(utf8_message));
+                            extism_error_set(ptr);
+                            mono_free(utf8_message);
+                        } else {
+                            const char* fallback = "An exception occurred while handling another exception";
+                            ExtismPointer ptr = extism_alloc(strlen(fallback));
+                            memcpy((void*)ptr, fallback, strlen(fallback));
+                            extism_error_set(ptr);
+                        }
                     }
                 }
 
+                // Safe method invocation wrapper
+                int invoke_method_safely(MonoMethod* method, const char* method_name) 
+                {
+                    void* method_params[] = { };
+                    MonoObject* exception = NULL;
+                    MonoObject* result = NULL;
+
+                    mono_wasm_invoke_method_ref(method, NULL, method_params, &exception, &result);
+   
+                    if (exception != NULL) {
+                        // First print to stderr for debugging
+                        mono_print_unhandled_exception(exception);
+                        // Then ensure it's properly set as an Extism error
+                        extism_print_exception(exception);
+                        return 1;
+                    }
+    
+                    // Handle return value
+                    int int_result = 0;
+                    if (result != NULL) {
+                        int_result = *(int*)mono_object_unbox(result);
+                    }
+    
+                    return int_result;
+                }
                 """);
 
+                // Generate the exported function wrappers
                 foreach (var method in exportedMethods)
                 {
                     if (method.Parameters.Count > 0)
@@ -171,52 +219,36 @@ namespace Extism.Pdk.MSBuild
 
                     var assemblyFileName = method.Module.Assembly.Name.Name + ".dll";
                     var attribute = method.CustomAttributes.First(a => a.AttributeType.Name == "UnmanagedCallersOnlyAttribute");
-
                     var exportName = attribute.Fields.FirstOrDefault(p => p.Name == "EntryPoint").Argument.Value?.ToString() ?? method.Name;
-                    var parameterCount = method.Parameters.Count;
-                    var methodParams = string.Join(", ", Enumerable.Repeat("NULL", parameterCount));
-                    var returnType = method.ReturnType.FullName;
 
                     sb.AppendLine($$"""
-MonoMethod* method_{{exportName}};
-__attribute__((export_name("{{exportName}}"))) int {{exportName}}()
-{
-    initialize_runtime();
+                    MonoMethod* method_{{exportName}};
+                    __attribute__((export_name("{{exportName}}"))) int {{exportName}}()
+                    {
+                        initialize_runtime();
 
-    if (!method_{{exportName}})
-    {
-        method_{{exportName}} = lookup_dotnet_method("{{assemblyFileName}}", "{{method.DeclaringType.Namespace}}", "{{method.DeclaringType.Name}}", "{{method.Name}}", -1);
-        assert(method_{{exportName}});
-    }
+                        if (!method_{{exportName}})
+                        {
+                            method_{{exportName}} = lookup_dotnet_method("{{assemblyFileName}}", "{{method.DeclaringType.Namespace}}", "{{method.DeclaringType.Name}}", "{{method.Name}}", -1);
+                            if (!method_{{exportName}}) {
+                                const char* error_message = "Failed to lookup method: {{exportName}}";
+                                ExtismPointer ptr = extism_alloc(strlen(error_message));
+                                memcpy((void*)ptr, error_message, strlen(error_message));
+                                extism_error_set(ptr);
+                                return 1;
+                            }
+                        }
 
-    void* method_params[] = { };
-    MonoObject* exception = NULL;
-    MonoObject* result = NULL;
-    mono_wasm_invoke_method_ref(method_{{exportName}}, NULL, method_params, &exception, &result);
-   
-    if (exception != NULL) {
-        const char* message = "An exception was thrown when calling {{exportName}}. Please check stderr for details.";
-        mono_print_unhandled_exception(exception);
-
-        extism_print_exception(exception);
-        return 1;
-    }
-    
-    int int_result = 0;  // Default value
-
-    if (result != NULL) {
-        int_result = *(int*)mono_object_unbox(result);
-    }
-    
-    return int_result;
-}
-""");
+                        return invoke_method_safely(method_{{exportName}}, "{{exportName}}");
+                    }
+                    """);
                 }
             }
 
             sb.AppendLine();
             return new FileEntry { Name = "exports.c", Content = sb.ToString() };
         }
+
 
         private string ToImportStatement(MethodDefinition method)
         {
