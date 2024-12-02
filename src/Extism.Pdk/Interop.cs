@@ -26,13 +26,21 @@ public static class Pdk
         }
 
         var buffer = new byte[length];
-        fixed (byte* ptr = buffer)
+
+        for (ulong i = 0; i < length; i++)
         {
-            if (!Native.extism_load_input(0, ptr, length))
+            if (length - i >= 8)
             {
-                throw new InvalidOperationException("Failed to load input data");
+                var x = Native.extism_input_load_u64(i);
+                BinaryPrimitives.WriteUInt64LittleEndian(buffer.AsSpan((int)i), x);
+                i += 7;
+            }
+            else
+            {
+                buffer[i] = Native.extism_input_load_u8(i);
             }
         }
+
         return buffer;
     }
 
@@ -67,10 +75,7 @@ public static class Pdk
     /// <param name="block">The memory block containing the output data.</param>
     public static void SetOutput(MemoryBlock block)
     {
-        if (!Native.extism_output_set_from_handle(block.Offset, 0, block.Length))
-        {
-            throw new InvalidOperationException("Failed to set output data.");
-        }
+        Native.extism_output_set(block.Offset, block.Length);
     }
 
     /// <summary>
@@ -81,7 +86,10 @@ public static class Pdk
     {
         fixed (byte* ptr = data)
         {
-            Native.extism_output_buf(ptr, (ulong)data.Length);
+            var len = (ulong)data.Length;
+            var offs = Native.extism_alloc(len);
+            Native.extism_store(offs, ptr, len);
+            Native.extism_output_set(offs, len);
         }
     }
 
@@ -116,11 +124,8 @@ public static class Pdk
     /// <param name="errorMessage"></param>
     public static unsafe void SetError(string errorMessage)
     {
-        var bytes = Encoding.UTF8.GetBytes(errorMessage);
-        fixed (byte* ptr = bytes)
-        {
-            Native.extism_error_set_buf(ptr, (ulong)bytes.Length);
-        }
+        var block = Allocate(errorMessage);
+        Native.extism_error_set(block.Offset);
     }
 
     /// <summary>
@@ -155,10 +160,7 @@ public static class Pdk
 
         fixed (byte* ptr = buffer)
         {
-            if (!Native.extism_store_to_handle(block.Offset, 0, ptr, (ulong)buffer.Length))
-            {
-                throw new InvalidOperationException("Failed to store memory block.");
-            }
+            Native.extism_store(block.Offset, ptr, (ulong)buffer.Length);
         }
 
         return block;
@@ -572,10 +574,7 @@ public class MemoryBlock : IDisposable
 
         fixed (byte* ptr = buffer)
         {
-            if (!Native.extism_load_from_handle(Offset, 0, ptr, Length))
-            {
-                throw new InvalidOperationException("Failed to load memory block.");
-            }
+            Native.extism_load(Offset, ptr, Length);
         }
     }
 
@@ -598,17 +597,14 @@ public class MemoryBlock : IDisposable
     {
         CheckDisposed();
 
-        if ((ulong)bytes.Length > Length)
+        if((ulong)bytes.Length > Length)
         {
             throw new IndexOutOfRangeException("Memory block is not big enough.");
         }
 
         fixed (byte* ptr = bytes)
         {
-            if (!Native.extism_store_to_handle(Offset, 0, ptr, (ulong)bytes.Length))
-            {
-                throw new InvalidOperationException("Failed to store memory block.");
-            }
+            Native.extism_store(Offset, ptr, Length);
         }
     }
 
