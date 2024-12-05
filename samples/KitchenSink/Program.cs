@@ -3,6 +3,7 @@ using System;
 using Extism;
 using SampleLib;
 using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 Class1.noop(); // Import Class1 from SampleLib so that it's included during compilation
 Console.WriteLine("Hello world!");
@@ -81,6 +82,12 @@ namespace Functions
             request.Headers.Add("Authorization", $"Basic {token}");
 
             var response = Pdk.SendRequest(request);
+
+            if (!response.Headers.TryGetValue("content-type", out var contentType) || !contentType.Contains("application/json"))
+            {
+                Pdk.SetError($"Invalid content-type header. Expected 'application/json', got '{contentType}'");
+            }
+
             Pdk.SetOutput(response.Body);
             return 0;
         }
@@ -88,13 +95,14 @@ namespace Functions
         [UnmanagedCallersOnly(EntryPoint = "throw")]
         public static int Throw()
         {
-            // Exceptions are also handled, but Pdk.SetError is recommeded to use.
+            // Extism PDK also tries to handle Exceptions, but Pdk.SetError is recommeded to use.
             throw new InvalidOperationException("Something bad happened.");
         }
     }
 
     [JsonSerializable(typeof(ConcatInput))]
     [JsonSerializable(typeof(ConcatOutput))]
+    [JsonSerializable(typeof(Dictionary<string, string>))]
     public partial class JsonContext : JsonSerializerContext {}
 
     public class ConcatInput
