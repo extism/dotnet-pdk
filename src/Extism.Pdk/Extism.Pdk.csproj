@@ -22,6 +22,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	    <PackageReference Include="Extism.runtime.all" Version="1.9.1" />
+	    <PackageReference Include="Extism.runtime.win-x64" Version="1.9.1" />
 	    <PackageReference Include="MinVer" Version="6.0.0">
 	      <PrivateAssets>all</PrivateAssets>
 	      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

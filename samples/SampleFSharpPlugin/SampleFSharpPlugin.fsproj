@@ -13,7 +13,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Extism.runtime.win-x64" Version="1.9.1" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="FSharp.Core" Version="9.0.100" />
 	</ItemGroup>
   
 	<!--This is only necessary for ProjectReference, when using the nuget package this will not be necessary-->
