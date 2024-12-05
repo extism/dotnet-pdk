@@ -431,7 +431,7 @@ public class HttpRequest
     /// <summary>
     /// An optional body.
     /// </summary>
-    [JsonPropertyName("body")]
+    [JsonIgnore]
     public byte[] Body { get; set; } = Array.Empty<byte>();
 }
 
