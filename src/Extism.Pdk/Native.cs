@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Extism;
 
@@ -81,8 +82,18 @@ internal class Native
     internal static unsafe extern void extism_load(ulong offset, byte* buffer, ulong n);
     [DllImport("extism")]
     internal static unsafe extern void extism_load_input(byte* buffer, ulong n);
-    
-    internal static void PrintException(Exception ex)
+
+    [DllImport("extism")]
+    internal static unsafe extern ulong extism_http_headers();
+
+    // Logging functions with levels
+    [DllImport("extism")]
+    internal static unsafe extern int extism_get_log_level();
+
+    [DllImport("extism")]
+    internal static unsafe extern void extism_log_trace(ulong offset);
+
+    internal unsafe static void PrintException(Exception ex)
     {
         var message = ex.ToString();
         var block = Pdk.Allocate(message);

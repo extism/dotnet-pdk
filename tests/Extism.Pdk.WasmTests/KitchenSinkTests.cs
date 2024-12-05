@@ -81,6 +81,8 @@ public class KitchenSinkTests
             manifest.AllowedHosts.Add(allowedHost);
         });
 
+        plugin.AllowHttpResponseHeaders();
+
         var input = Encoding.UTF8.GetBytes("1");
 
         if (expected)

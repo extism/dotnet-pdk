@@ -10,6 +10,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Extism.runtime.win-x64" Version="1.9.1" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\src\Extism.Pdk\Extism.Pdk.csproj" />
 		<ProjectReference Include="..\SampleLib\SampleLib.csproj" />
 		<TrimmerRootAssembly Include="SampleLib" />

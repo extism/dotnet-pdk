@@ -1,7 +1,9 @@
 ﻿using System.Buffers.Binary;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
 namespace Extism;
@@ -42,6 +44,7 @@ public static class Pdk
         return buffer;
     }
 
+
     /// <summary>
     /// Read the input data sent by the host as a UTF-8 encoded string.
     /// </summary>
@@ -79,7 +82,7 @@ public static class Pdk
     /// Set the output data to be sent back to the host as a byte buffer.
     /// </summary>
     /// <param name="data">The byte buffer to set as output data.</param>
-    public unsafe static void SetOutput(ReadOnlySpan<byte> data)
+    public static unsafe void SetOutput(ReadOnlySpan<byte> data)
     {
         fixed (byte* ptr = data)
         {
@@ -133,6 +136,10 @@ public static class Pdk
     public static MemoryBlock Allocate(ulong length)
     {
         var offset = Native.extism_alloc(length);
+        if (offset == 0 && length > 0)
+        {
+            throw new InvalidOperationException("Failed to allocate memory block.");
+        }
 
         return new MemoryBlock(offset, length);
     }
@@ -203,8 +210,17 @@ public static class Pdk
     /// <param name="block">The memory block containing the log message.</param>
     public static void Log(LogLevel level, MemoryBlock block)
     {
+        if (level < (LogLevel)Native.extism_get_log_level())
+        {
+            return;
+        }
+
         switch (level)
         {
+            case LogLevel.Trace:
+                Native.extism_log_trace(block.Offset);
+                break;
+
             case LogLevel.Info:
                 Native.extism_log_info(block.Offset);
                 break;
@@ -230,6 +246,11 @@ public static class Pdk
     /// <param name="message"></param>
     public static void Log(LogLevel level, string message)
     {
+        if (level < (LogLevel)Native.extism_get_log_level())
+        {
+            return;
+        }
+
         var block = Allocate(message);
         Log(level, block);
     }
@@ -306,36 +327,31 @@ public static class Pdk
     /// <returns>The HTTP response received from the host. The plugin takes ownership of the memory block and is expected to free it.</returns>
     public static HttpResponse SendRequest(HttpRequest request)
     {
-        using var stream = new MemoryStream();
-        using (var writer = new Utf8JsonWriter(stream))
+        var requestJson = JsonSerializer.Serialize(request, JsonContext.Default.HttpRequest);
+
+        using var requestBlock = Allocate(requestJson);
+        using var bodyBlock = Allocate(request.Body);
+
+        var responseOffset = Native.extism_http_request(requestBlock.Offset, bodyBlock.Offset);
+        if (responseOffset == 0)
         {
-            writer.WriteStartObject();
-            writer.WriteString("url", request.Url.AbsoluteUri);
-            writer.WriteString("method", Enum.GetName(typeof(HttpMethod), request.Method));
-
-            if (request.Headers.Count > 0)
-            {
-                writer.WriteStartObject("headers");
-                foreach (var kvp in request.Headers)
-                {
-                    writer.WriteString(kvp.Key, kvp.Value);
-                }
-                writer.WriteEndObject();
-            }
-
-            writer.WriteEndObject();
+            throw new InvalidOperationException("Failed to send HTTP request.");
         }
 
-        var bytes = stream.ToArray();
-
-        var requestBlock = Allocate(bytes);
-        var bodyBlock = Allocate(request.Body);
-
-        var offset = Native.extism_http_request(requestBlock.Offset, bodyBlock.Offset);
-        var block = MemoryBlock.Find(offset);
+        var responseBody = MemoryBlock.Find(responseOffset);
         var status = Native.extism_http_status_code();
+        var httpResponse = new HttpResponse(responseBody, status);
 
-        return new HttpResponse(block, status);
+        var headersOffset = Native.extism_http_headers();
+        if (headersOffset > 0)
+        {
+            using var headersBlock = MemoryBlock.Find(headersOffset);
+            var headersJson = headersBlock.ReadString();
+
+            httpResponse.Headers = JsonSerializer.Deserialize(headersJson, JsonContext.Default.DictionaryStringString) ?? [];
+        }
+
+        return httpResponse;
     }
 }
 
@@ -345,24 +361,29 @@ public static class Pdk
 public enum LogLevel
 {
     /// <summary>
-    /// Information
+    /// Trace 
     /// </summary>
-    Info,
+    Trace = 0,
 
     /// <summary>
     /// Debug
     /// </summary>
-    Debug,
+    Debug = 1,
+
+    /// <summary>
+    /// Information
+    /// </summary>
+    Info = 2,
 
     /// <summary>
     /// Warning
     /// </summary>
-    Warn,
+    Warn = 3,
 
     /// <summary>
     /// Error
     /// </summary>
-    Error
+    Error = 4,
 }
 
 /// <summary>
@@ -391,21 +412,26 @@ public class HttpRequest
     /// <summary>
     /// HTTP URL
     /// </summary>
+    [JsonPropertyName("url")]
     public Uri Url { get; set; }
 
     /// <summary>
     /// HTTP Headers
     /// </summary>
+    [JsonPropertyName("headers")]
     public Dictionary<string, string> Headers { get; } = new();
 
     /// <summary>
     /// HTTP method
     /// </summary>
+    [JsonPropertyName("method")]
+    [JsonConverter(typeof(JsonStringEnumConverter<HttpMethod>))]
     public HttpMethod Method { get; set; } = HttpMethod.GET;
 
     /// <summary>
     /// An optional body.
     /// </summary>
+    [JsonIgnore]
     public byte[] Body { get; set; } = Array.Empty<byte>();
 }
 
@@ -472,6 +498,11 @@ public class HttpResponse : IDisposable
     public ushort Status { get; set; }
 
     /// <summary>
+    /// HTTP Headers. Make sure HTTP response headers are enabled in the host.
+    /// </summary>
+    public Dictionary<string, string> Headers { get; set; } = new();
+
+    /// <summary>
     /// Frees the current memory block.
     /// </summary>
     public void Dispose()
@@ -534,6 +565,8 @@ public class MemoryBlock : IDisposable
     /// <exception cref="InvalidOperationException"></exception>
     public unsafe void CopyTo(Span<byte> buffer)
     {
+        CheckDisposed();
+
         if ((ulong)buffer.Length < Length)
         {
             throw new InvalidOperationException($"Buffer must be at least ${Length} bytes.");
@@ -562,7 +595,9 @@ public class MemoryBlock : IDisposable
     /// <exception cref="IndexOutOfRangeException"></exception>
     public unsafe void WriteBytes(ReadOnlySpan<byte> bytes)
     {
-        if ((ulong)bytes.Length > Length)
+        CheckDisposed();
+
+        if((ulong)bytes.Length > Length)
         {
             throw new IndexOutOfRangeException("Memory block is not big enough.");
         }
@@ -579,6 +614,8 @@ public class MemoryBlock : IDisposable
     /// <returns></returns>
     public byte[] ReadBytes()
     {
+        CheckDisposed();
+
         var buffer = new byte[Length];
         CopyTo(buffer);
 
@@ -606,6 +643,15 @@ public class MemoryBlock : IDisposable
         return new MemoryBlock(offset, length);
     }
 
+    private void CheckDisposed()
+    {
+        if (_disposed)
+        {
+            throw new ObjectDisposedException(nameof(MemoryBlock));
+        }
+    }
+
+    private bool _disposed;
     /// <summary>
     /// Frees the current memory block.
     /// </summary>
@@ -617,6 +663,13 @@ public class MemoryBlock : IDisposable
 
     private void Dispose(bool disposing)
     {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+
         if (disposing)
         {
             // free managed resources
@@ -627,4 +680,11 @@ public class MemoryBlock : IDisposable
             Native.extism_free(Offset);
         }
     }
+}
+
+[JsonSerializable(typeof(HttpRequest))]
+[JsonSerializable(typeof(Dictionary<string, string>))]
+internal partial class JsonContext : JsonSerializerContext
+{
+
 }
