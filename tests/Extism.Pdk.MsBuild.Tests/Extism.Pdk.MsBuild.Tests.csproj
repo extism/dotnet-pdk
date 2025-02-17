@@ -12,7 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Extism.runtime.all" Version="1.9.1" />
     <PackageReference Include="Extism.runtime.win-x64" Version="1.9.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="Mono.Cecil" Version="0.11.6" />
     <PackageReference Include="Shouldly" Version="4.3.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
