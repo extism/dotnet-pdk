@@ -21,7 +21,7 @@
 
 		<PackageReference Include="Extism.runtime.win-x64" Version="1.9.1" />
 
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.12.6" ExcludeAssets="Runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.13.9" ExcludeAssets="Runtime" />
 
 		<PackageReference Include="Mono.Cecil" Version="0.11.6">
 			<PrivateAssets>All</PrivateAssets>
