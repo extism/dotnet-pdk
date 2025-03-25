@@ -186,6 +186,19 @@ references:
   isSpec: "True"
   fullName: Extism.HttpResponse.Dispose
   nameWithType: HttpResponse.Dispose
+- uid: Extism.HttpResponse.Headers
+  name: Headers
+  href: api/Extism.HttpResponse.html#Extism_HttpResponse_Headers
+  commentId: P:Extism.HttpResponse.Headers
+  fullName: Extism.HttpResponse.Headers
+  nameWithType: HttpResponse.Headers
+- uid: Extism.HttpResponse.Headers*
+  name: Headers
+  href: api/Extism.HttpResponse.html#Extism_HttpResponse_Headers_
+  commentId: Overload:Extism.HttpResponse.Headers
+  isSpec: "True"
+  fullName: Extism.HttpResponse.Headers
+  nameWithType: HttpResponse.Headers
 - uid: Extism.HttpResponse.Status
   name: Status
   href: api/Extism.HttpResponse.html#Extism_HttpResponse_Status
@@ -223,6 +236,12 @@ references:
   commentId: F:Extism.LogLevel.Info
   fullName: Extism.LogLevel.Info
   nameWithType: LogLevel.Info
+- uid: Extism.LogLevel.Trace
+  name: Trace
+  href: api/Extism.LogLevel.html#Extism_LogLevel_Trace
+  commentId: F:Extism.LogLevel.Trace
+  fullName: Extism.LogLevel.Trace
+  nameWithType: LogLevel.Trace
 - uid: Extism.LogLevel.Warn
   name: Warn
   href: api/Extism.LogLevel.html#Extism_LogLevel_Warn

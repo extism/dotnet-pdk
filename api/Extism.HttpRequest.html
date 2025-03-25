@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/extism/dotnet-pdk/new/v1.0.3/apiSpec/new?filename=Extism_HttpRequest.md&amp;value=---%0Auid%3A%20Extism.HttpRequest%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/extism/dotnet-pdk/new/v1.1.1/apiSpec/new?filename=Extism_HttpRequest.md&amp;value=---%0Auid%3A%20Extism.HttpRequest%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -54,7 +54,7 @@
             <div id="navbar">
               <form class="search" role="search" id="search">
                 <i class="bi bi-search"></i>
-                <input class="form-control" id="search-query" type="search" disabled="" placeholder="Search" autocomplete="off" aria-label="Search">
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             </div>
           </div>
@@ -77,7 +77,7 @@
 
       <div class="content">
         <div class="actionbar">
-          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
             <i class="bi bi-list"></i>
           </button>
 
@@ -89,7 +89,7 @@
 
 
   <h1 id="Extism_HttpRequest" data-uid="Extism.HttpRequest" class="text-break">
-Class HttpRequest  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.0.3/src/Extism.Pdk/Interop.cs/#L371"><i class="bi bi-code-slash"></i></a>
+Class HttpRequest  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.1.1/src/Extism.Pdk/Interop.cs/#L392"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -157,7 +157,7 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="Extism_HttpRequest__ctor_System_String_" data-uid="Extism.HttpRequest.#ctor(System.String)">
   HttpRequest(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.0.3/src/Extism.Pdk/Interop.cs/#L386"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.1.1/src/Extism.Pdk/Interop.cs/#L407"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -188,7 +188,7 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="Extism_HttpRequest__ctor_System_Uri_" data-uid="Extism.HttpRequest.#ctor(System.Uri)">
   HttpRequest(Uri)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.0.3/src/Extism.Pdk/Interop.cs/#L377"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.1.1/src/Extism.Pdk/Interop.cs/#L398"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -223,7 +223,7 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="Extism_HttpRequest_Body" data-uid="Extism.HttpRequest.Body">
   Body
-  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.0.3/src/Extism.Pdk/Interop.cs/#L409"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.1.1/src/Extism.Pdk/Interop.cs/#L434"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>An optional body.</p>
@@ -231,7 +231,8 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public byte[] Body { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
+public byte[] Body { get; set; }</code></pre>
   </div>
 
 
@@ -255,7 +256,7 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="Extism_HttpRequest_Headers" data-uid="Extism.HttpRequest.Headers">
   Headers
-  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.0.3/src/Extism.Pdk/Interop.cs/#L399"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.1.1/src/Extism.Pdk/Interop.cs/#L421"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP Headers</p>
@@ -263,7 +264,8 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Dictionary&lt;string, string&gt; Headers { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;headers&quot;)]
+public Dictionary&lt;string, string&gt; Headers { get; }</code></pre>
   </div>
 
 
@@ -287,7 +289,7 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="Extism_HttpRequest_Method" data-uid="Extism.HttpRequest.Method">
   Method
-  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.0.3/src/Extism.Pdk/Interop.cs/#L404"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.1.1/src/Extism.Pdk/Interop.cs/#L427"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP method</p>
@@ -295,7 +297,9 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public HttpMethod Method { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;method&quot;)]
+[JsonConverter(typeof(JsonStringEnumConverter&lt;HttpMethod&gt;))]
+public HttpMethod Method { get; set; }</code></pre>
   </div>
 
 
@@ -319,7 +323,7 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
 
   <h3 id="Extism_HttpRequest_Url" data-uid="Extism.HttpRequest.Url">
   Url
-  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.0.3/src/Extism.Pdk/Interop.cs/#L394"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/extism/dotnet-pdk/blob/v1.1.1/src/Extism.Pdk/Interop.cs/#L415"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>HTTP URL</p>
@@ -327,7 +331,8 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Uri Url { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
+public Uri Url { get; set; }</code></pre>
   </div>
 
 
@@ -351,7 +356,7 @@ Class HttpRequest  <a class="header-action link-secondary" title="View source" h
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/extism/dotnet-pdk/blob/v1.0.3/src/Extism.Pdk/Interop.cs/#L371" class="edit-link">Edit this page</a>
+          <a href="https://github.com/extism/dotnet-pdk/blob/v1.1.1/src/Extism.Pdk/Interop.cs/#L392" class="edit-link">Edit this page</a>
         </div>
 
 

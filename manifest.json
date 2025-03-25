@@ -28,7 +28,11 @@
           "relative_path": "api/Extism.HttpMethod.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Extism.HttpMethod",
+      "Summary": "<p sourcefile=\"api/Extism.HttpMethod.yml\" sourcestartlinenumber=\"1\">HTTP Method</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -38,7 +42,11 @@
           "relative_path": "api/Extism.HttpRequest.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Extism.HttpRequest",
+      "Summary": "<p sourcefile=\"api/Extism.HttpRequest.yml\" sourcestartlinenumber=\"1\">An HTTP request</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -48,7 +56,11 @@
           "relative_path": "api/Extism.HttpResponse.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Extism.HttpResponse",
+      "Summary": "<p sourcefile=\"api/Extism.HttpResponse.yml\" sourcestartlinenumber=\"1\">Response from an HTTP call</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -58,7 +70,11 @@
           "relative_path": "api/Extism.LogLevel.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Extism.LogLevel",
+      "Summary": "<p sourcefile=\"api/Extism.LogLevel.yml\" sourcestartlinenumber=\"1\">Log level</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -68,7 +84,11 @@
           "relative_path": "api/Extism.MemoryBlock.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Extism.MemoryBlock",
+      "Summary": "<p sourcefile=\"api/Extism.MemoryBlock.yml\" sourcestartlinenumber=\"1\">A block of allocated memory.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -78,7 +98,11 @@
           "relative_path": "api/Extism.Pdk.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Extism.Pdk",
+      "Summary": "<p sourcefile=\"api/Extism.Pdk.yml\" sourcestartlinenumber=\"1\">Provides interop functions for communication between guests and the host.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -88,7 +112,11 @@
           "relative_path": "api/Extism.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Extism",
+      "Summary": null
     },
     {
       "type": "Toc",
