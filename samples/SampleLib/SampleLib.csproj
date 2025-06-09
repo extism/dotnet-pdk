@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Extism.runtime.all" Version="1.9.1" />
-    <PackageReference Include="Extism.runtime.win-x64" Version="1.9.1" />
+    <PackageReference Include="Extism.runtime.all" Version="1.11.1" />
+    <PackageReference Include="Extism.runtime.win-x64" Version="1.11.1" />
   </ItemGroup>
 
   <ItemGroup>
