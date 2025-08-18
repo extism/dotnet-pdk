@@ -22,6 +22,7 @@
 
 	<ItemGroup>
 	  <PackageReference Update="FSharp.Core" Version="9.0.100" />
+	  <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.19" />
 	</ItemGroup>
   
 	<!--This is only necessary for ProjectReference, when using the nuget package this will not be necessary-->
